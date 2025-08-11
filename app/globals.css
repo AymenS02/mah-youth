@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+@theme {
+  /* Brand Colors */
+  --color-primary: #0D5EA6; /* Main blue */
+  --color-accent:  #EAA64D; /* Gold accent */
+  --color-light:   #E6E6E6; /* Light gray */
+
+  /* UI Assignments */
+  --bg: var(--color-primary);        /* Page + menu background */
+  --fg: var(--color-accent);         /* Main text, menu links */
+  --menu-bg: var(--color-primary);   /* Menu overlay background */
+  --menu-fg-secondary: var(--color-light); /* Secondary text */
+  --hamburger-icon-border: rgba(255, 255, 255, 0.3); /* Subtle on blue */
+}
+
+
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: "PP Neue Montreal", "Inter", sans-serif;
+}
