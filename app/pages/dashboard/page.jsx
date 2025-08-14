@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from "/components/header/Header";
-import { BookOpen, FileText, Video, Plus, Edit, Trash2, Users, BarChart3, Settings } from 'lucide-react';
+import { BookOpen, FileText, Video, Plus, Edit, Trash2, Users, BarChart3 } from 'lucide-react';
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
@@ -25,14 +25,32 @@ export default function Dashboard() {
     
     setUser(JSON.parse(userData));
     
-    // TODO: Fetch actual stats from your APIs
-    // This is mock data - replace with real API calls
-    setStats({
-      books: 24,
-      articles: 156,
-      videos: 42,
-      users: 1250
-    });
+    const fetchStats = async () => {
+      try {
+        const [booksRes, articlesRes, videosRes] = await Promise.all([
+          fetch("/api/books"),
+          fetch("/api/articles"),
+          fetch("/api/videos"),
+        ]);
+
+        const [booksData, articlesData, videosData] = await Promise.all([
+          booksRes.json(),
+          articlesRes.json(),
+          videosRes.json(),
+        ]);
+
+        setStats({
+          books: booksData.pagination?.total || 0,
+          articles: articlesData.pagination?.total || 0,
+          videos: videosData.pagination?.total || 0,
+        });
+
+      } catch (err) {
+        console.error("Error fetching stats:", err);
+      }
+    };
+
+    fetchStats();
   }, [router]);
 
   const handleLogout = () => {
@@ -101,13 +119,6 @@ export default function Dashboard() {
             </div>
             <div className="flex items-center space-x-4">
               <button
-                onClick={() => router.push('/pages/dashboard/settings')}
-                className="flex items-center px-4 py-2 text-gray-600 hover:text-gray-900 transition duration-200"
-              >
-                <Settings className="w-5 h-5 mr-2" />
-                Settings
-              </button>
-              <button
                 onClick={handleLogout}
                 className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition duration-200"
               >
@@ -120,7 +131,7 @@ export default function Dashboard() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex items-center">
               <div className="p-3 rounded-full bg-blue-100">
@@ -153,18 +164,6 @@ export default function Dashboard() {
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">Total Videos</p>
                 <p className="text-2xl font-bold text-gray-900">{stats.videos}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center">
-              <div className="p-3 rounded-full bg-indigo-100">
-                <Users className="w-6 h-6 text-indigo-600" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Total Users</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.users}</p>
               </div>
             </div>
           </div>
@@ -208,38 +207,6 @@ export default function Dashboard() {
               </div>
             );
           })}
-        </div>
-
-        {/* Recent Activity */}
-        <div className="bg-white rounded-lg shadow-md p-6 mt-8">
-          <h3 className="text-xl font-bold text-gray-900 mb-6">Recent Activity</h3>
-          
-          <div className="space-y-4">
-            <div className="flex items-center py-3 px-4 bg-blue-50 rounded-lg">
-              <BookOpen className="w-5 h-5 text-blue-600 mr-3" />
-              <div>
-                <p className="text-sm font-medium text-gray-900">New book "Advanced JavaScript" added</p>
-                <p className="text-xs text-gray-500">2 hours ago</p>
-              </div>
-            </div>
-            
-            <div className="flex items-center py-3 px-4 bg-green-50 rounded-lg">
-              <FileText className="w-5 h-5 text-green-600 mr-3" />
-              <div>
-                <p className="text-sm font-medium text-gray-900">Article "React Best Practices" updated</p>
-                <p className="text-xs text-gray-500">5 hours ago</p>
-              </div>
-            </div>
-            
-            <div className="flex items-center py-3 px-4 bg-purple-50 rounded-lg">
-              <Video className="w-5 h-5 text-purple-600 mr-3" />
-              <div>
-                <p className="text-sm font-medium text-gray-900">Video "Database Design" published</p>
-                <p className="text-xs text-gray-500">1 day ago</p>
-              </div>
-            </div>
-          </div>
-        
         </div>
       </div>
     </div>
