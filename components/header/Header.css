@@ -71,6 +71,7 @@ nav {
   align-items: center;
   pointer-events: all;
   z-index: 2;
+  background-color: var(--menu-bg);
 }
 
 .menu-logo {

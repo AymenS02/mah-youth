@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Mail, Phone, MapPin, Send, MessageCircle, Clock, Globe, User, MessageSquare } from 'lucide-react';
 import Header from "/components/header/Header";
+import Image from 'next/image';
 
 const ContactPage = () => {
   const headerRef = useRef(null);
@@ -94,20 +95,6 @@ const ContactPage = () => {
       link: "mailto:info@ar-ribat.org"
     },
     {
-      icon: Phone,
-      title: "Call Us",
-      details: "+1 (555) 123-4567",
-      description: "Available 9 AM - 6 PM EST",
-      link: "tel:+15551234567"
-    },
-    {
-      icon: MapPin,
-      title: "Visit Us",
-      details: "123 Islamic Center St",
-      description: "Hamilton, ON, Canada",
-      link: "https://maps.google.com"
-    },
-    {
       icon: Globe,
       title: "Website",
       details: "www.ar-ribat.org",
@@ -126,23 +113,23 @@ const ContactPage = () => {
   return (
     <>
       <Header />
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-100 py-12">
+      <div className="min-h-screen bg-gradient-to-br bg-primary py-12">
         <div className="container mx-auto px-6 max-w-7xl">
           
           {/* Header Section */}
           <div ref={headerRef} className="text-center mb-12">
             <div className="flex items-center justify-center gap-3 mb-6">
-              <div className="bg-indigo-100 p-3 rounded-full">
-                <MessageCircle className="w-8 h-8 text-indigo-600" />
+              <div className="bg-white p-3 rounded-full">
+                <MessageCircle className="w-8 h-8 text-accent" />
               </div>
-              <h1 className="text-4xl lg:text-5xl font-bold text-gray-800">
-                Get in <span className="text-indigo-600">Touch</span>
+              <h1 className="text-4xl lg:text-5xl font-bold text-light">
+                Get in <span className="text-accent">Touch</span>
               </h1>
             </div>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-light max-w-3xl mx-auto">
               Have questions, suggestions, or want to contribute? We'd love to hear from you. Reach out to the Ar-Ribat community.
             </p>
-            <div className="w-24 h-1 bg-indigo-600 mx-auto mt-6 rounded-full"></div>
+            <div className="w-24 h-1 bg-accent mx-auto mt-6 rounded-full"></div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
@@ -151,7 +138,7 @@ const ContactPage = () => {
             <div ref={formRef} className="lg:col-span-2">
               <div className="bg-white rounded-2xl shadow-lg p-8">
                 <div className="flex items-center gap-3 mb-6">
-                  <Send className="w-6 h-6 text-indigo-600" />
+                  <Send className="w-6 h-6 text-accent" />
                   <h2 className="text-2xl font-bold text-gray-800">Send Us a Message</h2>
                 </div>
 
@@ -179,7 +166,7 @@ const ContactPage = () => {
                           value={formData.name}
                           onChange={handleInputChange}
                           required
-                          className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
+                          className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all"
                           placeholder="Your full name"
                         />
                       </div>
@@ -198,7 +185,7 @@ const ContactPage = () => {
                           value={formData.email}
                           onChange={handleInputChange}
                           required
-                          className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
+                          className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all"
                           placeholder="your.email@example.com"
                         />
                       </div>
@@ -216,7 +203,7 @@ const ContactPage = () => {
                       value={formData.subject}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
+                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all"
                       placeholder="What is this about?"
                     />
                   </div>
@@ -234,7 +221,7 @@ const ContactPage = () => {
                         onChange={handleInputChange}
                         required
                         rows={6}
-                        className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all resize-none"
+                        className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all resize-none"
                         placeholder="Tell us more about your inquiry..."
                       />
                     </div>
@@ -243,7 +230,7 @@ const ContactPage = () => {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-500 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 flex items-center justify-center gap-2"
+                    className="w-full bg-accent hover:bg-primary text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 flex items-center justify-center gap-2"
                   >
                     {isSubmitting ? (
                       <>
@@ -267,7 +254,7 @@ const ContactPage = () => {
               {/* Contact Details */}
               <div className="bg-white rounded-2xl shadow-lg p-6">
                 <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-                  <Phone className="w-5 h-5 text-indigo-600" />
+                  <Phone className="w-5 h-5 text-accent" />
                   Contact Information
                 </h3>
                 
@@ -280,11 +267,11 @@ const ContactPage = () => {
                         href={info.link}
                         className="flex items-start gap-4 p-4 rounded-xl hover:bg-gray-50 transition-colors group"
                       >
-                        <div className="bg-indigo-100 p-3 rounded-full group-hover:bg-indigo-200 transition-colors">
-                          <IconComponent className="w-5 h-5 text-indigo-600" />
+                        <div className="bg-light p-3 rounded-full group-hover:bg-light transition-colors">
+                          <IconComponent className="w-5 h-5 text-accent" />
                         </div>
                         <div>
-                          <h4 className="font-semibold text-gray-800 group-hover:text-indigo-600 transition-colors">
+                          <h4 className="font-semibold text-gray-800 group-hover:text-accent transition-colors">
                             {info.title}
                           </h4>
                           <p className="text-gray-600 font-medium">{info.details}</p>
@@ -296,92 +283,35 @@ const ContactPage = () => {
                 </div>
               </div>
 
-              {/* Quick Actions */}
-              {/* <div className="bg-white rounded-2xl shadow-lg p-6">
-                <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-                  <Clock className="w-5 h-5 text-indigo-600" />
-                  Quick Actions
-                </h3>
-                
-                <div className="space-y-3">
-                  {quickLinks.map((link, index) => (
-                    <button
-                      key={index}
-                      className="w-full text-left p-4 rounded-xl border border-gray-200 hover:border-indigo-300 hover:bg-indigo-50 transition-all group"
-                    >
-                      <h4 className="font-semibold text-gray-800 group-hover:text-indigo-600 transition-colors">
-                        {link.title}
-                      </h4>
-                      <p className="text-sm text-gray-500">{link.description}</p>
-                    </button>
-                  ))}
-                </div>
-              </div> */}
 
-              {/* Office Hours */}
-              <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl shadow-lg p-6 text-white">
-                <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                  <Clock className="w-5 h-5" />
-                  Office Hours
-                </h3>
-                
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span>Monday - Friday</span>
-                    <span className="font-medium">9:00 AM - 6:00 PM</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Saturday</span>
-                    <span className="font-medium">10:00 AM - 4:00 PM</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Sunday</span>
-                    <span className="font-medium">Closed</span>
-                  </div>
+
+              {/* Additional Information */}
+              <div className="mt-2 bg-white rounded-2xl shadow-lg p-8">
+                <div className="text-center mb-8">
+                  <h3 className="text-2xl font-bold text-gray-800 mb-4">Other Ways to Connect</h3>
+                  <p className="text-gray-600">Join our community and stay updated with our latest content</p>
                 </div>
                 
-                <div className="mt-4 pt-4 border-t border-white/20">
-                  <p className="text-sm text-indigo-100">
-                    Response time: Usually within 24 hours
-                  </p>
+                <div className="grid grid-cols-1 md:grid-cols-1 gap-6"> 
+                  <a
+                    href="https://x.com/RibatFoundation"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-center p-6 border border-gray-200 rounded-xl hover:border-light hover:bg-indigo-50 transition-all cursor-pointer"
+                  >
+                    <div className="flex items-center justify-center mx-auto mb-4">
+                      <Image src="/x.png" alt="Twitter" width={36} height={36} />
+                    </div>
+                    <h4 className="font-semibold text-gray-800 mb-2">Twitter</h4>
+                    <p className="text-sm text-gray-600">See our content on Twitter</p>
+                  </a>
                 </div>
               </div>
+
             </div>
           </div>
 
-          {/* Additional Information */}
-          <div className="mt-16 bg-white rounded-2xl shadow-lg p-8">
-            <div className="text-center mb-8">
-              <h3 className="text-2xl font-bold text-gray-800 mb-4">Other Ways to Connect</h3>
-              <p className="text-gray-600">Join our community and stay updated with our latest content</p>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="text-center p-6 border border-gray-200 rounded-xl hover:border-indigo-300 hover:bg-indigo-50 transition-all">
-                <div className="bg-blue-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-blue-600 font-bold">f</span>
-                </div>
-                <h4 className="font-semibold text-gray-800 mb-2">Facebook</h4>
-                <p className="text-sm text-gray-600">Follow our page for updates</p>
-              </div>
-              
-              <div className="text-center p-6 border border-gray-200 rounded-xl hover:border-indigo-300 hover:bg-indigo-50 transition-all">
-                <div className="bg-red-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-red-600 font-bold">▶</span>
-                </div>
-                <h4 className="font-semibold text-gray-800 mb-2">YouTube</h4>
-                <p className="text-sm text-gray-600">Subscribe to our channel</p>
-              </div>
-              
-              <div className="text-center p-6 border border-gray-200 rounded-xl hover:border-indigo-300 hover:bg-indigo-50 transition-all">
-                <div className="bg-green-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-green-600 font-bold">@</span>
-                </div>
-                <h4 className="font-semibold text-gray-800 mb-2">Newsletter</h4>
-                <p className="text-sm text-gray-600">Get weekly updates</p>
-              </div>
-            </div>
-          </div>
+
         </div>
       </div>
     </>

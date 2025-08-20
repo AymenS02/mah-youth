@@ -168,7 +168,7 @@ const AboutUs = () => {
         </div>
 
         {/* Logo Section */}
-        <div className='flex-shrink-0'>
+        <div className='flex-shrink-0 my-20'>
           <div 
             ref={logoRef}
             className='relative group cursor-pointer'
