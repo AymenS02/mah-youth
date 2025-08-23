@@ -65,13 +65,14 @@ nav {
   top: 0;
   left: 0;
   width: 100vw;
-  padding: 2rem;
+  padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
   pointer-events: all;
   z-index: 2;
   background-color: var(--menu-bg);
+  box-shadow: 0 6px 14px #0000001a;
 }
 
 .menu-logo {

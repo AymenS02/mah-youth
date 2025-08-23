@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Mail, Phone, MapPin, Send, MessageCircle, Clock, Globe, User, MessageSquare } from 'lucide-react';
 import Header from "/components/header/Header";
 import Image from 'next/image';
+import Footer from '../../../components/footer/Footer';
 
 const ContactPage = () => {
   const headerRef = useRef(null);
@@ -113,7 +114,7 @@ const ContactPage = () => {
   return (
     <>
       <Header />
-      <div className="min-h-screen bg-gradient-to-br bg-primary py-12">
+      <div className="min-h-screen bg-gradient-to-br bg-primary py-[200px]">
         <div className="container mx-auto px-6 max-w-7xl">
           
           {/* Header Section */}
@@ -314,6 +315,7 @@ const ContactPage = () => {
 
         </div>
       </div>
+      <Footer />
     </>
   );
 };

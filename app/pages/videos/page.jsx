@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { gsap } from "gsap";
 import { Play, ExternalLink, Search, Filter, Video, User, Calendar } from 'lucide-react';
 import Header from "/components/header/Header";
+import Footer from "/components/footer/Footer";
 
 const VideosPage = () => {
   const [videos, setVideos] = useState([]);
@@ -98,7 +99,7 @@ const VideosPage = () => {
   return (
     <>
       <Header />
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-100 py-12">
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-100 py-[200px]">
         <div className="container mx-auto px-6 max-w-7xl">
 
           {/* Header Section */}
@@ -203,6 +204,7 @@ const VideosPage = () => {
           )}
         </div>
       </div>
+      <Footer />
     </>
   );
 };

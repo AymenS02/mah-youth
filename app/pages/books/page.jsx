@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { gsap } from "gsap";
 import { FileText, Download, Search, Filter, BookOpen, User, Calendar } from 'lucide-react';
 import Header from "/components/header/Header";
+import Footer from "/components/footer/Footer";
 
 const BooksPage = () => {
   const [books, setBooks] = useState([]);
@@ -90,7 +91,7 @@ const BooksPage = () => {
   return (
     <>
       <Header />
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12">
+      <div className="h-screen bg-gradient-to-br from-blue-50 to-indigo-100 pt-[200px]">
         <div className="container mx-auto px-6 max-w-7xl">
 
           {/* Header Section */}
@@ -201,6 +202,7 @@ const BooksPage = () => {
           )}
         </div>
       </div>
+      <Footer />
     </>
   );
 };

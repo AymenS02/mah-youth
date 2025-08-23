@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { gsap } from "gsap";
 import { FileText, Eye, Search, Filter, Tag, User, Calendar } from 'lucide-react';
 import Header from "/components/header/Header";
+import Footer from "/components/footer/Footer";
 
 const ArticlesPage = () => {
   const [articles, setArticles] = useState([]);
@@ -105,23 +106,23 @@ const ArticlesPage = () => {
   return (
     <>
       <Header />
-      <div className="min-h-screen bg-gradient-to-br from-green-50 to-teal-100 py-12">
+      <div className="min-h-screen bg-primary py-[200px]">
         <div className="container mx-auto px-6 max-w-7xl">
 
           {/* Header Section */}
           <div ref={headerRef} className="text-center mb-12">
             <div className="flex items-center justify-center gap-3 mb-6">
-              <div className="bg-green-100 p-3 rounded-full">
-                <FileText className="w-8 h-8 text-green-600" />
+              <div className="bg-light p-3 rounded-full">
+                <FileText className="w-8 h-8 text-accent" />
               </div>
               <h1 className="text-4xl lg:text-5xl font-bold text-gray-800">
-                Islamic <span className="text-green-600">Articles</span>
+                Islamic <span className="text-accent">Articles</span>
               </h1>
             </div>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Explore insightful articles on Islamic topics, scholarly works, and contemporary discussions to enrich your knowledge
             </p>
-            <div className="w-24 h-1 bg-green-600 mx-auto mt-6 rounded-full"></div>
+            <div className="w-24 h-1 bg-accent mx-auto mt-6 rounded-full"></div>
           </div>
 
           {/* Search and Filter Section */}
@@ -134,7 +135,7 @@ const ArticlesPage = () => {
                   placeholder="Search articles, authors, or topics..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent outline-none"
                 />
               </div>
               <div className="flex items-center gap-2">
@@ -142,7 +143,7 @@ const ArticlesPage = () => {
                 <select
                   value={selectedTag}
                   onChange={(e) => setSelectedTag(e.target.value)}
-                  className="px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none bg-white"
+                  className="px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent outline-none bg-white"
                 >
                   {availableTags.map(tag => (
                     <option key={tag} value={tag}>
@@ -172,7 +173,7 @@ const ArticlesPage = () => {
                       onError={(e) => {
                         // Fallback to gradient header if image fails
                         e.target.parentElement.innerHTML = `
-                          <div class="bg-gradient-to-br from-green-500 to-teal-600 h-full flex items-center justify-center">
+                          <div class="bg-gradient-to-br from-accent to-teal-600 h-full flex items-center justify-center">
                             <svg class="w-16 h-16 text-white opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                             </svg>
@@ -181,7 +182,7 @@ const ArticlesPage = () => {
                       }}
                     />
                   ) : (
-                    <div className="bg-gradient-to-br from-green-500 to-teal-600 h-full flex items-center justify-center">
+                    <div className="bg-gradient-to-br from-accent to-teal-600 h-full flex items-center justify-center">
                       <FileText className="w-16 h-16 text-white opacity-80" />
                     </div>
                   )}
@@ -189,7 +190,7 @@ const ArticlesPage = () => {
                   {/* Tags overlay */}
                   {article.tags && article.tags.length > 0 && (
                     <div className="absolute top-4 right-4">
-                      <span className="bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium text-green-700">
+                      <span className="bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium text-accent">
                         {article.tags[0]}
                       </span>
                     </div>
@@ -199,7 +200,7 @@ const ArticlesPage = () => {
                 </div>
 
                 <div className="p-6">
-                  <h3 className="text-xl font-bold text-gray-800 mb-2 line-clamp-2 group-hover:text-green-600 transition-colors">
+                  <h3 className="text-xl font-bold text-gray-800 mb-2 line-clamp-2 group-hover:text-accent transition-colors">
                     {article.title}
                   </h3>
                   
@@ -223,7 +224,7 @@ const ArticlesPage = () => {
                       {article.tags.slice(0, 3).map((tag, index) => (
                         <span
                           key={index}
-                          className="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full"
+                          className="inline-flex items-center px-2 py-1 text-xs font-medium bg-light text-accent rounded-full"
                         >
                           <Tag className="w-3 h-3 mr-1" />
                           {tag}
@@ -239,7 +240,7 @@ const ArticlesPage = () => {
                   
                   <button
                     onClick={() => handleViewArticle(article)}
-                    className="w-full bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 group-hover:shadow-lg"
+                    className="w-full bg-gradient-to-r bg-accent hover:bg-primary text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 group-hover:shadow-lg"
                   >
                     <Eye className="w-5 h-5" />
                     <span>Read Article</span>
@@ -262,6 +263,7 @@ const ArticlesPage = () => {
           )}
         </div>
       </div>
+      <Footer />
     </>
   );
 };
