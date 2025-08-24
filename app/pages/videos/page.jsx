@@ -89,7 +89,7 @@ const VideosPage = () => {
     return (
       <>
         <Header />
-        <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-50 to-pink-100">
+        <div className="flex items-center justify-center min-h-screen bg-light">
           <div className="text-gray-600">Loading videos...</div>
         </div>
       </>
@@ -99,28 +99,28 @@ const VideosPage = () => {
   return (
     <>
       <Header />
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-100 py-[200px]">
+      <div className="min-h-screen bg-light py-[200px]">
         <div className="container mx-auto px-6 max-w-7xl">
 
           {/* Header Section */}
           <div ref={headerRef} className="text-center mb-12">
             <div className="flex items-center justify-center gap-3 mb-6">
-              <div className="bg-purple-100 p-3 rounded-full">
-                <Video className="w-8 h-8 text-purple-600" />
+              <div className="hidden md:block bg-light p-3 rounded-full">
+                <Video className="w-8 h-8 text-primary" />
               </div>
               <h1 className="text-4xl lg:text-5xl font-bold text-gray-800">
-                Islamic <span className="text-purple-600">Videos</span>
+                Islamic <span className="text-primary">Videos</span>
               </h1>
             </div>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Watch educational Islamic videos, lectures, and scholarly content to enhance your knowledge of Islam
             </p>
-            <div className="w-24 h-1 bg-purple-600 mx-auto mt-6 rounded-full"></div>
+            <div className="w-24 h-1 bg-primary mx-auto mt-6 rounded-full"></div>
           </div>
 
           {/* Search and Filter Section */}
           <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
-            <div className="flex flex-col md:flex-row gap-4 items-center">
+            <div className="flex flex-col md:flex-row gap-4 md:items-center">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
@@ -155,7 +155,7 @@ const VideosPage = () => {
           <div ref={videosGridRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredVideos.map((video) => (
               <div key={video._id} className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden group">
-                <div className="bg-gradient-to-br from-purple-500 to-pink-600 h-48 flex items-center justify-center relative overflow-hidden">
+                <div className="bg-gradient-to-br from-blue-500 to-indigo-600 h-48 flex items-center justify-center relative overflow-hidden">
                   <Play className="w-16 h-16 text-white opacity-80" />
                   <div className="absolute top-4 right-4 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
                     <span className="text-white text-sm font-medium">{video.category}</span>
@@ -163,7 +163,7 @@ const VideosPage = () => {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </div>
                 <div className="p-6">
-                  <h3 className="text-xl font-bold text-gray-800 mb-2 line-clamp-2 group-hover:text-purple-600 transition-colors">
+                  <h3 className="text-xl font-bold text-gray-800 mb-2 line-clamp-2 group-hover:text-accent transition-colors">
                     {video.title}
                   </h3>
                   <div className="flex items-center gap-2 text-gray-600 mb-3">
@@ -183,7 +183,7 @@ const VideosPage = () => {
                   </div>
                   <button
                     onClick={() => handleWatchVideo(video)}
-                    className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 group-hover:shadow-lg"
+                    className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 group-hover:shadow-lg"
                   >
                     <ExternalLink className="w-5 h-5" />
                     <span>Watch Video</span>

@@ -81,7 +81,7 @@ const BooksPage = () => {
     return (
       <>
         <Header />
-        <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+        <div className="flex items-center justify-center min-h-screen bg-light">
           <div className="text-gray-600">Loading books...</div>
         </div>
       </>
@@ -91,13 +91,13 @@ const BooksPage = () => {
   return (
     <>
       <Header />
-      <div className="h-screen bg-gradient-to-br from-blue-50 to-indigo-100 pt-[200px]">
+      <div className="h-screen bg-light pt-[200px]">
         <div className="container mx-auto px-6 max-w-7xl">
 
           {/* Header Section */}
           <div ref={headerRef} className="text-center mb-12">
             <div className="flex items-center justify-center gap-3 mb-6">
-              <div className="bg-blue-100 p-3 rounded-full">
+              <div className="hidden md:block bg-blue-100 p-3 rounded-full">
                 <BookOpen className="w-8 h-8 text-blue-600" />
               </div>
               <h1 className="text-4xl lg:text-5xl font-bold text-gray-800">
@@ -112,7 +112,7 @@ const BooksPage = () => {
 
           {/* Search and Filter Section */}
           <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
-            <div className="flex flex-col md:flex-row gap-4 items-center">
+            <div className="flex flex-col md:flex-row gap-4 md:items-center">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input

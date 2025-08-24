@@ -96,7 +96,7 @@ const ArticlesPage = () => {
     return (
       <>
         <Header />
-        <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-green-50 to-teal-100">
+        <div className="flex items-center justify-center min-h-screen bg-light">
           <div className="text-gray-600">Loading articles...</div>
         </div>
       </>
@@ -106,28 +106,28 @@ const ArticlesPage = () => {
   return (
     <>
       <Header />
-      <div className="min-h-screen bg-primary py-[200px]">
+      <div className="min-h-screen bg-light py-[200px]">
         <div className="container mx-auto px-6 max-w-7xl">
 
           {/* Header Section */}
           <div ref={headerRef} className="text-center mb-12">
             <div className="flex items-center justify-center gap-3 mb-6">
-              <div className="bg-light p-3 rounded-full">
-                <FileText className="w-8 h-8 text-accent" />
+              <div className="hidden md:block bg-blue-100 p-3 rounded-full">
+                <FileText className="w-8 h-8 text-primary" />
               </div>
               <h1 className="text-4xl lg:text-5xl font-bold text-gray-800">
-                Islamic <span className="text-accent">Articles</span>
+                Islamic <span className="text-primary">Articles</span>
               </h1>
             </div>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Explore insightful articles on Islamic topics, scholarly works, and contemporary discussions to enrich your knowledge
             </p>
-            <div className="w-24 h-1 bg-accent mx-auto mt-6 rounded-full"></div>
+            <div className="w-24 h-1 bg-primary mx-auto mt-6 rounded-full"></div>
           </div>
 
           {/* Search and Filter Section */}
           <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
-            <div className="flex flex-col md:flex-row gap-4 items-center">
+            <div className="flex flex-col md:flex-row gap-4 md:items-center">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
@@ -182,7 +182,7 @@ const ArticlesPage = () => {
                       }}
                     />
                   ) : (
-                    <div className="bg-gradient-to-br from-accent to-teal-600 h-full flex items-center justify-center">
+                    <div className="bg-gradient-to-br from-blue-600 to-indigo-600 h-full flex items-center justify-center">
                       <FileText className="w-16 h-16 text-white opacity-80" />
                     </div>
                   )}
@@ -200,7 +200,7 @@ const ArticlesPage = () => {
                 </div>
 
                 <div className="p-6">
-                  <h3 className="text-xl font-bold text-gray-800 mb-2 line-clamp-2 group-hover:text-accent transition-colors">
+                  <h3 className="text-xl font-bold text-gray-800 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
                     {article.title}
                   </h3>
                   
@@ -224,7 +224,7 @@ const ArticlesPage = () => {
                       {article.tags.slice(0, 3).map((tag, index) => (
                         <span
                           key={index}
-                          className="inline-flex items-center px-2 py-1 text-xs font-medium bg-light text-accent rounded-full"
+                          className="inline-flex items-center px-2 py-1 text-xs font-medium bg-light text-primary rounded-full"
                         >
                           <Tag className="w-3 h-3 mr-1" />
                           {tag}
@@ -240,7 +240,7 @@ const ArticlesPage = () => {
                   
                   <button
                     onClick={() => handleViewArticle(article)}
-                    className="w-full bg-gradient-to-r bg-accent hover:bg-primary text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 group-hover:shadow-lg"
+                    className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 group-hover:shadow-lg"
                   >
                     <Eye className="w-5 h-5" />
                     <span>Read Article</span>

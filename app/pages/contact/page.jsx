@@ -120,7 +120,7 @@ const ContactPage = () => {
           {/* Header Section */}
           <div ref={headerRef} className="text-center mb-12">
             <div className="flex items-center justify-center gap-3 mb-6">
-              <div className="bg-white p-3 rounded-full">
+              <div className="hidden md:block bg-white p-3 rounded-full">
                 <MessageCircle className="w-8 h-8 text-accent" />
               </div>
               <h1 className="text-4xl lg:text-5xl font-bold text-light">
