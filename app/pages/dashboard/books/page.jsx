@@ -176,14 +176,6 @@ export default function BooksManagement() {
                 
                 <div className="flex space-x-2">
                   <button
-                    onClick={() => router.push(`/pages/dashboard/books/${book._id}/edit`)}
-                    className="flex-1 bg-blue-600 text-white py-2 px-3 rounded-md hover:bg-blue-700 transition duration-200 text-sm font-medium flex items-center justify-center"
-                  >
-                    <Edit className="w-4 h-4 mr-1" />
-                    Edit
-                  </button>
-                
-                  <button
                     onClick={() => handleDelete(book._id)}
                     className="bg-red-600 text-white py-2 px-3 rounded-md hover:bg-red-700 transition duration-200 text-sm font-medium flex items-center justify-center"
                   >

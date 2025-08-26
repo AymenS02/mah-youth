@@ -82,8 +82,8 @@ export default function Dashboard() {
     {
       title: 'Articles',
       icon: FileText,
-      color: 'bg-green-500',
-      hoverColor: 'hover:bg-green-600',
+      color: 'bg-accent',
+      hoverColor: 'hover:bg-yellow-600',
       count: stats.articles,
       description: 'Manage your articles',
       actions: [
@@ -94,8 +94,8 @@ export default function Dashboard() {
     {
       title: 'Videos',
       icon: Video,
-      color: 'bg-purple-500',
-      hoverColor: 'hover:bg-purple-600',
+      color: 'bg-red-700',
+      hoverColor: 'hover:bg-red-800',
       count: stats.videos,
       description: 'Manage your videos',
       actions: [
@@ -146,8 +146,8 @@ export default function Dashboard() {
 
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex items-center">
-              <div className="p-3 rounded-full bg-green-100">
-                <FileText className="w-6 h-6 text-green-600" />
+              <div className="p-3 rounded-full bg-yellow-100">
+                <FileText className="w-6 h-6 text-yellow-600" />
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">Total Articles</p>
@@ -158,8 +158,8 @@ export default function Dashboard() {
 
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex items-center">
-              <div className="p-3 rounded-full bg-purple-100">
-                <Video className="w-6 h-6 text-purple-600" />
+              <div className="p-3 rounded-full bg-red-100">
+                <Video className="w-6 h-6 text-red-600" />
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">Total Videos</p>

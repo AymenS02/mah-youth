@@ -222,14 +222,6 @@ export default function ArticlesManagement() {
                 
                 <div className="flex space-x-2">
                   <button
-                    onClick={() => router.push(`/pages/dashboard/articles/edit/${article._id}`)}
-                    className="flex-1 bg-blue-600 text-white py-2 px-3 rounded-md hover:bg-blue-700 transition duration-200 text-sm font-medium flex items-center justify-center"
-                  >
-                    <Edit className="w-4 h-4 mr-1" />
-                    Edit
-                  </button>
-                  
-                  <button
                     onClick={() => handleDelete(article._id)}
                     className="bg-red-600 text-white py-2 px-3 rounded-md hover:bg-red-700 transition duration-200 text-sm font-medium flex items-center justify-center"
                   >

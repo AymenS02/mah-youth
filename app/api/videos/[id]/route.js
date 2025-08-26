@@ -7,13 +7,17 @@ import Account from '../../../../lib/models/AccountModel';
 export async function GET(request, { params }) {
   try {
     await connectDB();
-    const { id } = params;
+    const { id } = await params; // ✅ FIXED
 
-    if (!id) return NextResponse.json({ error: 'Video ID is required' }, { status: 400 });
+    if (!id) {
+      return NextResponse.json({ error: 'Video ID is required' }, { status: 400 });
+    }
 
     const video = await Video.findById(id).populate('createdBy', 'name email');
 
-    if (!video) return NextResponse.json({ error: 'Video not found' }, { status: 404 });
+    if (!video) {
+      return NextResponse.json({ error: 'Video not found' }, { status: 404 });
+    }
 
     return NextResponse.json({ success: true, video });
   } catch (error) {
@@ -26,10 +30,12 @@ export async function GET(request, { params }) {
 export async function PUT(request, { params }) {
   try {
     await connectDB();
-    const { id } = params;
+    const { id } = await params; // ✅ FIXED
     const body = await request.json();
 
-    if (!id) return NextResponse.json({ error: 'Video ID is required' }, { status: 400 });
+    if (!id) {
+      return NextResponse.json({ error: 'Video ID is required' }, { status: 400 });
+    }
 
     const {
       title,
@@ -42,11 +48,14 @@ export async function PUT(request, { params }) {
     } = body;
 
     // Validation
-    if (!title || !author || !category || !videoUrl || !createdBy)
+    if (!title || !author || !category || !videoUrl || !createdBy) {
       return NextResponse.json({ error: 'All required fields must be provided' }, { status: 400 });
+    }
 
     const existingVideo = await Video.findById(id);
-    if (!existingVideo) return NextResponse.json({ error: 'Video not found' }, { status: 404 });
+    if (!existingVideo) {
+      return NextResponse.json({ error: 'Video not found' }, { status: 404 });
+    }
 
     // Duplicate check
     const duplicateVideo = await Video.findOne({
@@ -54,7 +63,10 @@ export async function PUT(request, { params }) {
       title: { $regex: new RegExp(`^${title}$`, 'i') },
       author: { $regex: new RegExp(`^${author}$`, 'i') },
     });
-    if (duplicateVideo) return NextResponse.json({ error: 'A video with this title and author already exists' }, { status: 409 });
+
+    if (duplicateVideo) {
+      return NextResponse.json({ error: 'A video with this title and author already exists' }, { status: 409 });
+    }
 
     // Update
     const updatedVideo = await Video.findByIdAndUpdate(
@@ -82,12 +94,16 @@ export async function PUT(request, { params }) {
 export async function DELETE(request, { params }) {
   try {
     await connectDB();
-    const { id } = params;
+    const { id } = await params; // ✅ FIXED
 
-    if (!id) return NextResponse.json({ error: 'Video ID is required' }, { status: 400 });
+    if (!id) {
+      return NextResponse.json({ error: 'Video ID is required' }, { status: 400 });
+    }
 
     const video = await Video.findById(id);
-    if (!video) return NextResponse.json({ error: 'Video not found' }, { status: 404 });
+    if (!video) {
+      return NextResponse.json({ error: 'Video not found' }, { status: 404 });
+    }
 
     await Video.findByIdAndDelete(id);
     return NextResponse.json({ success: true, message: 'Video deleted successfully' });
