@@ -1,23 +1,36 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { Mail, Phone, MapPin, Send, MessageCircle, Clock, Globe, User, MessageSquare } from 'lucide-react';
+import { Mail, Phone, Send, MessageCircle, Globe } from 'lucide-react';
 import Header from "/components/header/Header";
 import Image from 'next/image';
 import Footer from '../../../components/footer/Footer';
+import Swal from 'sweetalert2';
+
+const web3formsKey = '0c3fa56a-8d7f-454b-bfab-80b5dc3f7c7e'; // Replace with your actual key
+const twelveHours = 12 * 60 * 60 * 1000;
 
 const ContactPage = () => {
   const headerRef = useRef(null);
   const formRef = useRef(null);
   const infoRef = useRef(null);
+  const successRef = useRef(null);
+
+  const getInitialSubmittedState = () => {
+    const lastSubmitted = localStorage.getItem('contactFormSubmittedAt');
+    if (!lastSubmitted) return false;
+    return Date.now() - parseInt(lastSubmitted, 10) < twelveHours;
+  };
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    subject: '',
-    message: ''
+    message: '',
+    reason: '',
+    number: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState(null);
+  const [submitted, setSubmitted] = useState(getInitialSubmittedState());
 
   useEffect(() => {
     // Load GSAP dynamically
@@ -25,9 +38,7 @@ const ContactPage = () => {
       if (typeof window !== 'undefined' && !window.gsap) {
         const script = document.createElement('script');
         script.src = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js';
-        script.onload = () => {
-          initAnimations();
-        };
+        script.onload = initAnimations;
         document.head.appendChild(script);
       } else if (window.gsap) {
         initAnimations();
@@ -35,80 +46,64 @@ const ContactPage = () => {
     };
 
     const initAnimations = () => {
-      // GSAP Animations
       const tl = window.gsap.timeline({ delay: 0.3 });
-
-      window.gsap.set([headerRef.current, formRef.current, infoRef.current], {
-        opacity: 0,
-        y: 50
-      });
-
-      tl.to(headerRef.current, {
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        ease: "power3.out"
-      })
-      .to([formRef.current, infoRef.current], {
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        ease: "power3.out",
-        stagger: 0.2
-      }, "-=0.4");
+      window.gsap.set([headerRef.current, formRef.current, infoRef.current], { opacity: 0, y: 50 });
+      tl.to(headerRef.current, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" })
+        .to([formRef.current, infoRef.current], { opacity: 1, y: 0, duration: 0.8, ease: "power3.out", stagger: 0.2 }, "-=0.4");
     };
 
     loadGSAP();
   }, []);
 
-  const handleInputChange = (e) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setSubmitStatus(null);
 
-    // Simulate form submission
-    setTimeout(() => {
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ access_key: web3formsKey, ...formData })
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        localStorage.setItem('contactFormSubmittedAt', Date.now());
+        setSubmitted(true);
+        setFormData({ name: '', email: '', message: '', reason: '', number: '' });
+
+        // Animate success message using GSAP
+        if (successRef.current && window.gsap) {
+          window.gsap.fromTo(
+            successRef.current,
+            { opacity: 0, y: -20 },
+            { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }
+          );
+
+          setTimeout(() => {
+            window.gsap.to(successRef.current, { opacity: 0, y: -20, duration: 0.6, ease: "power3.in" });
+          }, 4000); // hide after 4 seconds
+        }
+
+        Swal.fire({ title: 'Success!', text: 'Your message has been sent successfully.', icon: 'success', confirmButtonColor: '#f59e0b' });
+      } else {
+        throw new Error(result.message || 'Submission failed');
+      }
+    } catch (error) {
+      Swal.fire({ title: 'Error!', text: error.message, icon: 'error', confirmButtonColor: '#f59e0b' });
+    } finally {
       setIsSubmitting(false);
-      setSubmitStatus('success');
-      setFormData({ name: '', email: '', subject: '', message: '' });
-      
-      // Clear success message after 5 seconds
-      setTimeout(() => {
-        setSubmitStatus(null);
-      }, 5000);
-    }, 2000);
+    }
   };
 
   const contactInfo = [
-    {
-      icon: Mail,
-      title: "Email Us",
-      details: "info@ar-ribat.org",
-      description: "Send us an email anytime",
-      link: "mailto:info@ar-ribat.org"
-    },
-    {
-      icon: Globe,
-      title: "Website",
-      details: "www.ar-ribat.org",
-      description: "Explore our resources",
-      link: "https://ar-ribat.org"
-    }
-  ];
-
-  const quickLinks = [
-    { title: "Submit Article", description: "Share your Islamic knowledge" },
-    { title: "Request Prayer", description: "Ask for community prayers" },
-    { title: "Report Issue", description: "Technical or content issues" },
-    { title: "Partnership", description: "Collaborate with us" }
+    { icon: Mail, title: "Email Us", details: "info@ar-ribat.org", description: "Send us an email anytime", link: "mailto:info@ar-ribat.org" },
+    { icon: Globe, title: "Website", details: "www.ar-ribat.org", description: "Explore our resources", link: "https://ar-ribat.org" }
   ];
 
   return (
@@ -116,8 +111,6 @@ const ContactPage = () => {
       <Header />
       <div className="min-h-screen bg-gradient-to-br bg-primary py-[200px]">
         <div className="container mx-auto px-6 max-w-7xl">
-          
-          {/* Header Section */}
           <div ref={headerRef} className="text-center mb-12">
             <div className="flex items-center justify-center gap-3 mb-6">
               <div className="hidden md:block bg-white p-3 rounded-full">
@@ -134,8 +127,6 @@ const ContactPage = () => {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-            
-            {/* Contact Form */}
             <div ref={formRef} className="lg:col-span-2">
               <div className="bg-white rounded-2xl shadow-lg p-8">
                 <div className="flex items-center gap-3 mb-6">
@@ -143,8 +134,9 @@ const ContactPage = () => {
                   <h2 className="text-2xl font-bold text-gray-800">Send Us a Message</h2>
                 </div>
 
-                {submitStatus === 'success' && (
-                  <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-xl mb-6 flex items-center gap-2">
+                {/* Success Message */}
+                {submitted && (
+                  <div ref={successRef} className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-xl mb-6 flex items-center gap-2">
                     <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
                       <span className="text-white text-xs">✓</span>
                     </div>
@@ -155,126 +147,63 @@ const ContactPage = () => {
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                        Full Name
-                      </label>
-                      <div className="relative">
-                        <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                        <input
-                          type="text"
-                          id="name"
-                          name="name"
-                          value={formData.name}
-                          onChange={handleInputChange}
-                          required
-                          className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all"
-                          placeholder="Your full name"
-                        />
-                      </div>
+                      <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                      <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all" placeholder="Your full name" />
                     </div>
-
                     <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                        Email Address
-                      </label>
-                      <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                        <input
-                          type="email"
-                          id="email"
-                          name="email"
-                          value={formData.email}
-                          onChange={handleInputChange}
-                          required
-                          className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all"
-                          placeholder="your.email@example.com"
-                        />
-                      </div>
+                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                      <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all" placeholder="your.email@example.com" />
                     </div>
                   </div>
 
                   <div>
-                    <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
-                      Subject
-                    </label>
-                    <input
-                      type="text"
-                      id="subject"
-                      name="subject"
-                      value={formData.subject}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all"
-                      placeholder="What is this about?"
-                    />
+                    <label htmlFor="number" className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                    <input type="tel" id="number" name="number" value={formData.number} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all" placeholder="Your phone number" />
                   </div>
 
                   <div>
-                    <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
-                      Message
-                    </label>
-                    <div className="relative">
-                      <MessageSquare className="absolute left-3 top-3 text-gray-400 w-5 h-5" />
-                      <textarea
-                        id="message"
-                        name="message"
-                        value={formData.message}
-                        onChange={handleInputChange}
-                        required
-                        rows={6}
-                        className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all resize-none"
-                        placeholder="Tell us more about your inquiry..."
-                      />
-                    </div>
+                    <label htmlFor="reason" className="block text-sm font-medium text-gray-700 mb-2">Reason for Contact</label>
+                    <select id="reason" name="reason" value={formData.reason} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all">
+                      <option value="">Select a reason</option>
+                      <option value="General Inquiry">General Inquiry</option>
+                      <option value="Partnership">Partnership</option>
+                      <option value="Report Issue">Report Issue</option>
+                      <option value="Other">Other</option>
+                    </select>
                   </div>
 
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full bg-accent hover:bg-primary text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 flex items-center justify-center gap-2"
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                        <span>Sending...</span>
-                      </>
-                    ) : (
-                      <>
-                        <Send className="w-5 h-5" />
-                        <span>Send Message</span>
-                      </>
-                    )}
-                  </button>
+                  <div>
+                    <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">Message</label>
+                    <textarea id="message" name="message" value={formData.message} onChange={handleChange} required rows={6} className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all resize-none" placeholder="Tell us more..."></textarea>
+                  </div>
+
+                  {!submitted && (
+                    <button type="submit" disabled={isSubmitting} className="w-full bg-accent hover:bg-primary text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 flex items-center justify-center gap-2">
+                      {isSubmitting ? 'Sending...' : 'Send Message'}
+                    </button>
+                  )}
+                  {submitted && (
+                    <p className="text-center text-accent mt-4">You've already submitted. Please wait 12 hours before submitting again.</p>
+                  )}
                 </form>
               </div>
             </div>
 
-            {/* Contact Information */}
             <div ref={infoRef} className="space-y-8">
-              
-              {/* Contact Details */}
               <div className="bg-white rounded-2xl shadow-lg p-6">
                 <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-                  <Phone className="w-5 h-5 text-accent" />
-                  Contact Information
+                  <Phone className="w-5 h-5 text-accent" /> Contact Information
                 </h3>
-                
                 <div className="space-y-4">
                   {contactInfo.map((info, index) => {
                     const IconComponent = info.icon;
                     return (
-                      <a
-                        key={index}
-                        href={info.link}
-                        className="flex items-start gap-4 p-4 rounded-xl hover:bg-gray-50 transition-colors group"
-                      >
+                      <a key={index} href={info.link} className="flex items-start gap-4 p-4 rounded-xl hover:bg-gray-50 transition-colors group">
                         <div className="bg-light p-3 rounded-full group-hover:bg-light transition-colors">
                           <IconComponent className="w-5 h-5 text-accent" />
                         </div>
                         <div>
-                          <h4 className="font-semibold text-gray-800 group-hover:text-accent transition-colors">
-                            {info.title}
-                          </h4>
+                          <h4 className="font-semibold text-gray-800 group-hover:text-accent transition-colors">{info.title}</h4>
                           <p className="text-gray-600 font-medium">{info.details}</p>
                           <p className="text-sm text-gray-500">{info.description}</p>
                         </div>
@@ -283,36 +212,8 @@ const ContactPage = () => {
                   })}
                 </div>
               </div>
-
-
-
-              {/* Additional Information */}
-              <div className="mt-2 bg-white rounded-2xl shadow-lg p-8">
-                <div className="text-center mb-8">
-                  <h3 className="text-2xl font-bold text-gray-800 mb-4">Other Ways to Connect</h3>
-                  <p className="text-gray-600">Join our community and stay updated with our latest content</p>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-1 gap-6"> 
-                  <a
-                    href="https://x.com/RibatFoundation"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block text-center p-6 border border-gray-200 rounded-xl hover:border-light hover:bg-indigo-50 transition-all cursor-pointer"
-                  >
-                    <div className="flex items-center justify-center mx-auto mb-4">
-                      <Image src="/x.png" alt="Twitter" width={36} height={36} />
-                    </div>
-                    <h4 className="font-semibold text-gray-800 mb-2">Twitter</h4>
-                    <p className="text-sm text-gray-600">See our content on Twitter</p>
-                  </a>
-                </div>
-              </div>
-
             </div>
           </div>
-
-
         </div>
       </div>
       <Footer />
