@@ -89,7 +89,7 @@ export default function BooksManagement() {
       
       <div className="pt-[200px] min-h-screen max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Page Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-8 flex-col md:flex-row space-y-4 md:space-y-0">
           <div className="flex items-center">
             <button
               onClick={() => router.push('/pages/dashboard')}
@@ -98,7 +98,7 @@ export default function BooksManagement() {
               <ArrowLeft className="w-6 h-6" />
             </button>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 flex items-center">
+              <h1 className="max-md:hidden text-3xl font-bold text-gray-900 flex items-center">
                 <BookOpen className="w-8 h-8 mr-3 text-blue-600" />
                 Books Management
               </h1>
