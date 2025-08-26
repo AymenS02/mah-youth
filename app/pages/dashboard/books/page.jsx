@@ -182,15 +182,7 @@ export default function BooksManagement() {
                     <Edit className="w-4 h-4 mr-1" />
                     Edit
                   </button>
-                  
-                  <button
-                    onClick={() => router.push(`/pages/dashboard/books/${book._id}/view`)}
-                    className="flex-1 bg-gray-600 text-white py-2 px-3 rounded-md hover:bg-gray-700 transition duration-200 text-sm font-medium flex items-center justify-center"
-                  >
-                    <Eye className="w-4 h-4 mr-1" />
-                    View
-                  </button>
-                  
+                
                   <button
                     onClick={() => handleDelete(book._id)}
                     className="bg-red-600 text-white py-2 px-3 rounded-md hover:bg-red-700 transition duration-200 text-sm font-medium flex items-center justify-center"

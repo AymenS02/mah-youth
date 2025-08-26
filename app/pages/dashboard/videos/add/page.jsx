@@ -16,6 +16,7 @@ export default function AddVideo() {
     author: '',
     category: '',
     videoUrl: '',
+    thumbnailUrl: '',
     description: ''
   });
 
@@ -39,7 +40,6 @@ export default function AddVideo() {
     setSuccess('');
 
     try {
-      // Get current user
       const userData = localStorage.getItem('user');
       const user = userData ? JSON.parse(userData) : null;
 
@@ -50,9 +50,7 @@ export default function AddVideo() {
 
       const response = await fetch('/api/videos', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(submitData),
       });
 
@@ -60,9 +58,7 @@ export default function AddVideo() {
 
       if (response.ok) {
         setSuccess('Video added successfully! Redirecting...');
-        setTimeout(() => {
-          router.push('/pages/dashboard/videos');
-        }, 2000);
+        setTimeout(() => router.push('/pages/dashboard/videos'), 2000);
       } else {
         setError(result.error || 'Failed to add video');
       }
@@ -83,7 +79,7 @@ export default function AddVideo() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      
+
       <div className="pt-[200px] max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Page Header */}
         <div className="flex items-center justify-between mb-8">
@@ -112,7 +108,7 @@ export default function AddVideo() {
                 <p className="text-red-600 text-sm">{error}</p>
               </div>
             )}
-            
+
             {success && (
               <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-md">
                 <p className="text-green-600 text-sm">{success}</p>
@@ -196,6 +192,24 @@ export default function AddVideo() {
                 </div>
               </div>
 
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="thumbnailUrl" className="block text-sm font-medium text-gray-700 mb-2">
+                    Thumbnail URL (Optional)
+                  </label>
+                  <input
+                    type="url"
+                    id="thumbnailUrl"
+                    name="thumbnailUrl"
+                    disabled={isLoading}
+                    value={formData.thumbnailUrl}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100"
+                    placeholder="https://example.com/thumbnail.jpg"
+                  />
+                </div>
+              </div>
+
               <div>
                 <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
                   Description
@@ -223,7 +237,7 @@ export default function AddVideo() {
                   <X className="w-4 h-4 mr-2" />
                   Cancel
                 </button>
-                
+
                 <button
                   type="submit"
                   disabled={isLoading}

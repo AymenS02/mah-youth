@@ -192,14 +192,6 @@ export default function VideosManagement() {
                   </button>
 
                   <button
-                    onClick={() => router.push(`/pages/dashboard/videos/${video._id}/view`)}
-                    className="flex-1 bg-gray-600 text-white py-2 px-3 rounded-md hover:bg-gray-700 transition duration-200 text-sm font-medium flex items-center justify-center"
-                  >
-                    <Eye className="w-4 h-4 mr-1" />
-                    View
-                  </button>
-
-                  <button
                     onClick={() => handleDelete(video._id)}
                     className="bg-red-600 text-white py-2 px-3 rounded-md hover:bg-red-700 transition duration-200 text-sm font-medium flex items-center justify-center"
                   >

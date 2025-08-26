@@ -14,7 +14,9 @@
   --hamburger-icon-border: rgba(255, 255, 255, 0.3); /* Subtle on blue */
 }
 
-
+html, body {
+  overflow-x: hidden;
+}
 
 body {
   background: var(--bg);

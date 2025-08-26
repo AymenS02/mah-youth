@@ -15,7 +15,6 @@ const VideosPage = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
 
   useEffect(() => {
-    // Check if refs are available before animating
     if (headerRef.current && videosGridRef.current) {
       const tl = gsap.timeline({ delay: 0.3 });
       gsap.set([headerRef.current, videosGridRef.current], { opacity: 0, y: 50 });
@@ -154,14 +153,43 @@ const VideosPage = () => {
           {/* Videos Grid */}
           <div ref={videosGridRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredVideos.map((video) => (
-              <div key={video._id} className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden group">
-                <div className="bg-gradient-to-br from-blue-500 to-indigo-600 h-48 flex items-center justify-center relative overflow-hidden">
-                  <Play className="w-16 h-16 text-white opacity-80" />
+              <div
+                key={video._id}
+                className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden group"
+              >
+                {/* Thumbnail or Gradient Header */}
+                <div className="relative h-48 overflow-hidden">
+                  {video.thumbnailUrl ? (
+                    <img
+                      src={video.thumbnailUrl}
+                      alt={video.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      onError={(e) => {
+                        // Fallback to gradient header if image fails
+                        e.target.parentElement.innerHTML = `
+                          <div class="bg-gradient-to-br from-blue-500 to-indigo-600 h-full flex items-center justify-center relative">
+                            <svg class="w-16 h-16 text-white opacity-80" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M8 5v14l11-7z" />
+                            </svg>
+                          </div>
+                        `;
+                      }}
+                    />
+                  ) : (
+                    <div className="bg-gradient-to-br from-blue-500 to-indigo-600 h-full flex items-center justify-center relative">
+                      <Play className="w-16 h-16 text-white opacity-80" />
+                    </div>
+                  )}
+
+                  {/* Category Tag */}
                   <div className="absolute top-4 right-4 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
                     <span className="text-white text-sm font-medium">{video.category}</span>
                   </div>
+
+                  {/* Hover Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </div>
+
                 <div className="p-6">
                   <h3 className="text-xl font-bold text-gray-800 mb-2 line-clamp-2 group-hover:text-accent transition-colors">
                     {video.title}
@@ -189,6 +217,8 @@ const VideosPage = () => {
                     <span>Watch Video</span>
                   </button>
                 </div>
+
+                {/* Hover effect overlay */}
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-10 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out pointer-events-none"></div>
               </div>
             ))}

@@ -20,6 +20,7 @@ export default function EditVideo() {
     author: '',
     category: '',
     videoUrl: '',
+    thumbnailUrl: '',
     description: '',
   });
 
@@ -47,6 +48,7 @@ export default function EditVideo() {
             author: video.author || '',
             category: video.category || '',
             videoUrl: video.videoUrl || '',
+            thumbnailUrl: video.thumbnailUrl || '',
             description: video.description || '',
           });
         } else if (response.status === 404) {
@@ -275,6 +277,22 @@ export default function EditVideo() {
                     placeholder="https://example.com/video.mp4"
                   />
                 </div>
+              </div>
+              
+              <div>
+                <label htmlFor="thumbnailUrl" className="block text-sm font-medium text-gray-700 mb-2">
+                  Thumbnail URL
+                </label>
+                <input
+                  type="url"
+                  id="thumbnailUrl"
+                  name="thumbnailUrl"
+                  disabled={isLoading}
+                  value={formData.thumbnailUrl}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100"
+                  placeholder="https://example.com/thumbnail.jpg"
+                />
               </div>
 
               <div>

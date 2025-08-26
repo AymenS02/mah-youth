@@ -67,11 +67,17 @@ export async function POST(request) {
     await connectDB();
     
     const body = await request.json();
+    
+    // Debug logs to see what's being received
+    console.log('Received thumbnailUrl:', body.thumbnailUrl);
+    console.log('Processed thumbnailUrl:', body.thumbnailUrl?.trim() || '');
+
     const {
       title,
       author,
       category,
       videoUrl,
+      thumbnailUrl, // Now we'll actually use this variable
       description,
       createdBy
     } = body;
@@ -108,13 +114,14 @@ export async function POST(request) {
       );
     }
 
-    // Create new video - only include fields that exist in the model
+    // Create new video - use the destructured thumbnailUrl variable
     const newVideo = new Video({
       title: title.trim(),
       author: author.trim(),
       category: category.trim(),
       videoUrl: videoUrl.trim(),
-      description: description?.trim() || undefined, // Optional field
+      thumbnailUrl: thumbnailUrl?.trim() || '', // Use the destructured variable
+      description: description?.trim() || '', // Optional field
       createdBy: createdBy || undefined
     });
 
