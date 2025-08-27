@@ -7,7 +7,7 @@ import Image from 'next/image';
 import Footer from '../../../components/footer/Footer';
 import Swal from 'sweetalert2';
 
-const web3formsKey = '0c3fa56a-8d7f-454b-bfab-80b5dc3f7c7e'; // Replace with your actual key
+const web3formsKey = '4811c4ac-102d-47ca-98eb-fb475f877a96'; // Replace with your actual key
 const twelveHours = 12 * 60 * 60 * 1000;
 
 const ContactPage = () => {
