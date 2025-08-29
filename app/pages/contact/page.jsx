@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { Mail, Phone, Send, MessageCircle, Globe } from 'lucide-react';
+import { Mail, Phone, Send, MessageCircle, Globe, Youtube, Twitter } from 'lucide-react';
 import Header from "/components/header/Header";
 import Image from 'next/image';
 import Footer from '../../../components/footer/Footer';
@@ -103,7 +103,9 @@ const ContactPage = () => {
 
   const contactInfo = [
     { icon: Mail, title: "Email Us", details: "info@ar-ribat.org", description: "Send us an email anytime", link: "mailto:info@ar-ribat.org" },
-    { icon: Globe, title: "Website", details: "www.ar-ribat.org", description: "Explore our resources", link: "https://ar-ribat.org" }
+    { icon: Globe, title: "Website", details: "www.ar-ribat.org", description: "Explore our resources", link: "https://ar-ribat.org" },
+    { icon: Youtube, title: "YouTube", details: "Ar Ribat Foundation", description: "Watch our latest videos", link: "https://www.youtube.com/@RibatFoundation" },
+    { icon: Twitter, title: "Twitter", details: "@RibatFoundation", description: "Follow us on Twitter", link: "https://x.com/RibatFoundation" },
   ];
 
   return (

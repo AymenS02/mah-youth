@@ -8,6 +8,7 @@ import {
   Play, 
   Mail, 
   Twitter, 
+  Youtube,
   ChevronUp,
   ExternalLink
 } from 'lucide-react';
@@ -113,7 +114,8 @@ const Footer = () => {
   ];
 
   const socialLinks = [
-    { name: 'Twitter', href: '#', icon: Twitter },
+    { name: 'Twitter', href: 'https://x.com/RibatFoundation', icon: Twitter },
+    { name: 'YouTube', href: 'https://www.youtube.com/@RibatFoundation', icon: Youtube }
   ];
 
   const contactInfo = [

@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
-import Link from 'next/link';
 import { Mail, Phone, MapPin, MessageCircle, ArrowRight, Send } from 'lucide-react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -186,8 +185,8 @@ const ContactUsSection = () => {
 
           {/* Call to Action */}
           <div className="text-center">
-            <Link href="/pages/contact">
-              <button
+            <a href="/pages/contact">
+              <div
                 ref={ctaButtonRef}
                 className="group relative inline-flex items-center px-8 py-4 text-lg font-semibold text-white rounded-2xl transition-all duration-300 hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-yellow-400 focus:ring-opacity-50"
                 style={{
@@ -215,8 +214,8 @@ const ContactUsSection = () => {
                     }}
                   ></div>
                 </div>
-              </button>
-            </Link>
+              </div>
+            </a>
             
             <p className="text-blue-200 text-sm mt-6 max-w-md mx-auto">
               We typically respond within 24 hours. Your questions and feedback are important to us.
