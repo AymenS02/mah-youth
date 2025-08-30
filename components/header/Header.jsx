@@ -68,7 +68,6 @@ const Header = () => {
                   <p className='paragraph'></p>
                 </div>
                 <div className="menu-col">
-                  <p className='paragraph'>+1 437 555 0199</p>
                   <p className='paragraph'>info@ar-ribat.com</p>
                 </div>
               </div>
