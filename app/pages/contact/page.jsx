@@ -1,9 +1,8 @@
-'use client';
+"use client";
 
 import React, { useEffect, useRef, useState } from 'react';
 import { Mail, Phone, Send, MessageCircle, Globe, Youtube, Twitter } from 'lucide-react';
 import Header from "/components/header/Header";
-import Image from 'next/image';
 import Footer from '../../../components/footer/Footer';
 import Swal from 'sweetalert2';
 
@@ -16,12 +15,6 @@ const ContactPage = () => {
   const infoRef = useRef(null);
   const successRef = useRef(null);
 
-  const getInitialSubmittedState = () => {
-    const lastSubmitted = localStorage.getItem('contactFormSubmittedAt');
-    if (!lastSubmitted) return false;
-    return Date.now() - parseInt(lastSubmitted, 10) < twelveHours;
-  };
-
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -30,7 +23,19 @@ const ContactPage = () => {
     number: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(getInitialSubmittedState());
+
+  // Start with false; update later in useEffect
+  const [submitted, setSubmitted] = useState(false);
+
+  // ✅ Safe check in the browser
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const lastSubmitted = localStorage.getItem('contactFormSubmittedAt');
+      if (lastSubmitted && Date.now() - parseInt(lastSubmitted, 10) < twelveHours) {
+        setSubmitted(true);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     // Load GSAP dynamically
@@ -40,7 +45,7 @@ const ContactPage = () => {
         script.src = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js';
         script.onload = initAnimations;
         document.head.appendChild(script);
-      } else if (window.gsap) {
+      } else if (typeof window !== 'undefined' && window.gsap) {
         initAnimations();
       }
     };
@@ -54,7 +59,6 @@ const ContactPage = () => {
 
     loadGSAP();
   }, []);
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
