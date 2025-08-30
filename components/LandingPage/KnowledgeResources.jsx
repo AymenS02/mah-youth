@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef } from 'react'
 import { FileText, BookOpen, Play, ArrowRight } from 'lucide-react'
+import Link from 'next/link'
 
 const KnowledgeResources = () => {
   const containerRef = useRef(null);
@@ -110,7 +111,7 @@ const KnowledgeResources = () => {
                 animation: `fadeInUp 0.6s ease-out ${index * 0.1}s both`
               }}
             >
-              <a
+              <Link
                 href={resource.link}
                 className='relative block p-8 sm:p-10 bg-white/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 shadow-lg hover:shadow-xl hover:bg-white transition-all duration-300 group-hover:-translate-y-2'
               >
@@ -134,7 +135,7 @@ const KnowledgeResources = () => {
                   <span className="mr-2">Explore Now</span>
                   <ArrowRight className="w-4 h-4 transform transition-transform duration-300 group-hover:translate-x-1" />
                 </div>
-              </a>
+              </Link>
             </div>
           ))}
         </div>
