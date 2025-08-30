@@ -98,7 +98,7 @@ const Hero = () => {
         {!isMobile && (
           <div className="text-white flex flex-col items-start max-w-4xl">
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-shadow-sm/20">
-              Ar Ribat
+              Ar Ribat Foundation
             </h1>
             <p className="text-sm sm:text-base md:text-lg lg:text-2xl xl:text-4xl mt-10 text-shadow-sm/20 leading-relaxed">
               يَـٰٓأَيُّهَا ٱلَّذِينَ ءَامَنُوا۟ ٱصْبِرُوا۟ وَصَابِرُوا۟ وَرَابِطُوا۟
