@@ -102,8 +102,8 @@ const ContactPage = () => {
   };
 
   const contactInfo = [
-    { icon: Mail, title: "Email Us", details: "info@ar-ribat.org", description: "Send us an email anytime", link: "mailto:info@ar-ribat.org" },
-    { icon: Globe, title: "Website", details: "www.ar-ribat.org", description: "Explore our resources", link: "https://ar-ribat.org" },
+    { icon: Mail, title: "Email Us", details: "info@ar-ribat.com", description: "Send us an email anytime", link: "mailto:info@ar-ribat.com" },
+    { icon: Globe, title: "Website", details: "www.ar-ribat.com", description: "Explore our resources", link: "https://ar-ribat.com" },
     { icon: Youtube, title: "YouTube", details: "Ar Ribat Foundation", description: "Watch our latest videos", link: "https://www.youtube.com/@RibatFoundation" },
     { icon: Twitter, title: "Twitter", details: "@RibatFoundation", description: "Follow us on Twitter", link: "https://x.com/RibatFoundation" },
   ];

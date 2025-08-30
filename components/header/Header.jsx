@@ -65,11 +65,11 @@ const Header = () => {
               </div>
               <div className="menu-footer">
                 <div className="menu-col">
-                  <p className='paragraph'>Toronto, Canada</p>
+                  <p className='paragraph'></p>
                 </div>
                 <div className="menu-col">
                   <p className='paragraph'>+1 437 555 0199</p>
-                  <p className='paragraph'>hello@nullspace.studio</p>
+                  <p className='paragraph'>info@ar-ribat.com</p>
                 </div>
               </div>
             </div>
