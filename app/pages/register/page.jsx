@@ -56,7 +56,7 @@ export default function Page() {
     <div className="min-h-screen bg-gray-50">
       <Header />
       
-      <div className="flex items-center justify-center px-4 py-12">
+      <div className="flex items-center justify-center px-4 py-12 mt-20">
         <div className="w-full max-w-md">
           <div className="bg-white rounded-lg shadow-md p-8">
             <div className="text-center mb-8">
