@@ -119,7 +119,7 @@ const Footer = () => {
   ];
 
   const contactInfo = [
-    { icon: Mail, text: 'info@ar-ribat.com', href: 'mailto:info@ar-ribat.com' },
+    { icon: Mail, text: 'ar-ribat@tuta.com', href: 'mailto:ar-ribat@tuta.com' },
   ];
 
   return (
