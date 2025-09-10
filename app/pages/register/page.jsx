@@ -23,6 +23,7 @@ export default function Page() {
       phone: formData.get('phone'),
       password: formData.get('password'),
       confirmPassword: formData.get('confirmPassword'),
+      passcode: formData.get('passcode'), // ✅ include passcode
     };
 
     try {
@@ -56,7 +57,7 @@ export default function Page() {
     <div className="min-h-screen bg-gray-50">
       <Header />
       
-      <div className="flex items-center justify-center px-4 py-12 mt-20">
+      <div className="flex items-center justify-center px-4 py-12 h-screen">
         <div className="w-full max-w-md">
           <div className="bg-white rounded-lg shadow-md p-8">
             <div className="text-center mb-8">
@@ -166,6 +167,25 @@ export default function Page() {
                   disabled={isLoading}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 disabled:bg-gray-100 disabled:cursor-not-allowed"
                   placeholder="Confirm your password"
+                />
+              </div>
+
+              <div>
+                <label 
+                  htmlFor="passcode" 
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Passcode
+                </label>
+                <input 
+                  type="password" 
+                  id="passcode" 
+                  name="passcode" 
+                  required
+                  minLength="6"
+                  disabled={isLoading}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                  placeholder="Enter the mandatory registration passcode"
                 />
               </div>
 

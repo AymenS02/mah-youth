@@ -1,4 +1,3 @@
-// app/api/register/route.js
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import { connectDB } from '../../../lib/config/db';
@@ -6,14 +5,28 @@ import Account from '../../../lib/models/AccountModel';
 
 export async function POST(request) {
   try {
-    // Connect to database
-    await connectDB();
-    
     // Parse request body
     const body = await request.json();
-    const { name, email, phone, password, confirmPassword } = body;
+    const { name, email, phone, password, confirmPassword, passcode } = body;
     
-    // Validation
+    // Mandatory passcode validation for ALL registrations
+    const CORRECT_PASSCODE = process.env.REGISTRATION_PASSCODE;
+    
+    if (!passcode) {
+      return NextResponse.json(
+        { error: 'Registration passcode is required' },
+        { status: 400 }
+      );
+    }
+    
+    if (passcode !== CORRECT_PASSCODE) {
+      return NextResponse.json(
+        { error: 'Invalid registration passcode' },
+        { status: 401 }
+      );
+    }
+    
+    // Continue with regular validation
     if (!name || !email || !phone || !password || !confirmPassword) {
       return NextResponse.json(
         { error: 'All fields are required' },
@@ -35,7 +48,7 @@ export async function POST(request) {
       );
     }
     
-    // Email format validation (additional check beyond schema)
+    // Email format validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return NextResponse.json(
@@ -43,6 +56,9 @@ export async function POST(request) {
         { status: 400 }
       );
     }
+    
+    // Connect to database
+    await connectDB();
     
     // Check if user already exists
     const existingUser = await Account.findOne({ email: email.toLowerCase() });
@@ -71,7 +87,7 @@ export async function POST(request) {
     
     console.log('✅ Account created successfully:', savedAccount._id);
     
-    // Return success response (don't include password in response)
+    // Return success response
     return NextResponse.json(
       {
         success: true,
@@ -91,7 +107,6 @@ export async function POST(request) {
   } catch (error) {
     console.error('❌ Registration error:', error);
     
-    // Handle mongoose validation errors
     if (error.name === 'ValidationError') {
       const validationErrors = Object.values(error.errors).map(err => err.message);
       return NextResponse.json(
@@ -100,7 +115,6 @@ export async function POST(request) {
       );
     }
     
-    // Handle duplicate key error (if email uniqueness fails at DB level)
     if (error.code === 11000) {
       return NextResponse.json(
         { error: 'User with this email already exists' },
@@ -108,7 +122,6 @@ export async function POST(request) {
       );
     }
     
-    // Generic error response
     return NextResponse.json(
       { error: 'Internal server error. Please try again later.' },
       { status: 500 }
