@@ -91,7 +91,7 @@ const BooksPage = () => {
   return (
     <>
       <Header />
-      <div className="h-screen bg-light pt-[200px]">
+      <div className="py-20 min-h-screen bg-light pt-[200px]">
         <div className="container mx-auto px-6 max-w-7xl">
 
           {/* Header Section */}
