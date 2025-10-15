@@ -1,102 +1,95 @@
-// app/api/articles/[id]/route.js
+// app/api/events/[id]/route.js
 import { NextResponse } from 'next/server';
 import { connectDB } from '../../../../lib/config/db';
-import Article from '../../../../lib/models/ArticleModel';
+import Event from '../../../../lib/models/EventModel';
 import Account from '../../../../lib/models/AccountModel';
 
-// GET - Fetch single article
+// GET - Fetch single event
 export async function GET(request, { params }) {
   try {
     await connectDB();
-    
+
     const { id } = params;
-    
+
     if (!id) {
       return NextResponse.json(
-        { error: 'Article ID is required' },
+        { error: 'Event ID is required' },
         { status: 400 }
       );
     }
 
-    const article = await Article.findById(id).populate('createdBy', 'name email');
-    
-    if (!article) {
+    const event = await Event.findById(id).populate('createdBy', 'name email');
+
+    if (!event) {
       return NextResponse.json(
-        { error: 'Article not found' },
+        { error: 'Event not found' },
         { status: 404 }
       );
     }
 
     return NextResponse.json({
       success: true,
-      article
+      event
     });
 
   } catch (error) {
-    console.error('❌ Get article error:', error);
+    console.error('❌ Get event error:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch article' },
+      { error: 'Failed to fetch event' },
       { status: 500 }
     );
   }
 }
 
-// PUT - Update article
+// PUT - Update event
 export async function PUT(request, { params }) {
   try {
     await connectDB();
-    
+
     const { id } = params;
     const body = await request.json();
-    
+
     if (!id) {
       return NextResponse.json(
-        { error: 'Article ID is required' },
+        { error: 'Event ID is required' },
         { status: 400 }
       );
     }
 
-    const {
-      title,
-      author,
-      date,
-      tags,
-      imageUrl,
-      content
-    } = body;
+    const { title, location, date, tags, imageUrl, description } = body;
 
     // Validation
-    if (!title || !author || !content) {
+    if (!title || !location || !date) {
       return NextResponse.json(
-        { error: 'Title, author, and content are required fields' },
+        { error: 'Title, location, and date are required fields' },
         { status: 400 }
       );
     }
 
-    // Check if article exists
-    const existingArticle = await Article.findById(id);
-    if (!existingArticle) {
+    // Check if event exists
+    const existingEvent = await Event.findById(id);
+    if (!existingEvent) {
       return NextResponse.json(
-        { error: 'Article not found' },
+        { error: 'Event not found' },
         { status: 404 }
       );
     }
 
-    // Check if another article with same title and author exists (excluding current article)
-    const duplicateArticle = await Article.findOne({ 
+    // Check for duplicates (same title + date)
+    const duplicateEvent = await Event.findOne({
       _id: { $ne: id },
-      title: { $regex: new RegExp(`^${title}$`, 'i') }, 
-      author: { $regex: new RegExp(`^${author}$`, 'i') }
+      title: { $regex: new RegExp(`^${title}$`, 'i') },
+      date: new Date(date)
     });
-    
-    if (duplicateArticle) {
+
+    if (duplicateEvent) {
       return NextResponse.json(
-        { error: 'An article with this title and author already exists' },
+        { error: 'An event with this title and date already exists' },
         { status: 409 }
       );
     }
 
-    // Process tags - ensure it's an array and clean up
+    // Process tags
     let processedTags = [];
     if (tags) {
       if (Array.isArray(tags)) {
@@ -106,31 +99,31 @@ export async function PUT(request, { params }) {
       }
     }
 
-    // Update article
-    const updatedArticle = await Article.findByIdAndUpdate(
+    // Update event
+    const updatedEvent = await Event.findByIdAndUpdate(
       id,
       {
         title: title.trim(),
-        author: author.trim(),
-        date: date ? new Date(date) : existingArticle.date,
+        location: location.trim(),
+        date: new Date(date),
         tags: processedTags,
         imageUrl: imageUrl?.trim() || null,
-        content: content.trim()
+        description: description.trim()
       },
       { new: true, runValidators: true }
     ).populate('createdBy', 'name email');
 
-    console.log('✅ Article updated successfully:', updatedArticle._id);
+    console.log('✅ Event updated successfully:', updatedEvent._id);
 
     return NextResponse.json({
       success: true,
-      message: 'Article updated successfully',
-      article: updatedArticle
+      message: 'Event updated successfully',
+      event: updatedEvent
     });
 
   } catch (error) {
-    console.error('❌ Update article error:', error);
-    
+    console.error('❌ Update event error:', error);
+
     if (error.name === 'ValidationError') {
       const validationErrors = Object.values(error.errors).map(err => err.message);
       return NextResponse.json(
@@ -140,49 +133,49 @@ export async function PUT(request, { params }) {
     }
 
     return NextResponse.json(
-      { error: 'Failed to update article' },
+      { error: 'Failed to update event' },
       { status: 500 }
     );
   }
 }
 
-// DELETE - Delete article
+// DELETE - Delete event
 export async function DELETE(request, { params }) {
   try {
     await connectDB();
-    
-    const { id } = params;
-    
+
+    const { id } = await params;
+
     if (!id) {
       return NextResponse.json(
-        { error: 'Article ID is required' },
+        { error: 'Event ID is required' },
         { status: 400 }
       );
     }
 
-    // Check if article exists
-    const article = await Article.findById(id);
-    if (!article) {
+    // Check if event exists
+    const event = await Event.findById(id);
+    if (!event) {
       return NextResponse.json(
-        { error: 'Article not found' },
+        { error: 'Event not found' },
         { status: 404 }
       );
     }
 
-    // Delete the article
-    await Article.findByIdAndDelete(id);
+    // Delete the event
+    await Event.findByIdAndDelete(id);
 
-    console.log('✅ Article deleted successfully:', id);
+    console.log('✅ Event deleted successfully:', id);
 
     return NextResponse.json({
       success: true,
-      message: 'Article deleted successfully'
+      message: 'Event deleted successfully'
     });
 
   } catch (error) {
-    console.error('❌ Delete article error:', error);
+    console.error('❌ Delete event error:', error);
     return NextResponse.json(
-      { error: 'Failed to delete article' },
+      { error: 'Failed to delete event' },
       { status: 500 }
     );
   }

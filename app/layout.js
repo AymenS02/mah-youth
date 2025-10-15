@@ -8,10 +8,10 @@ const nunitoSans = Nunito({
 
 
 export const metadata = {
-  title: "Ar Ribat Foundation",
+  title: "MAH Youth",
   description: "A platform dedicated to educating muslims world-wide.",
   icons: {
-    icon: "/favicon.png", // can also use .png or .svg
+    icon: "/logo.png", // can also use .png or .svg
   },
 };
 

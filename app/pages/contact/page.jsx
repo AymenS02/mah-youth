@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from 'react';
-import { Mail, Phone, Send, MessageCircle, Globe, Youtube, Twitter } from 'lucide-react';
+import { Mail, Phone, Send, MessageCircle, MapPin, Instagram } from 'lucide-react';
 import Header from "/components/header/Header";
 import Footer from '../../../components/footer/Footer';
 import Swal from 'sweetalert2';
@@ -59,6 +59,7 @@ const ContactPage = () => {
 
     loadGSAP();
   }, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -91,60 +92,102 @@ const ContactPage = () => {
 
           setTimeout(() => {
             window.gsap.to(successRef.current, { opacity: 0, y: -20, duration: 0.6, ease: "power3.in" });
-          }, 4000); // hide after 4 seconds
+          }, 4000);
         }
 
-        Swal.fire({ title: 'Success!', text: 'Your message has been sent successfully.', icon: 'success', confirmButtonColor: '#f59e0b' });
+        Swal.fire({ 
+          title: 'Success!', 
+          text: 'Your message has been sent successfully.', 
+          icon: 'success', 
+          confirmButtonColor: 'var(--color-accent)' 
+        });
       } else {
         throw new Error(result.message || 'Submission failed');
       }
     } catch (error) {
-      Swal.fire({ title: 'Error!', text: error.message, icon: 'error', confirmButtonColor: '#f59e0b' });
+      Swal.fire({ 
+        title: 'Error!', 
+        text: error.message, 
+        icon: 'error', 
+        confirmButtonColor: 'var(--color-accent)' 
+      });
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const contactInfo = [
-    { icon: Mail, title: "Email Us", details: "ar-ribat@tuta.com", description: "Send us an email anytime", link: "mailto:ar-ribat@tuta.com" },
-    { icon: Globe, title: "Website", details: "www.ribatfoundation.org", description: "Explore our resources", link: "https://www.ribatfoundation.org" },
-    { icon: Youtube, title: "YouTube", details: "Ar Ribat Foundation", description: "Watch our latest videos", link: "https://www.youtube.com/@RibatFoundation" },
-    { icon: Twitter, title: "Twitter", details: "@RibatFoundation", description: "Follow us on Twitter", link: "https://x.com/RibatFoundation" },
+    { 
+      icon: Mail, 
+      title: "Email Us", 
+      details: "youth@mah.ca", 
+      description: "Send us an email anytime", 
+      link: "mailto:youth@mah.ca" 
+    },
+    { 
+      icon: Phone, 
+      title: "Call Us", 
+      details: "(905) 555-YOUTH", 
+      description: "Mon-Fri, 9AM-5PM EST", 
+      link: "tel:+19055559684" 
+    },
+    { 
+      icon: MapPin, 
+      title: "Visit Us", 
+      details: "Muslim Association of Hamilton", 
+      description: "1545 Stone Church Rd E, Hamilton, ON", 
+      link: "https://maps.google.com" 
+    },
+    { 
+      icon: Instagram, 
+      title: "Instagram", 
+      details: "@mahyouth", 
+      description: "Follow us for updates", 
+      link: "https://instagram.com/mahyouth" 
+    },
   ];
 
   return (
     <>
       <Header />
-      <div className="min-h-screen bg-gradient-to-br bg-primary py-[200px]">
+      <div className="min-h-screen py-[200px]" style={{background: 'var(--gradient-primary)'}}>
         <div className="container mx-auto px-6 max-w-7xl">
           <div ref={headerRef} className="text-center mb-12">
             <div className="flex items-center justify-center gap-3 mb-6">
-              <div className="hidden md:block bg-white p-3 rounded-full">
-                <MessageCircle className="w-8 h-8 text-accent" />
+              <div className="hidden md:block p-3 rounded-full" style={{backgroundColor: 'var(--color-light)'}}>
+                <MessageCircle className="w-8 h-8" style={{color: 'var(--color-accent)'}} />
               </div>
-              <h1 className="text-4xl lg:text-5xl font-bold text-light">
-                Get in <span className="text-accent">Touch</span>
+              <h1 className="text-4xl lg:text-5xl font-bold" style={{color: 'var(--color-light)'}}>
+                Get in <span style={{color: 'var(--color-accent)'}}>Touch</span>
               </h1>
             </div>
-            <p className="text-xl text-light max-w-3xl mx-auto">
-              Have questions, suggestions, or want to contribute? We'd love to hear from you. Reach out to the Ar-Ribat community.
+            <p className="text-xl max-w-3xl mx-auto" style={{color: 'var(--color-light)'}}>
+              Have questions, suggestions, or want to get involved? We'd love to hear from you. Reach out to the MAH Youth community.
             </p>
-            <div className="w-24 h-1 bg-accent mx-auto mt-6 rounded-full"></div>
+            <div className="w-24 h-1 mx-auto mt-6 rounded-full" style={{backgroundColor: 'var(--color-accent)'}}></div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
             <div ref={formRef} className="lg:col-span-2">
-              <div className="bg-white rounded-2xl shadow-lg p-8">
+              <div className="bg-white rounded-2xl p-8" style={{boxShadow: 'var(--shadow-lg)'}}>
                 <div className="flex items-center gap-3 mb-6">
-                  <Send className="w-6 h-6 text-accent" />
-                  <h2 className="text-2xl font-bold text-gray-800">Send Us a Message</h2>
+                  <Send className="w-6 h-6" style={{color: 'var(--color-accent)'}} />
+                  <h2 className="text-2xl font-bold" style={{color: 'var(--color-primary)'}}>Send Us a Message</h2>
                 </div>
 
                 {/* Success Message */}
                 {submitted && (
-                  <div ref={successRef} className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-xl mb-6 flex items-center gap-2">
-                    <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
-                      <span className="text-white text-xs">✓</span>
+                  <div 
+                    ref={successRef} 
+                    className="px-4 py-3 rounded-xl mb-6 flex items-center gap-2"
+                    style={{
+                      backgroundColor: 'var(--color-success)',
+                      color: 'var(--color-light)',
+                      border: '1px solid var(--color-success)'
+                    }}
+                  >
+                    <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{backgroundColor: 'var(--color-light)'}}>
+                      <span style={{color: 'var(--color-success)'}} className="text-xs font-bold">✓</span>
                     </div>
                     <span>Thank you! Your message has been sent successfully. We'll get back to you soon.</span>
                   </div>
@@ -153,65 +196,167 @@ const ContactPage = () => {
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
-                      <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all" placeholder="Your full name" />
+                      <label htmlFor="name" className="block text-sm font-medium mb-2" style={{color: 'var(--color-primary)'}}>
+                        Full Name
+                      </label>
+                      <input 
+                        type="text" 
+                        id="name" 
+                        name="name" 
+                        value={formData.name} 
+                        onChange={handleChange} 
+                        required 
+                        className="w-full px-4 py-3 rounded-xl outline-none transition-all" 
+                        style={{
+                          border: '1px solid var(--border-color)',
+                          color: 'var(--color-primary)'
+                        }}
+                        placeholder="Your full name" 
+                      />
                     </div>
                     <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
-                      <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all" placeholder="your.email@example.com" />
+                      <label htmlFor="email" className="block text-sm font-medium mb-2" style={{color: 'var(--color-primary)'}}>
+                        Email Address
+                      </label>
+                      <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        value={formData.email} 
+                        onChange={handleChange} 
+                        required 
+                        className="w-full px-4 py-3 rounded-xl outline-none transition-all" 
+                        style={{
+                          border: '1px solid var(--border-color)',
+                          color: 'var(--color-primary)'
+                        }}
+                        placeholder="your.email@example.com" 
+                      />
                     </div>
                   </div>
 
                   <div>
-                    <label htmlFor="number" className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
-                    <input type="tel" id="number" name="number" value={formData.number} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all" placeholder="Your phone number" />
+                    <label htmlFor="number" className="block text-sm font-medium mb-2" style={{color: 'var(--color-primary)'}}>
+                      Phone Number
+                    </label>
+                    <input 
+                      type="tel" 
+                      id="number" 
+                      name="number" 
+                      value={formData.number} 
+                      onChange={handleChange} 
+                      required 
+                      className="w-full px-4 py-3 rounded-xl outline-none transition-all" 
+                      style={{
+                        border: '1px solid var(--border-color)',
+                        color: 'var(--color-primary)'
+                      }}
+                      placeholder="Your phone number" 
+                    />
                   </div>
 
                   <div>
-                    <label htmlFor="reason" className="block text-sm font-medium text-gray-700 mb-2">Reason for Contact</label>
-                    <select id="reason" name="reason" value={formData.reason} onChange={handleChange} required className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all">
+                    <label htmlFor="reason" className="block text-sm font-medium mb-2" style={{color: 'var(--color-primary)'}}>
+                      Reason for Contact
+                    </label>
+                    <select 
+                      id="reason" 
+                      name="reason" 
+                      value={formData.reason} 
+                      onChange={handleChange} 
+                      required 
+                      className="w-full px-4 py-3 rounded-xl outline-none transition-all" 
+                      style={{
+                        border: '1px solid var(--border-color)',
+                        color: 'var(--color-primary)'
+                      }}
+                    >
                       <option value="">Select a reason</option>
                       <option value="General Inquiry">General Inquiry</option>
-                      <option value="Partnership">Partnership</option>
-                      <option value="Report Issue">Report Issue</option>
+                      <option value="Event Information">Event Information</option>
+                      <option value="Volunteer Opportunity">Volunteer Opportunity</option>
+                      <option value="Youth Leadership">Youth Leadership</option>
                       <option value="Other">Other</option>
                     </select>
                   </div>
 
                   <div>
-                    <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">Message</label>
-                    <textarea id="message" name="message" value={formData.message} onChange={handleChange} required rows={6} className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all resize-none" placeholder="Tell us more..."></textarea>
+                    <label htmlFor="message" className="block text-sm font-medium mb-2" style={{color: 'var(--color-primary)'}}>
+                      Message
+                    </label>
+                    <textarea 
+                      id="message" 
+                      name="message" 
+                      value={formData.message} 
+                      onChange={handleChange} 
+                      required 
+                      rows={6} 
+                      className="w-full px-4 py-3 rounded-xl outline-none transition-all resize-none" 
+                      style={{
+                        border: '1px solid var(--border-color)',
+                        color: 'var(--color-primary)'
+                      }}
+                      placeholder="Tell us more..."
+                    ></textarea>
                   </div>
 
                   {!submitted && (
-                    <button type="submit" disabled={isSubmitting} className="w-full bg-accent hover:bg-primary text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 flex items-center justify-center gap-2">
+                    <button 
+                      type="submit" 
+                      disabled={isSubmitting} 
+                      className="w-full font-semibold py-4 px-6 rounded-xl transition-all duration-300 flex items-center justify-center gap-2"
+                      style={{
+                        backgroundColor: 'var(--btn-primary-bg)',
+                        color: 'var(--btn-primary-fg)'
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--btn-primary-hover)'}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--btn-primary-bg)'}
+                    >
                       {isSubmitting ? 'Sending...' : 'Send Message'}
                     </button>
                   )}
                   {submitted && (
-                    <p className="text-center text-accent mt-4">You've already submitted. Please wait 12 hours before submitting again.</p>
+                    <p className="text-center mt-4" style={{color: 'var(--color-accent)'}}>
+                      You've already submitted. Please wait 12 hours before submitting again.
+                    </p>
                   )}
                 </form>
               </div>
             </div>
 
             <div ref={infoRef} className="space-y-8">
-              <div className="bg-white rounded-2xl shadow-lg p-6">
-                <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-                  <Phone className="w-5 h-5 text-accent" /> Contact Information
+              <div className="bg-white rounded-2xl p-6" style={{boxShadow: 'var(--shadow-lg)'}}>
+                <h3 className="text-xl font-bold mb-6 flex items-center gap-2" style={{color: 'var(--color-primary)'}}>
+                  <Phone className="w-5 h-5" style={{color: 'var(--color-accent)'}} /> Contact Information
                 </h3>
                 <div className="space-y-4">
                   {contactInfo.map((info, index) => {
                     const IconComponent = info.icon;
                     return (
-                      <a key={index} href={info.link} className="flex items-start gap-4 p-4 rounded-xl hover:bg-gray-50 transition-colors group">
-                        <div className="bg-light p-3 rounded-full group-hover:bg-light transition-colors">
-                          <IconComponent className="w-5 h-5 text-accent" />
+                      <a 
+                        key={index} 
+                        href={info.link} 
+                        className="flex items-start gap-4 p-4 rounded-xl transition-colors group"
+                        style={{backgroundColor: 'transparent'}}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-light-gray)'}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                      >
+                        <div 
+                          className="p-3 rounded-full transition-colors"
+                          style={{backgroundColor: 'var(--color-light-gray)'}}
+                        >
+                          <IconComponent className="w-5 h-5" style={{color: 'var(--color-accent)'}} />
                         </div>
                         <div>
-                          <h4 className="font-semibold text-gray-800 group-hover:text-accent transition-colors">{info.title}</h4>
-                          <p className="text-gray-600 font-medium">{info.details}</p>
-                          <p className="text-sm text-gray-500">{info.description}</p>
+                          <h4 className="font-semibold transition-colors" style={{color: 'var(--color-primary)'}}>
+                            {info.title}
+                          </h4>
+                          <p className="font-medium" style={{color: 'var(--color-primary)', opacity: 0.8}}>
+                            {info.details}
+                          </p>
+                          <p className="text-sm" style={{color: 'var(--color-medium-gray)'}}>
+                            {info.description}
+                          </p>
                         </div>
                       </a>
                     );

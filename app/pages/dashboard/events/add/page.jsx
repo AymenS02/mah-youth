@@ -1,11 +1,10 @@
-// app/pages/dashboard/videos/add/page.jsx
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Header from "/components/header/Header";
-import { Video, ArrowLeft, Save, X } from 'lucide-react';
+import Header from '/components/header/Header';
+import { CalendarPlus, ArrowLeft, Save, X } from 'lucide-react';
 
-export default function AddVideo() {
+export default function AddEvent() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -13,23 +12,29 @@ export default function AddVideo() {
 
   const [formData, setFormData] = useState({
     title: '',
-    author: '',
+    description: '',
     category: '',
-    videoUrl: '',
-    thumbnailUrl: '',
-    description: ''
+    location: '',
+    date: '',
+    time: '',
+    imageUrl: '',
   });
 
   const categories = [
-    'Aqeedah', 'Fiqh', 'Hadith', 'Quran', 'Seerah', 'Islamic History',
-    'Dua & Dhikr', 'Islamic Literature', 'Comparative Religion', 'Other'
+    'Retreat',
+    'Lecture',
+    'Workshop',
+    'Fundraiser',
+    'Social Gathering',
+    'Sports',
+    'Other',
   ];
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -45,26 +50,30 @@ export default function AddVideo() {
 
       const submitData = {
         ...formData,
-        createdBy: user?.id || null
+        createdBy: user?.id || null,
       };
 
-      const response = await fetch('/api/videos', {
+      const response = await fetch('/api/events', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify(submitData),
       });
 
       const result = await response.json();
 
       if (response.ok) {
-        setSuccess('Video added successfully! Redirecting...');
-        setTimeout(() => router.push('/pages/dashboard/videos'), 2000);
+        setSuccess('Event added successfully! Redirecting...');
+        setTimeout(() => {
+          router.push('/pages/dashboard/events');
+        }, 2000);
       } else {
-        setError(result.error || 'Failed to add video');
+        setError(result.error || 'Failed to add event');
       }
     } catch (err) {
+      console.error('Add event error:', err);
       setError('Network error. Please try again.');
-      console.error('Add video error:', err);
     } finally {
       setIsLoading(false);
     }
@@ -72,7 +81,7 @@ export default function AddVideo() {
 
   const handleCancel = () => {
     if (confirm('Are you sure you want to cancel? All changes will be lost.')) {
-      router.push('/pages/dashboard/videos');
+      router.push('/pages/dashboard/events');
     }
   };
 
@@ -85,17 +94,17 @@ export default function AddVideo() {
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center">
             <button
-              onClick={() => router.push('/pages/dashboard/videos')}
+              onClick={() => router.push('/pages/dashboard/events')}
               className="mr-4 p-2 text-gray-600 hover:text-gray-900 transition duration-200"
             >
               <ArrowLeft className="w-6 h-6" />
             </button>
             <div>
               <h1 className="text-3xl font-bold text-gray-900 flex items-center">
-                <Video className="w-8 h-8 mr-3 text-blue-600" />
-                Add New Video
+                <CalendarPlus className="w-8 h-8 mr-3 text-blue-600" />
+                Add New Event
               </h1>
-              <p className="text-gray-600">Add a new video to your collection</p>
+              <p className="text-gray-600">Add a new event to your calendar</p>
             </div>
           </div>
         </div>
@@ -116,11 +125,14 @@ export default function AddVideo() {
             )}
 
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Basic Information */}
+              {/* Event Info */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
-                    Video Title *
+                  <label
+                    htmlFor="title"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
+                    Event Title *
                   </label>
                   <input
                     type="text"
@@ -131,31 +143,15 @@ export default function AddVideo() {
                     value={formData.title}
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100"
-                    placeholder="Enter video title"
+                    placeholder="Enter event title"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="author" className="block text-sm font-medium text-gray-700 mb-2">
-                    Author *
-                  </label>
-                  <input
-                    type="text"
-                    id="author"
-                    name="author"
-                    required
-                    disabled={isLoading}
-                    value={formData.author}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100"
-                    placeholder="e.g., Dr. Bilal Philips"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label
+                    htmlFor="category"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
                     Category *
                   </label>
                   <select
@@ -169,64 +165,120 @@ export default function AddVideo() {
                   >
                     <option value="">Select category</option>
                     {categories.map((cat) => (
-                      <option key={cat} value={cat}>{cat}</option>
+                      <option key={cat} value={cat}>
+                        {cat}
+                      </option>
                     ))}
                   </select>
-                </div>
-
-                <div>
-                  <label htmlFor="videoUrl" className="block text-sm font-medium text-gray-700 mb-2">
-                    Video URL *
-                  </label>
-                  <input
-                    type="url"
-                    id="videoUrl"
-                    name="videoUrl"
-                    required
-                    disabled={isLoading}
-                    value={formData.videoUrl}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100"
-                    placeholder="https://example.com/video.mp4"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label htmlFor="thumbnailUrl" className="block text-sm font-medium text-gray-700 mb-2">
-                    Thumbnail URL (Optional)
-                  </label>
-                  <input
-                    type="url"
-                    id="thumbnailUrl"
-                    name="thumbnailUrl"
-                    disabled={isLoading}
-                    value={formData.thumbnailUrl}
-                    onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100"
-                    placeholder="https://example.com/thumbnail.jpg"
-                  />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
-                  Description
+                <label
+                  htmlFor="description"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Description *
                 </label>
                 <textarea
                   id="description"
                   name="description"
+                  required
                   rows={4}
                   disabled={isLoading}
                   value={formData.description}
                   onChange={handleInputChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100"
-                  placeholder="Enter video description (optional)"
+                  placeholder="Enter event description"
                 />
               </div>
 
-              {/* Form Actions */}
+              {/* Event Details */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label
+                    htmlFor="date"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
+                    Date *
+                  </label>
+                  <input
+                    type="date"
+                    id="date"
+                    name="date"
+                    required
+                    disabled={isLoading}
+                    value={formData.date}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100"
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="time"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
+                    Time *
+                  </label>
+                  <input
+                    type="time"
+                    id="time"
+                    name="time"
+                    required
+                    disabled={isLoading}
+                    value={formData.time}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label
+                  htmlFor="location"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Location *
+                </label>
+                <input
+                  type="text"
+                  id="location"
+                  name="location"
+                  required
+                  disabled={isLoading}
+                  value={formData.location}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100"
+                  placeholder="e.g., Toronto Masjid Hall"
+                />
+              </div>
+
+              {/* Image URL */}
+              <div className="border-t pt-6">
+                <h3 className="text-lg font-medium text-gray-900 mb-4">
+                  Event Image
+                </h3>
+                <label
+                  htmlFor="imageUrl"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Image URL (Google Drive)
+                </label>
+                <input
+                  type="url"
+                  id="imageUrl"
+                  name="imageUrl"
+                  required
+                  disabled={isLoading}
+                  value={formData.imageUrl}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100"
+                  placeholder="Paste Google Drive image URL"
+                />
+              </div>
+
+              {/* Actions */}
               <div className="border-t pt-6 flex justify-end space-x-4">
                 <button
                   type="button"
@@ -244,7 +296,7 @@ export default function AddVideo() {
                   className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200 font-medium disabled:bg-blue-400 disabled:cursor-not-allowed flex items-center"
                 >
                   <Save className="w-4 h-4 mr-2" />
-                  {isLoading ? 'Adding Video...' : 'Add Video'}
+                  {isLoading ? 'Adding Event...' : 'Add Event'}
                 </button>
               </div>
             </form>

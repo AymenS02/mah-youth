@@ -19,7 +19,7 @@ const Header = () => {
       <nav>
         <div className="menu-bar">
           <div className="menu-logo">
-            <a className='links' href="/"><img className="image" src="/logoB.png" alt="logo" /></a>
+            <a className='links' href="/"><img className="image" src="/logoA.png" alt="MAH Youth Logo" /></a>
           </div>
           <div className="menu-toggle-btn">
             <div className="menu-toggle-label">
@@ -35,7 +35,7 @@ const Header = () => {
         <div className="menu-overlay">
           <div className="menu-overlay-content">
             <div className="menu-media-wrapper">
-              <img className="image" src="/logo.png" alt="menu media" />
+              <img className="image" src="/logo.png" alt="MAH Youth" />
             </div>
             <div className="menu-content-wrapper">
               <div className="menu-content-main">
@@ -44,31 +44,29 @@ const Header = () => {
                     <Link className="links" href="/">Home</Link>
                   </div>
                   <div className="menu-link">
-                    <Link className="links" href="/pages/books/">Books</Link>
+                    <Link className="links" href="/pages/events">Events</Link>
                   </div>
                   <div className="menu-link">
-                    <Link className="links" href="/pages/articles/">Articles</Link>
+                    <Link className="links" href="/programs">Programs</Link>
                   </div>
                   <div className="menu-link">
-                    <Link className="links" href="/pages/videos/">Videos</Link>
+                    <Link className="links" href="/about">About Us</Link>
                   </div>
                   <div className="menu-link">
-                    <Link className="links" href="/pages/contact">Contact Us</Link>
+                    <Link className="links" href="/pages/contact">Contact</Link>
                   </div>
                 </div>
 
                 <div className="menu-col">
-                  {/* <div className="menu-tag"><Link className='links' href="#">Web Animations</Link></div>
-                  <div className="menu-tag"><Link className='links' href="#">Interactive Media</Link></div>
-                  <div className="menu-tag"><Link className='links' href="#">Motion Craft</Link></div> */}
+                  {/* Additional menu items can go here */}
                 </div>
               </div>
               <div className="menu-footer">
                 <div className="menu-col">
-                  <p className='paragraph'></p>
+                  <p className='paragraph'>Muslim Association of Hamilton Youth</p>
                 </div>
                 <div className="menu-col">
-                  <p className='paragraph'>info@ar-ribat.com</p>
+                  <p className='paragraph'>youth@mah.ca</p>
                 </div>
               </div>
             </div>

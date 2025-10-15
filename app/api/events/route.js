@@ -1,14 +1,14 @@
-// app/api/articles/route.js
+// app/api/events/route.js
 import { NextResponse } from 'next/server';
 import { connectDB } from '../../../lib/config/db';
-import Article from '../../../lib/models/ArticleModel';
+import Event from '../../../lib/models/EventModel';
 import Account from '../../../lib/models/AccountModel';
 
-// GET - Fetch all articles
+// GET - Fetch all events
 export async function GET(request) {
   try {
     await connectDB();
-    
+
     const { searchParams } = new URL(request.url);
     const search = searchParams.get('search') || '';
     const tags = searchParams.get('tags') || '';
@@ -18,34 +18,31 @@ export async function GET(request) {
 
     // Build search query
     let query = {};
-    
     if (search) {
       query.$or = [
         { title: { $regex: search, $options: 'i' } },
-        { author: { $regex: search, $options: 'i' } },
-        { content: { $regex: search, $options: 'i' } }
+        { location: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } }
       ];
     }
-    
+
     if (tags && tags !== 'all') {
-      // Handle multiple tags separated by comma
       const tagArray = tags.split(',').map(tag => tag.trim());
       query.tags = { $in: tagArray };
     }
 
-    // Fetch articles with pagination and populate createdBy
-    const articles = await Article.find(query)
+    // Fetch events with pagination and populate createdBy
+    const events = await Event.find(query)
       .populate('createdBy', 'name email')
-      .sort({ createdAt: -1 })
+      .sort({ date: -1 })
       .skip(skip)
       .limit(limit);
 
-    // Get total count for pagination
-    const total = await Article.countDocuments(query);
-    
+    const total = await Event.countDocuments(query);
+
     return NextResponse.json({
       success: true,
-      articles,
+      events,
       pagination: {
         page,
         limit,
@@ -55,39 +52,30 @@ export async function GET(request) {
     });
 
   } catch (error) {
-    console.error('❌ Get articles error:', error);
+    console.error('❌ Get events error:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch articles' },
+      { error: 'Failed to fetch events' },
       { status: 500 }
     );
   }
 }
 
-// POST - Create new article
+// POST - Create new event
 export async function POST(request) {
   try {
     await connectDB();
     
     const body = await request.json();
-    const {
-      title,
-      author,
-      date,
-      tags,
-      imageUrl,
-      content,
-      createdBy
-    } = body;
+    const { title, location, date, tags, imageUrl, description, createdBy } = body;
 
-    // Validation
-    if (!title || !author || !content) {
+    if (!title || !location || !date) {
       return NextResponse.json(
-        { error: 'Title, author, and content are required fields' },
+        { error: 'Title, location, and date are required fields' },
         { status: 400 }
       );
     }
 
-    // Validate that createdBy user exists
+    // Validate createdBy user
     if (createdBy) {
       const user = await Account.findById(createdBy);
       if (!user) {
@@ -98,20 +86,20 @@ export async function POST(request) {
       }
     }
 
-    // Check if article with same title and author already exists
-    const existingArticle = await Article.findOne({ 
-      title: { $regex: new RegExp(`^${title}$`, 'i') }, 
-      author: { $regex: new RegExp(`^${author}$`, 'i') }
+    // Check if an event with same title and date exists
+    const existingEvent = await Event.findOne({
+      title: { $regex: new RegExp(`^${title}$`, 'i') },
+      date: new Date(date)
     });
-    
-    if (existingArticle) {
+
+    if (existingEvent) {
       return NextResponse.json(
-        { error: 'An article with this title and author already exists' },
+        { error: 'An event with this title and date already exists' },
         { status: 409 }
       );
     }
 
-    // Process tags - ensure it's an array and clean up
+    // Process tags
     let processedTags = [];
     if (tags) {
       if (Array.isArray(tags)) {
@@ -121,32 +109,33 @@ export async function POST(request) {
       }
     }
 
-    // Create new article
-    const newArticle = new Article({
+    // Create event
+    const newEvent = new Event({
       title: title.trim(),
-      author: author.trim(),
-      date: date ? new Date(date) : new Date(),
+      location: location.trim(),
+      date: new Date(date),
       tags: processedTags,
       imageUrl: imageUrl?.trim() || null,
-      content: content.trim(),
-      createdBy: createdBy || null
+      description: description.trim(),
+      createdBy: createdBy || null,
+      startTime: body.startTime || '09:00 AM',
+      endTime: body.endTime || '05:00 PM',
+      category: body.category || 'General',
     });
 
-    const savedArticle = await newArticle.save();
-    
-    // Populate the createdBy field for response
-    await savedArticle.populate('createdBy', 'name email');
+    const savedEvent = await newEvent.save();
+    await savedEvent.populate('createdBy', 'name email');
 
-    console.log('✅ Article created successfully:', savedArticle._id);
+    console.log('✅ Event created successfully:', savedEvent._id);
 
     return NextResponse.json({
       success: true,
-      message: 'Article created successfully',
-      article: savedArticle
+      message: 'Event created successfully',
+      event: savedEvent
     }, { status: 201 });
 
   } catch (error) {
-    console.error('❌ Create article error:', error);
+    console.error('❌ Create event error:', error);
     
     if (error.name === 'ValidationError') {
       const validationErrors = Object.values(error.errors).map(err => err.message);
@@ -157,24 +146,24 @@ export async function POST(request) {
     }
 
     return NextResponse.json(
-      { error: 'Failed to create article' },
+      { error: 'Failed to create event' },
       { status: 500 }
     );
   }
 }
 
-// PUT - Update article (handled in individual article route)
+// PUT - Update event (handled in /api/events/[id])
 export async function PUT() {
   return NextResponse.json(
-    { error: 'Use /api/articles/[id] for updating specific articles' },
+    { error: 'Use /api/events/[id] for updating specific events' },
     { status: 405 }
   );
 }
 
-// DELETE - Delete multiple articles (handled in individual article route for single delete)
+// DELETE - Delete event (handled in /api/events/[id])
 export async function DELETE() {
   return NextResponse.json(
-    { error: 'Use /api/articles/[id] for deleting specific articles' },
+    { error: 'Use /api/events/[id] for deleting specific events' },
     { status: 405 }
   );
 }
