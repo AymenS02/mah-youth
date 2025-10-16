@@ -1,6 +1,7 @@
 'use client';
-
+// /LandingPage/Events.jsx
 import React, { useEffect, useState } from 'react';
+import { animateEventsPage } from '../animations/events'; // Adjust path as needed
 
 const EventsPage = () => {
   const [events, setEvents] = useState([]);
@@ -32,27 +33,46 @@ const EventsPage = () => {
     fetchEvents();
   }, []);
 
+  // 🎬 Initialize animations after events are loaded
+  useEffect(() => {
+    if (!isLoading && events.length > 0) {
+      // Small delay to ensure DOM is fully rendered
+      const timer = setTimeout(() => {
+        animateEventsPage();
+      }, 100);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isLoading, events]);
+
   // 🧭 Render
   if (isLoading) return <p>Loading events...</p>;
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <section className="h-[calc(100vh-8vh)] w-full p-4 overflow-hidden">
+    <section className="team h-[92vh] w-full p-4 overflow-hidden bg-gradient-to-b from-primary to-primary-light">
       <div className="h-full w-full grid grid-cols-1 md:grid-cols-3 gap-4">
         {events.length > 0 ? (
           events.map((event, index) => (
-            <div key={index} className="h-full border-2 border-dashed border-gray-500 rounded-2xl overflow-hidden">
-              <div className='h-full bg-gradient-to-br from-gray-900 to-black rounded-2xl flex flex-col overflow-hidden shadow-xl'>
-                <div className="h-1/2 min-h-0 relative overflow-hidden flex-shrink-0">
+            <div key={index} className="z-0 team-member relative h-full border-2 border-dashed border-gray-500 rounded-2xl overflow-hidden">
+              
+              {/* Centered overlapping number */}
+              <div className="team-member-name-initial absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 pointer-events-none">
+                <h1 className='text-accent text-[300px] font-bold'>{index + 1}</h1>
+              </div>
+
+              {/* Main content */}
+              <div style={{ zIndex: events.length - index }}  className='team-member-card relative z-50 h-full bg-gradient-to-br from-gray-900 to-black rounded-2xl flex flex-col items-center overflow-hidden shadow-xl'>
+                <div className="team-member-img max-h-1/2 relative overflow-hidden flex-shrink-0 m-[2rem] rounded-2xl border-2 border-accent-dark">
                   <img 
                     src={event.imageUrl} 
                     alt={event.title} 
-                    className="w-full h-full object-cover" 
+                    className="h-full object-contain rounded-2xl" 
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                 </div>
                 
-                <div className="flex-1 min-h-0 p-6 overflow-y-auto">
+                <div className="team-member-info flex-1 p-6 overflow-y-auto">
                   <h3 className="text-2xl font-bold mb-4 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
                     {event.title}
                   </h3>
