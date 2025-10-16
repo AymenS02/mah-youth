@@ -62,7 +62,7 @@ const EventsPage = () => {
               </div>
 
               {/* Main content */}
-              <div style={{ zIndex: events.length - index }}  className='team-member-card relative z-50 h-full bg-gradient-to-br from-gray-900 to-black rounded-2xl flex flex-col items-center overflow-hidden shadow-xl'>
+              <div className='team-member-card relative z-50 h-full bg-gradient-to-br from-gray-900 to-black rounded-2xl flex flex-col items-center overflow-hidden shadow-xl'>
                 <div className="team-member-img max-h-1/2 relative overflow-hidden flex-shrink-0 m-[2rem] rounded-2xl border-2 border-accent-dark">
                   <img 
                     src={event.imageUrl} 

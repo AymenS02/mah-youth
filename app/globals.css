@@ -1,3 +1,13 @@
+@font-face {
+  font-family: "Sansita-Bold";
+  src: url("../assets/fonts/Sansita-Bold.ttf");
+}
+
+@font-face {
+  font-family: "Sansita-Regular";
+  src: url("../assets/fonts/Sansita-Regular.ttf");
+}
+
 @import "tailwindcss";
 
 @theme {
@@ -31,8 +41,8 @@
 
 
   /* ===== TYPOGRAPHY ===== */
-  --font-body: "PP Neue Montreal", "Inter", sans-serif;
-  --font-heading: "PP Neue Montreal", "Inter", sans-serif;
+  --font-sansita-bold: Sansita-Bold;
+  --font-sansita-regular: Sansita-Regular;
 
 }
 
@@ -44,7 +54,11 @@ html, body {
 
 body {
   background: var(--bg);
-  font-family: var(--font-body);
   line-height: 1.6;
+  font-family: var(--font-sansita-regular), sans-serif;
+}
+
+h1 {
+  font-family: var(--font-sansita-bold), sans-serif;
 }
 

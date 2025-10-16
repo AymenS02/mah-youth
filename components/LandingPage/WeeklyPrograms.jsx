@@ -34,7 +34,25 @@ const WeeklyPrograms = () => {
 
   return (
     <section className="min-h-screen py-20 bg-gradient-to-b from-primary-light to-primary-dark">
-      
+    
+      <div className="flex flex-col max-w-5xl mx-auto px-4">
+        <div className="mx-auto text-center mb-16 px-20 bg-primary/10 border-2 backdrop-blur-sm border-accent/20 text-light p-6 rounded-lg shadow-lg">
+          <h1 className="text-2xl">Weekly Programs!</h1>
+        </div>
+
+        <div>
+          <ul>
+            {programs.map((program, index) => (
+              <li key={index}>
+                <h1>{program.title}</h1>
+                <p>{program.day} | {program.time}</p>
+                <p>{program.description}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
     </section>
   );
 };
