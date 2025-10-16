@@ -50,19 +50,27 @@ const EventsPage = () => {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <section className="team h-[92vh] w-full p-4 overflow-hidden bg-gradient-to-b from-primary to-primary-light">
+    <section className="team relative h-screen w-full pt-[8vh] pb-[1vh] px-[2rem] overflow-visible bg-gradient-to-b from-primary to-primary-light z-100">
       <div className="h-full w-full grid grid-cols-1 md:grid-cols-3 gap-4">
         {events.length > 0 ? (
           events.map((event, index) => (
-            <div key={index} className="z-0 team-member relative h-full border-2 border-dashed border-gray-500 rounded-2xl overflow-hidden">
+            <div 
+              key={index} 
+              className="team-member relative h-full border-2 border-dashed border-gray-500 rounded-2xl overflow-visible"
+              style={{ zIndex: events.length - index }}
+            >
               
-              {/* Centered overlapping number */}
-              <div className="team-member-name-initial absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 pointer-events-none">
+              {/* Centered overlapping number - Behind cards */}
+              <div className="team-member-name-initial absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+                   style={{ zIndex: 0 }}>
                 <h1 className='text-accent text-[300px] font-bold'>{index + 1}</h1>
               </div>
 
-              {/* Main content */}
-              <div className='team-member-card relative z-50 h-full bg-gradient-to-br from-gray-900 to-black rounded-2xl flex flex-col items-center overflow-hidden shadow-xl'>
+              {/* Main content - Above everything with stacking */}
+              <div 
+                className='team-member-card absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100%+4px)] h-[calc(100%+4px)] bg-gradient-to-br from-gray-900 to-black rounded-2xl flex flex-col items-center shadow-xl'
+                style={{ zIndex: 10 + (events.length - index) }}
+              >
                 <div className="team-member-img max-h-1/2 relative overflow-hidden flex-shrink-0 m-[2rem] rounded-2xl border-2 border-accent-dark">
                   <img 
                     src={event.imageUrl} 

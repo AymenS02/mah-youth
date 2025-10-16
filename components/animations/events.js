@@ -54,7 +54,7 @@ export function animateEventsPage() {
 
     teamMemberCards.forEach((card, index) => {
       // Position cards off-screen to the right with rotation
-      const cardInitialX = 150 - index * 50;
+      const cardInitialX = 350 - index * 50;
       gsap.set(card, {
         x: `${cardInitialX}%`,
         rotation: 20,
@@ -115,7 +115,7 @@ export function animateEventsPage() {
 
         teamMemberCards.forEach((card, index) => {
           const slideInStagger = 0.075;
-          const xRotationDuration = 0.4;
+          const xRotationDuration = 0.2;
           const xRotationStart = index * slideInStagger;
           const xRotationEnd = xRotationStart + xRotationDuration;
 
@@ -124,7 +124,7 @@ export function animateEventsPage() {
               (progress - xRotationStart) / xRotationDuration;
 
             // 🔧 ADJUSTED VALUES - Start from right side
-            const cardInitialX = 150 - index * 50; // Reduced from 300 - index * 100
+            const cardInitialX = 350 - index * 50; // Reduced from 300 - index * 100
             const cardTargetX = 0; // End at center (0%)
             const cardSlideInX =
               cardInitialX + cardProgress * (cardTargetX - cardInitialX);
