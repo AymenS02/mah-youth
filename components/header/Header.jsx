@@ -15,7 +15,7 @@ const Header = () => {
   }, []);
 
   return (
-    <>
+    <div className="header-component">
       <nav>
         <div className="menu-bar">
           <div className="menu-logo">
@@ -73,7 +73,7 @@ const Header = () => {
           </div>
         </div>
       </nav>
-    </>
+    </div>
   );
 };
 

@@ -13,24 +13,14 @@
   --color-light: #f8feff;        /* Off-white - Light backgrounds */
   --color-light-gray: #e8f0f2;   /* Light gray for sections */
   --color-medium-gray: #a0b4ba;  /* Medium gray for secondary text */
-  
-  /* ===== SEMANTIC COLORS ===== */
-  --color-success: #2d7a5f;      /* Green for success states */
-  --color-warning: #d4a574;      /* Warm tone for warnings */
-  --color-error: #c75c5c;        /* Muted red for errors */
-  --color-info: #4a7c9e;         /* Blue-gray for info */
+
 
   /* ===== UI ASSIGNMENTS ===== */
   --bg: var(--color-primary);              /* Main page background */
   --bg-elevated: var(--color-primary-light); /* Cards, elevated surfaces */
   --bg-light: var(--color-light);          /* Light sections */
   --bg-light-alt: var(--color-light-gray); /* Alternating light sections */
-  
-  --fg: var(--color-accent);               /* Primary text color */
-  --fg-primary: var(--color-primary);      /* Text on light backgrounds */
-  --fg-light: var(--color-light);          /* Text on dark backgrounds */
-  --fg-secondary: var(--color-medium-gray); /* Secondary text */
-  --fg-muted: rgba(193, 148, 94, 0.7);     /* Muted accent text */
+
 
   /* ===== MENU & NAVIGATION ===== */
   --menu-bg: var(--color-primary);         /* Menu overlay background */
@@ -39,77 +29,11 @@
   --menu-hover: var(--color-accent-light); /* Menu hover state */
   --hamburger-icon-border: rgba(193, 148, 94, 0.3); /* Hamburger icon border */
 
-  /* ===== BUTTONS ===== */
-  --btn-primary-bg: var(--color-accent);
-  --btn-primary-fg: var(--color-primary);
-  --btn-primary-hover: var(--color-accent-dark);
-  
-  --btn-secondary-bg: var(--color-primary);
-  --btn-secondary-fg: var(--color-accent);
-  --btn-secondary-hover: var(--color-primary-light);
-  
-  --btn-outline-border: var(--color-accent);
-  --btn-outline-fg: var(--color-accent);
-  --btn-outline-hover-bg: var(--color-accent);
-  --btn-outline-hover-fg: var(--color-primary);
-
-  /* ===== BORDERS & DIVIDERS ===== */
-  --border-color: rgba(193, 148, 94, 0.2);
-  --border-light: rgba(248, 254, 255, 0.1);
-  --border-accent: var(--color-accent);
-  --divider: rgba(193, 148, 94, 0.15);
-
-  /* ===== SHADOWS ===== */
-  --shadow-sm: 0 1px 3px rgba(10, 30, 57, 0.12);
-  --shadow-md: 0 4px 6px rgba(10, 30, 57, 0.15);
-  --shadow-lg: 0 10px 25px rgba(10, 30, 57, 0.2);
-  --shadow-xl: 0 20px 40px rgba(10, 30, 57, 0.25);
-  --shadow-accent: 0 4px 20px rgba(193, 148, 94, 0.3);
-
-  /* ===== OVERLAYS ===== */
-  --overlay-dark: rgba(10, 30, 57, 0.85);
-  --overlay-light: rgba(248, 254, 255, 0.95);
-  --overlay-gradient: linear-gradient(135deg, rgba(10, 30, 57, 0.95) 0%, rgba(22, 48, 82, 0.9) 100%);
-
-  /* ===== GRADIENTS ===== */
-  --gradient-primary: linear-gradient(135deg, #0a1e39 0%, #163052 100%);
-  --gradient-accent: linear-gradient(135deg, #c1945e 0%, #d4aa7a 100%);
-  --gradient-hero: linear-gradient(135deg, rgba(10, 30, 57, 0.95) 0%, rgba(22, 48, 82, 0.85) 50%, rgba(193, 148, 94, 0.1) 100%);
-
-  /* ===== SPACING & SIZING ===== */
-  --header-height: 80px;
-  --section-padding: 5rem;
-  --section-padding-mobile: 3rem;
-  --container-max: 1280px;
-  --card-radius: 12px;
-  --btn-radius: 8px;
-
-  /* ===== TRANSITIONS ===== */
-  --transition-fast: 150ms ease;
-  --transition-base: 250ms ease;
-  --transition-slow: 400ms ease;
 
   /* ===== TYPOGRAPHY ===== */
   --font-body: "PP Neue Montreal", "Inter", sans-serif;
   --font-heading: "PP Neue Montreal", "Inter", sans-serif;
-  
-  --text-xs: 0.75rem;
-  --text-sm: 0.875rem;
-  --text-base: 1rem;
-  --text-lg: 1.125rem;
-  --text-xl: 1.25rem;
-  --text-2xl: 1.5rem;
-  --text-3xl: 1.875rem;
-  --text-4xl: 2.25rem;
-  --text-5xl: 3rem;
 
-  /* ===== Z-INDEX LAYERS ===== */
-  --z-base: 1;
-  --z-dropdown: 100;
-  --z-sticky: 200;
-  --z-overlay: 300;
-  --z-modal: 400;
-  --z-toast: 500;
 }
 
 /* ===== GLOBAL STYLES ===== */
@@ -120,46 +44,7 @@ html, body {
 
 body {
   background: var(--bg);
-  color: var(--fg);
   font-family: var(--font-body);
   line-height: 1.6;
 }
 
-/* ===== UTILITY CLASSES ===== */
-.text-gradient-accent {
-  background: var(--gradient-accent);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.bg-gradient-primary {
-  background: var(--gradient-primary);
-}
-
-.bg-gradient-accent {
-  background: var(--gradient-accent);
-}
-
-.bg-gradient-hero {
-  background: var(--gradient-hero);
-}
-
-.shadow-accent {
-  box-shadow: var(--shadow-accent);
-}
-
-.transition-base {
-  transition: all var(--transition-base);
-}
-
-/* ===== SELECTION ===== */
-::selection {
-  background: var(--color-accent);
-  color: var(--color-primary);
-}
-
-::-moz-selection {
-  background: var(--color-accent);
-  color: var(--color-primary);
-}
