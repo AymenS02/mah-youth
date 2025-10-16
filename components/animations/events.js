@@ -8,14 +8,24 @@ export function animateEventsPage() {
 
   const lenis = new Lenis();
   lenis.on("scroll", ScrollTrigger.update);
-  gsap.ticker.add((time) => {
+  
+  const lenisRAF = (time) => {
     lenis.raf(time * 1000);
-  });
+  };
+  
+  gsap.ticker.add(lenisRAF);
   gsap.ticker.lagSmoothing(0);
 
   const teamSection = document.querySelector(".team");
   const teamMembers = gsap.utils.toArray(".team-member");
   const teamMemberCards = gsap.utils.toArray(".team-member-card");
+
+  if (!teamSection) {
+    // Cleanup if section doesn't exist
+    lenis.destroy();
+    gsap.ticker.remove(lenisRAF);
+    return () => {};
+  }
 
   let cardPlaceholderEntrance = null;
   let cardSlideInAnimation = null;
@@ -30,7 +40,9 @@ export function animateEventsPage() {
         const teamMemberInitial = member.querySelector(
           ".team-member-name-initial h1"
         );
-        gsap.set(teamMemberInitial, { clearProps: "all" });
+        if (teamMemberInitial) {
+          gsap.set(teamMemberInitial, { clearProps: "all" });
+        }
       });
 
       teamMemberCards.forEach((card) => {
@@ -49,7 +61,9 @@ export function animateEventsPage() {
       
       // Find and hide the number initially
       const teamMemberInitial = member.querySelector(".team-member-name-initial h1");
-      gsap.set(teamMemberInitial, { scale: 0 });
+      if (teamMemberInitial) {
+        gsap.set(teamMemberInitial, { scale: 0 });
+      }
     });
 
     teamMemberCards.forEach((card, index) => {
@@ -86,19 +100,23 @@ export function animateEventsPage() {
             const teamMemberInitial = member.querySelector(
               ".team-member-name-initial h1"
             );
-            const initialLetterScaleDelay = 0.4;
-            const initialLetterScaleProgress = Math.max(
-              0,
-              (memberEntranceProgress - initialLetterScaleDelay) /
-                (1 - initialLetterScaleDelay)
-            );
-            gsap.set(teamMemberInitial, { scale: initialLetterScaleProgress });
+            if (teamMemberInitial) {
+              const initialLetterScaleDelay = 0.4;
+              const initialLetterScaleProgress = Math.max(
+                0,
+                (memberEntranceProgress - initialLetterScaleDelay) /
+                  (1 - initialLetterScaleDelay)
+              );
+              gsap.set(teamMemberInitial, { scale: initialLetterScaleProgress });
+            }
           } else if (progress > entranceEnd) {
             gsap.set(member, { y: `0%` });
             const teamMemberInitial = member.querySelector(
               ".team-member-name-initial h1"
             );
-            gsap.set(teamMemberInitial, { scale: 1 });
+            if (teamMemberInitial) {
+              gsap.set(teamMemberInitial, { scale: 1 });
+            }
           }
         });
       },
@@ -123,9 +141,8 @@ export function animateEventsPage() {
             const cardProgress =
               (progress - xRotationStart) / xRotationDuration;
 
-            // 🔧 ADJUSTED VALUES - Start from right side
-            const cardInitialX = 350 - index * 50; // Reduced from 300 - index * 100
-            const cardTargetX = 0; // End at center (0%)
+            const cardInitialX = 350 - index * 50;
+            const cardTargetX = 0;
             const cardSlideInX =
               cardInitialX + cardProgress * (cardTargetX - cardInitialX);
 
@@ -137,7 +154,7 @@ export function animateEventsPage() {
             });
           } else if (progress > xRotationEnd) {
             gsap.set(card, {
-              x: `0%`, // Rest at center
+              x: `0%`,
               rotation: 0,
             });
           }
@@ -165,13 +182,48 @@ export function animateEventsPage() {
   }
 
   let resizeTimer;
-  window.addEventListener("resize", () => {
+  const handleResize = () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
       initTeamAnimations();
       ScrollTrigger.refresh();
     }, 250);
-  });
+  };
+
+  window.addEventListener("resize", handleResize);
 
   initTeamAnimations();
+
+  // 🧹 CLEANUP FUNCTION - Return this!
+  return () => {
+    // Remove event listeners
+    window.removeEventListener("resize", handleResize);
+    clearTimeout(resizeTimer);
+
+    // Kill ScrollTrigger instances
+    if (cardPlaceholderEntrance) cardPlaceholderEntrance.kill();
+    if (cardSlideInAnimation) cardSlideInAnimation.kill();
+
+    // Kill ALL ScrollTriggers to be safe
+    ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+
+    // Stop Lenis
+    lenis.destroy();
+
+    // Remove GSAP ticker
+    gsap.ticker.remove(lenisRAF);
+
+    // Clear inline styles
+    teamMembers.forEach((member) => {
+      gsap.set(member, { clearProps: "all" });
+      const teamMemberInitial = member.querySelector(".team-member-name-initial h1");
+      if (teamMemberInitial) {
+        gsap.set(teamMemberInitial, { clearProps: "all" });
+      }
+    });
+
+    teamMemberCards.forEach((card) => {
+      gsap.set(card, { clearProps: "all" });
+    });
+  };
 }

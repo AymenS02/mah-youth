@@ -47,9 +47,20 @@
 }
 
 /* ===== GLOBAL STYLES ===== */
-html, body {
+html,
+body {
   overflow-x: hidden;
   scroll-behavior: smooth;
+}
+
+/* Hide scrollbar but keep scrolling functional */
+body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+body {
+  -ms-overflow-style: none; /* Internet Explorer and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 body {
