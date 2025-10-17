@@ -167,7 +167,7 @@ export default function EventsManagement() {
 
                 <div className="flex items-center text-gray-500 text-sm mb-4">
                   <Clock className="w-4 h-4 mr-2" />
-                  {event.time}
+                  {event.startTime}
                 </div>
 
                 <div className="flex justify-between items-center">

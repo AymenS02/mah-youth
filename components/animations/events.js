@@ -195,35 +195,52 @@ export function animateEventsPage() {
   initTeamAnimations();
 
   // 🧹 CLEANUP FUNCTION - Return this!
-  return () => {
-    // Remove event listeners
-    window.removeEventListener("resize", handleResize);
-    clearTimeout(resizeTimer);
+// 🧹 CLEANUP FUNCTION - Return this!
+return () => {
+  // Remove event listeners
+  window.removeEventListener("resize", handleResize);
+  clearTimeout(resizeTimer);
 
-    // Kill ScrollTrigger instances
-    if (cardPlaceholderEntrance) cardPlaceholderEntrance.kill();
-    if (cardSlideInAnimation) cardSlideInAnimation.kill();
+  // Kill ScrollTrigger instances safely
+  if (cardPlaceholderEntrance) {
+    try { cardPlaceholderEntrance.kill(); } catch {}
+  }
+  if (cardSlideInAnimation) {
+    try { cardSlideInAnimation.kill(); } catch {}
+  }
 
-    // Kill ALL ScrollTriggers to be safe
-    ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+  // Kill ALL ScrollTriggers safely
+  try {
+    ScrollTrigger.getAll().forEach(trigger => {
+      try {
+        trigger.kill(true); // true forces pin-spacer cleanup
+      } catch {}
+    });
+    ScrollTrigger.clearMatchMedia && ScrollTrigger.clearMatchMedia();
+  } catch {}
 
-    // Stop Lenis
-    lenis.destroy();
+  // Stop Lenis
+  try { lenis.destroy(); } catch {}
 
-    // Remove GSAP ticker
-    gsap.ticker.remove(lenisRAF);
+  // Remove GSAP ticker
+  try { gsap.ticker.remove(lenisRAF); } catch {}
 
-    // Clear inline styles
+  // Safely clear inline styles if elements exist
+  if (teamMembers?.length) {
     teamMembers.forEach((member) => {
+      if (!member || !member.parentNode) return;
       gsap.set(member, { clearProps: "all" });
       const teamMemberInitial = member.querySelector(".team-member-name-initial h1");
-      if (teamMemberInitial) {
-        gsap.set(teamMemberInitial, { clearProps: "all" });
-      }
+      if (teamMemberInitial) gsap.set(teamMemberInitial, { clearProps: "all" });
     });
+  }
 
+  if (teamMemberCards?.length) {
     teamMemberCards.forEach((card) => {
+      if (!card || !card.parentNode) return;
       gsap.set(card, { clearProps: "all" });
     });
-  };
+  }
+};
+
 }

@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import Link from 'next/link'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -144,6 +145,7 @@ const Hero = () => {
             ref={quoteRef}
             className="text-white flex flex-col items-start max-w-4xl relative"
           >
+          <Link className="links" href="/pages/events">Events</Link>
             {/* Decorative quote mark */}
             <div className="absolute -top-8 -left-8 text-white/10 text-8xl font-serif">"</div>
             

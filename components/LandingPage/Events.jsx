@@ -1,7 +1,7 @@
 'use client';
 // /LandingPage/Events.jsx
-import React, { useEffect, useState } from 'react';
-import { animateEventsPage } from '../animations/events'; // Adjust path as needed
+import React, { useEffect, useLayoutEffect, useState } from 'react';
+import { animateEventsPage } from '../animations/events';
 
 const EventsPage = () => {
   const [events, setEvents] = useState([]);
@@ -33,17 +33,27 @@ const EventsPage = () => {
     fetchEvents();
   }, []);
 
-  // 🎬 Initialize animations after events are loaded
-  useEffect(() => {
+  // 🎬 Initialize animations - USE LAYOUT EFFECT for synchronous cleanup
+  useLayoutEffect(() => {
     if (!isLoading && events.length > 0) {
+      console.log("🔵 [COMPONENT] Setting up animations...");
+      
+      let cleanupFn;
       const timer = setTimeout(() => {
-        const cleanup = animateEventsPage();
-        
-        return cleanup;
+        cleanupFn = animateEventsPage();
+        console.log("✅ [COMPONENT] Animation setup complete");
       }, 100);
 
+      // This cleanup runs SYNCHRONOUSLY during React's commit phase
       return () => {
+        console.log("🔴 [COMPONENT] useLayoutEffect cleanup - BEFORE React removes DOM");
         clearTimeout(timer);
+        
+        if (cleanupFn) {
+          cleanupFn();
+        }
+        
+        console.log("✅ [COMPONENT] useLayoutEffect cleanup finished");
       };
     }
   }, [isLoading, events]);

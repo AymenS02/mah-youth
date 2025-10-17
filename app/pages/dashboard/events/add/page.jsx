@@ -263,19 +263,52 @@ export default function AddEvent() {
                   htmlFor="imageUrl"
                   className="block text-sm font-medium text-gray-700 mb-2"
                 >
-                  Image URL (Google Drive)
+                  Upload Image
                 </label>
                 <input
-                  type="url"
-                  id="imageUrl"
-                  name="imageUrl"
-                  required
+                  type="file"
+                  id="image"
+                  name="image"
+                  accept="image/*"
                   disabled={isLoading}
-                  value={formData.imageUrl}
-                  onChange={handleInputChange}
+                  onChange={async (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    setIsLoading(true);
+                    const formData = new FormData();
+                    formData.append('file', file);
+
+                    try {
+                      const res = await fetch('/api/upload', {
+                        method: 'POST',
+                        body: formData,
+                      });
+                      const data = await res.json();
+                      if (res.ok) {
+                        setFormData((prev) => ({
+                          ...prev,
+                          imageUrl: data.url,
+                        }));
+                        setSuccess('Image uploaded successfully!');
+                      } else {
+                        setError(data.error || 'Failed to upload image');
+                      }
+                    } catch (err) {
+                      console.error(err);
+                      setError('Image upload failed. Please try again.');
+                    } finally {
+                      setIsLoading(false);
+                    }
+                  }}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100"
-                  placeholder="Paste Google Drive image URL"
                 />
+                {formData.imageUrl && (
+                  <img
+                    src={formData.imageUrl}
+                    alt="Preview"
+                    className="mt-4 w-48 rounded-md border"
+                  />
+                )}
               </div>
 
               {/* Actions */}
