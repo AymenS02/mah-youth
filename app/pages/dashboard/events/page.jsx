@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from "/components/header/Header";
-import { CalendarDays, Plus, Trash2, Search, Filter, ArrowLeft, Clock } from 'lucide-react';
+import { CalendarDays, Plus, Trash2, Search, Filter, ArrowLeft, Clock, MapPin, Edit, Eye } from 'lucide-react';
 
 export default function EventsManagement() {
   const [events, setEvents] = useState([]);
@@ -73,138 +73,259 @@ export default function EventsManagement() {
     return matchesSearch && matchesFilter;
   });
 
+  const upcomingCount = events.filter(e => new Date(e.date) > new Date()).length;
+  const pastCount = events.filter(e => new Date(e.date) <= new Date()).length;
+
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gradient-to-b from-primary via-primary-dark to-primary-light">
         <Header />
-        <div className="flex items-center justify-center py-20">
-          <div className="text-gray-600">Loading events...</div>
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <div className="w-16 h-16 border-4 border-accent border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-white text-lg font-medium">Loading events...</p>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-b from-primary via-primary-dark to-primary-light">
       <Header />
 
-      <div className="pt-[200px] min-h-screen max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="pt-32 pb-20 min-h-screen max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Page Header */}
-        <div className="flex items-center justify-between mb-8 flex-col md:flex-row space-y-4 md:space-y-0">
-          <div className="flex items-center">
-            <button
-              onClick={() => router.push('/pages/dashboard')}
-              className="mr-4 p-2 text-gray-600 hover:text-gray-900 transition duration-200"
-            >
-              <ArrowLeft className="w-6 h-6" />
-            </button>
+        <div className="mb-12">
+          <button
+            onClick={() => router.push('/pages/dashboard')}
+            className="mb-6 flex items-center gap-2 text-gray-300 hover:text-accent transition-colors duration-300 group"
+          >
+            <ArrowLeft className="w-5 h-5 transition-transform duration-300 group-hover:-translate-x-1" />
+            <span className="font-medium">Back to Dashboard</span>
+          </button>
+
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div>
-              <h1 className="max-md:hidden text-3xl font-bold text-gray-900 flex items-center">
-                <CalendarDays className="w-8 h-8 mr-3 text-blue-600" />
+              <h1 className="text-4xl md:text-5xl font-black text-white mb-3 flex items-center gap-3">
+                <div className="p-3 bg-accent/10 rounded-xl">
+                  <CalendarDays className="w-8 h-8 text-accent" />
+                </div>
                 Events Management
               </h1>
-              <p className="text-gray-600">Manage your upcoming and past events</p>
+              <p className="text-xl text-gray-300">Manage your upcoming and past events</p>
+            </div>
+
+            <button
+              onClick={() => router.push('/pages/dashboard/events/add')}
+              className="bg-gradient-to-r from-accent to-accent-light text-white px-8 py-4 rounded-xl hover:shadow-lg hover:shadow-accent/50 transition-all duration-300 font-bold flex items-center gap-2 justify-center group transform hover:scale-105"
+            >
+              <Plus className="w-5 h-5 transition-transform duration-300 group-hover:rotate-90" />
+              Add New Event
+            </button>
+          </div>
+        </div>
+
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="bg-gradient-to-br from-gray-900 to-black rounded-2xl p-6 border-2 border-gray-700/50 hover:border-accent/50 transition-all duration-300">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-400 text-sm font-medium mb-1">Total Events</p>
+                <p className="text-4xl font-black text-white">{events.length}</p>
+              </div>
+              <div className="p-4 bg-accent/10 rounded-xl">
+                <CalendarDays className="w-8 h-8 text-accent" />
+              </div>
             </div>
           </div>
 
-          <button
-            onClick={() => router.push('/pages/dashboard/events/add')}
-            className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition duration-200 font-medium flex items-center"
-          >
-            <Plus className="w-5 h-5 mr-2" />
-            Add New Event
-          </button>
+          <div className="bg-gradient-to-br from-gray-900 to-black rounded-2xl p-6 border-2 border-gray-700/50 hover:border-emerald-500/50 transition-all duration-300">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-400 text-sm font-medium mb-1">Upcoming</p>
+                <p className="text-4xl font-black text-white">{upcomingCount}</p>
+              </div>
+              <div className="p-4 bg-emerald-500/10 rounded-xl">
+                <Clock className="w-8 h-8 text-emerald-500" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-gradient-to-br from-gray-900 to-black rounded-2xl p-6 border-2 border-gray-700/50 hover:border-gray-500/50 transition-all duration-300">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-400 text-sm font-medium mb-1">Past Events</p>
+                <p className="text-4xl font-black text-white">{pastCount}</p>
+              </div>
+              <div className="p-4 bg-gray-500/10 rounded-xl">
+                <CalendarDays className="w-8 h-8 text-gray-500" />
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Search and Filter */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0 md:space-x-4">
+        <div className="bg-gradient-to-br from-gray-900 to-black rounded-2xl shadow-2xl p-6 mb-8 border-2 border-gray-700/50">
+          <div className="flex flex-col lg:flex-row gap-4">
+            {/* Search Input */}
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
                 type="text"
                 placeholder="Search events by title or description..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full pl-12 pr-4 py-4 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all duration-300"
               />
             </div>
 
-            <div className="flex items-center space-x-4">
-              <Filter className="w-5 h-5 text-gray-400" />
+            {/* Filter Dropdown */}
+            <div className="relative lg:w-64">
+              <Filter className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" />
               <select
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
-                className="border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full pl-12 pr-10 py-4 bg-gray-800/50 border border-gray-700 text-white rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none appearance-none cursor-pointer transition-all duration-300"
               >
-                <option value="all">All Events</option>
-                <option value="upcoming">Upcoming</option>
-                <option value="past">Past</option>
+                <option value="all" className="bg-gray-900">All Events</option>
+                <option value="upcoming" className="bg-gray-900">Upcoming Events</option>
+                <option value="past" className="bg-gray-900">Past Events</option>
               </select>
+              <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
             </div>
+          </div>
+
+          {/* Results Counter */}
+          <div className="mt-4 text-sm text-gray-400">
+            Showing <span className="text-accent font-semibold">{filteredEvents.length}</span> of <span className="text-white font-semibold">{events.length}</span> events
           </div>
         </div>
 
         {/* Events Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredEvents.map((event) => (
-            <div key={event._id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-200">
-              {event.imageUrl && (
-                <img
-                  src={event.imageUrl}
-                  alt={event.title}
-                  className="w-full h-48 object-cover"
-                />
-              )}
-              <div className="p-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-2">{event.title}</h3>
-                <p className="text-sm text-gray-600 mb-4 line-clamp-3">{event.description}</p>
-                
-                <div className="flex items-center text-gray-500 text-sm mb-2">
-                  <CalendarDays className="w-4 h-4 mr-2" />
-                  {new Date(event.date).toLocaleDateString()}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {filteredEvents.map((event) => {
+            const isUpcoming = new Date(event.date) > new Date();
+            return (
+              <div
+                key={event._id}
+                className="group bg-gradient-to-br from-gray-900 to-black rounded-2xl overflow-hidden border-2 border-gray-700/50 hover:border-accent/50 transition-all duration-500 transform hover:-translate-y-2 hover:shadow-2xl hover:shadow-accent/20"
+              >
+                {/* Image Section */}
+                <div className="relative h-56 overflow-hidden bg-gray-800">
+                  {event.imageUrl ? (
+                    <>
+                      <img
+                        src={event.imageUrl}
+                        alt={event.title}
+                        className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+                    </>
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <CalendarDays className="w-20 h-20 text-gray-700" />
+                    </div>
+                  )}
+
+                  {/* Status Badge */}
+                  <div className="absolute top-4 right-4">
+                    <div className={`px-4 py-1.5 rounded-full backdrop-blur-sm font-bold text-xs uppercase tracking-wide ${
+                      isUpcoming
+                        ? 'bg-emerald-500/90 text-white'
+                        : 'bg-gray-500/90 text-white'
+                    }`}>
+                      {isUpcoming ? 'Upcoming' : 'Past'}
+                    </div>
+                  </div>
                 </div>
 
-                <div className="flex items-center text-gray-500 text-sm mb-4">
-                  <Clock className="w-4 h-4 mr-2" />
-                  {event.startTime}
-                </div>
+                {/* Content Section */}
+                <div className="p-6">
+                  {/* Title */}
+                  <h3 className="text-2xl font-bold text-white mb-3 line-clamp-2 group-hover:text-accent transition-colors duration-300">
+                    {event.title}
+                  </h3>
 
-                <div className="flex justify-between items-center">
-                  <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                    new Date(event.date) > new Date()
-                      ? 'bg-green-100 text-green-800'
-                      : 'bg-gray-200 text-gray-700'
-                  }`}>
-                    {new Date(event.date) > new Date() ? 'Upcoming' : 'Past'}
-                  </span>
+                  {/* Description */}
+                  <p className="text-gray-400 text-sm mb-4 line-clamp-3 leading-relaxed">
+                    {event.description}
+                  </p>
 
-                  <button
-                    onClick={() => handleDelete(event._id)}
-                    className="bg-red-600 text-white py-2 px-3 rounded-md hover:bg-red-700 transition duration-200 text-sm font-medium flex items-center justify-center"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+                  {/* Event Details */}
+                  <div className="space-y-3 mb-6">
+                    <div className="flex items-center gap-3 text-gray-300">
+                      <div className="w-10 h-10 bg-accent/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <CalendarDays className="w-5 h-5 text-accent" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-white">
+                          {new Date(event.date).toLocaleDateString("en-US", {
+                            month: "long",
+                            day: "numeric",
+                            year: "numeric",
+                          })}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-3 text-gray-300">
+                      <div className="w-10 h-10 bg-accent/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <Clock className="w-5 h-5 text-accent" />
+                      </div>
+                      <p className="text-sm">{event.startTime}</p>
+                    </div>
+
+                    {event.location && (
+                      <div className="flex items-center gap-3 text-gray-300">
+                        <div className="w-10 h-10 bg-accent/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <MapPin className="w-5 h-5 text-accent" />
+                        </div>
+                        <p className="text-sm truncate">{event.location}</p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Divider */}
+                  <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent mb-6"></div>
+
+                  {/* Action Buttons */}
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => handleDelete(event._id)}
+                      className="flex-1 bg-red-500/10 border border-red-500/50 text-red-400 py-3 px-4 rounded-xl hover:bg-red-500 hover:text-white transition-all duration-300 font-bold text-sm flex items-center justify-center gap-2 group/btn"
+                    >
+                      <Trash2 className="w-4 h-4 transition-transform duration-300 group-hover/btn:scale-110" />
+                      Delete
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Empty State */}
         {filteredEvents.length === 0 && (
-          <div className="bg-white rounded-lg shadow-md p-12 text-center">
-            <CalendarDays className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No events found</h3>
-            <p className="text-gray-600 mb-6">
+          <div className="bg-gradient-to-br from-gray-900 to-black rounded-2xl border-2 border-gray-700/50 p-16 text-center">
+            <div className="w-24 h-24 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-6">
+              <CalendarDays className="w-12 h-12 text-accent" />
+            </div>
+            <h3 className="text-3xl font-bold text-white mb-4">No events found</h3>
+            <p className="text-gray-400 text-lg mb-8 max-w-md mx-auto">
               {searchTerm || filterStatus !== 'all'
                 ? 'Try adjusting your search or filter criteria.'
                 : 'Get started by adding your first event.'}
             </p>
             <button
               onClick={() => router.push('/pages/dashboard/events/add')}
-              className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition duration-200 font-medium"
+              className="bg-gradient-to-r from-accent to-accent-light text-white px-8 py-4 rounded-xl hover:shadow-lg hover:shadow-accent/50 transition-all duration-300 font-bold inline-flex items-center gap-2"
             >
+              <Plus className="w-5 h-5" />
               Add Your First Event
             </button>
           </div>
