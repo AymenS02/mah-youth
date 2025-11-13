@@ -46,9 +46,9 @@ const Header = () => {
                   <div className="menu-link">
                     <Link className="links" href="/pages/events">Events</Link>
                   </div>
-                  <div className="menu-link">
+                  {/* <div className="menu-link">
                     <Link className="links" href="/programs">Programs</Link>
-                  </div>
+                  </div> */}
                   <div className="menu-link">
                     <Link className="links" href="/about">About Us</Link>
                   </div>

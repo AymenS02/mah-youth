@@ -4,6 +4,11 @@ import { useEffect } from "react";
 import { animateWeeklyPrograms } from "../animations/weeklyprograms"; // Adjust path
 
 const WeeklyPrograms = () => {
+
+  const handleContactUsClick = () => {
+    window.location.href = '/pages/contact';
+  }
+
   const programs = [
     {
       day: "Friday",
@@ -148,7 +153,7 @@ const WeeklyPrograms = () => {
           <p className="text-gray-400 text-xs sm:text-sm mb-3 lg:mb-4 px-4">
             Want to learn more or register for a program?
           </p>
-          <button className="px-6 lg:px-8 py-2.5 lg:py-3 bg-gradient-to-r from-accent to-accent-light text-primary text-sm lg:text-base font-semibold rounded-lg hover:shadow-lg hover:shadow-accent/50 transform hover:scale-105 transition-all duration-300 active:scale-95">
+          <button onClick={handleContactUsClick} className="px-6 lg:px-8 py-2.5 lg:py-3 bg-gradient-to-r from-accent to-accent-light text-primary text-sm lg:text-base font-semibold rounded-lg hover:shadow-lg hover:shadow-accent/50 transform hover:scale-105 transition-all duration-300 active:scale-95">
             Contact Us
           </button>
         </div>

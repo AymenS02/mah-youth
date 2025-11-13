@@ -114,14 +114,14 @@ const EventsPage = () => {
                   </div>
                   
                   <div className="team-member-info flex-1 p-6 overflow-y-auto">
-                    <h3 className="text-2xl font-bold mb-4 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                    <h3 className="text-2xl font-bold mb-4 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent break-words">
                       {event.title}
                     </h3>
-                    
+
                     <div className="space-y-2 mb-4">
-                      <div className="flex items-center text-gray-300">
+                      <div className="flex flex-wrap items-center text-gray-300">
                         <span className="w-1.5 h-1.5 bg-accent-light rounded-full mr-3 flex-shrink-0"></span>
-                        <p className="text-sm">
+                        <p className="text-sm break-all">
                           {new Date(event.date).toLocaleDateString("en-US", {
                             year: "numeric",
                             month: "long",
@@ -129,20 +129,22 @@ const EventsPage = () => {
                           })}
                         </p>
                       </div>
-                      <div className="flex items-center text-gray-300">
+                      <div className="flex flex-wrap items-center text-gray-300">
                         <span className="w-1.5 h-1.5 bg-accent-light rounded-full mr-3 flex-shrink-0"></span>
-                        <p className="text-sm">{event.startTime}</p>
+                        <p className="text-sm break-all">{event.startTime}</p>
                       </div>
-                      <div className="flex items-center text-gray-300">
+                      <div className="flex flex-wrap items-center text-gray-300">
                         <span className="w-1.5 h-1.5 bg-accent-light rounded-full mr-3 flex-shrink-0"></span>
-                        <p className="text-sm">{event.location}</p>
+                        <p className="text-sm break-all">{event.location}</p>
                       </div>
                     </div>
-                    
-                    <p className="text-gray-400 text-sm leading-relaxed border-t border-gray-800 pt-4">
+
+                    <p className="text-gray-400 text-sm leading-relaxed border-t border-gray-800 pt-4 break-all">
                       {event.description}
                     </p>
                   </div>
+
+
                 </div>
               </div>
             ))

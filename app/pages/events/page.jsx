@@ -2,9 +2,10 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { gsap } from "gsap";
-import { FileText, Search, Filter, Calendar, MapPin, Clock, Tag, ArrowRight } from 'lucide-react';
+import { FileText, Search, Filter, Calendar, MapPin, Clock, Tag, ArrowRight, Link } from 'lucide-react';
 import Header from "/components/header/Header";
 import Footer from "/components/footer/Footer";
+import { useRouter } from 'next/navigation';
 
 const EventsPage = () => {
   const [events, setEvents] = useState([]);
@@ -13,6 +14,7 @@ const EventsPage = () => {
   const eventsGridRef = useRef(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const router = useRouter();
 
   useEffect(() => {
     // GSAP animation
@@ -252,6 +254,16 @@ const EventsPage = () => {
                   <p className="text-gray-400 text-sm leading-relaxed line-clamp-3 mb-6">
                     {event.description}
                   </p>
+
+                  <div className='flex items-center justify-right gap-4'>
+                    <button onClick={() => router.push(`/pages/events/${event._id}`)} className="text-white bg-accent-dark p-2 px-4 rounded-lg hover:bg-accent-light transition-colors duration-300 cursor-pointer">
+                      Learn More
+                    </button>
+
+                    <button onClick={() => router.push(`/pages/events/${event._id}/register`)} className="text-white bg-accent-dark p-2 px-4 rounded-lg hover:bg-accent-light transition-colors duration-300 cursor-pointer">
+                      Register
+                    </button>
+                  </div>
                 </div>
 
                 {/* Shine Effect */}

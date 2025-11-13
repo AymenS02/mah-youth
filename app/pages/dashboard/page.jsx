@@ -2,13 +2,14 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from "/components/header/Header";
-import { Plus, Edit, Trash2, Calendar, Users, LogOut, TrendingUp, Activity, ArrowRight } from 'lucide-react';
+import { Plus, Edit, Calendar, LogOut, Activity, ArrowRight, Users, Eye } from 'lucide-react';
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
   const [stats, setStats] = useState({
-    events: 0,
-    users: 0
+    totalEvents: 0,
+    upcomingEvents: 0,
+    totalRegistrations: 0
   });
   const router = useRouter();
 
@@ -21,34 +22,46 @@ export default function Dashboard() {
     }
     
     setUser(JSON.parse(userData));
-    
-    const fetchStats = async () => {
-      try {
-        const [eventsRes, usersRes] = await Promise.all([
-          fetch("/api/events"),
-          fetch("/api/accounts")
-        ]);
-
-        const [eventsData, usersData] = await Promise.all([
-          eventsRes.json(),
-          usersRes.json()
-        ]);
-
-        setStats({
-          events: eventsData.pagination?.total || 0,
-          users: usersData.pagination?.total || 0
-        });
-
-      } catch (err) {
-        console.error("Error fetching stats:", err);
-      }
-    };
-
     fetchStats();
   }, [router]);
 
+  const fetchStats = async () => {
+    try {
+      // Fetch events
+      const eventsRes = await fetch("/api/events");
+      const eventsData = await eventsRes.json();
+
+      // Fetch registrations
+      const regsRes = await fetch("/api/registrations");
+      const regsData = await regsRes.json();
+
+      if (eventsRes.ok && eventsData.events) {
+        const now = new Date();
+        const upcoming = eventsData.events.filter(event => new Date(event.date) >= now);
+        
+        // Get actual registration count from registrations API
+        const totalRegs = regsData.success ? regsData.count : 0;
+
+        console.log("📊 Dashboard Stats:", {
+          totalEvents: eventsData.events.length,
+          upcomingEvents: upcoming.length,
+          totalRegistrations: totalRegs
+        });
+
+        setStats({
+          totalEvents: eventsData.events.length,
+          upcomingEvents: upcoming.length,
+          totalRegistrations: totalRegs
+        });
+      }
+    } catch (err) {
+      console.error("Error fetching stats:", err);
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem('user');
+    window.scrollTo(0, 0);
     router.push('/pages/login');
   };
 
@@ -99,52 +112,46 @@ export default function Dashboard() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
         {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-          {/* Events Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+          {/* Total Events */}
           <div className="group bg-gradient-to-br from-gray-900 to-black rounded-2xl p-8 border-2 border-gray-700/50 hover:border-accent/50 transition-all duration-500 transform hover:-translate-y-2 hover:shadow-2xl hover:shadow-accent/20">
             <div className="flex items-center justify-between mb-6">
               <div className="p-4 bg-accent/10 rounded-xl group-hover:scale-110 transition-transform duration-300">
                 <Calendar className="w-8 h-8 text-accent" />
               </div>
-              <div className="p-3 bg-emerald-500/10 rounded-lg">
-                <TrendingUp className="w-6 h-6 text-emerald-500" />
-              </div>
             </div>
             <div>
               <p className="text-gray-400 text-sm font-medium mb-2 uppercase tracking-wide">Total Events</p>
-              <p className="text-5xl font-black text-white mb-2">{stats.events}</p>
-              <p className="text-gray-500 text-sm">Events in your system</p>
-            </div>
-            <div className="mt-6 pt-6 border-t border-gray-700">
-              <button
-                onClick={() => router.push('/pages/dashboard/events')}
-                className="text-accent hover:text-accent-light transition-colors duration-300 font-medium flex items-center gap-2 group/link"
-              >
-                View all events
-                <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover/link:translate-x-1" />
-              </button>
+              <p className="text-5xl font-black text-white mb-2">{stats.totalEvents}</p>
+              <p className="text-gray-500 text-sm">All events in system</p>
             </div>
           </div>
 
-          {/* Users Stats */}
+          {/* Upcoming Events */}
+          <div className="group bg-gradient-to-br from-gray-900 to-black rounded-2xl p-8 border-2 border-gray-700/50 hover:border-emerald-500/50 transition-all duration-500 transform hover:-translate-y-2 hover:shadow-2xl hover:shadow-emerald-500/20">
+            <div className="flex items-center justify-between mb-6">
+              <div className="p-4 bg-emerald-500/10 rounded-xl group-hover:scale-110 transition-transform duration-300">
+                <Calendar className="w-8 h-8 text-emerald-500" />
+              </div>
+            </div>
+            <div>
+              <p className="text-gray-400 text-sm font-medium mb-2 uppercase tracking-wide">Upcoming Events</p>
+              <p className="text-5xl font-black text-white mb-2">{stats.upcomingEvents}</p>
+              <p className="text-gray-500 text-sm">Future scheduled events</p>
+            </div>
+          </div>
+
+          {/* Total Registrations */}
           <div className="group bg-gradient-to-br from-gray-900 to-black rounded-2xl p-8 border-2 border-gray-700/50 hover:border-purple-500/50 transition-all duration-500 transform hover:-translate-y-2 hover:shadow-2xl hover:shadow-purple-500/20">
             <div className="flex items-center justify-between mb-6">
               <div className="p-4 bg-purple-500/10 rounded-xl group-hover:scale-110 transition-transform duration-300">
                 <Users className="w-8 h-8 text-purple-500" />
               </div>
-              <div className="p-3 bg-blue-500/10 rounded-lg">
-                <Activity className="w-6 h-6 text-blue-500" />
-              </div>
             </div>
             <div>
-              <p className="text-gray-400 text-sm font-medium mb-2 uppercase tracking-wide">Total Users</p>
-              <p className="text-5xl font-black text-white mb-2">{stats.users}</p>
-              <p className="text-gray-500 text-sm">Registered users</p>
-            </div>
-            <div className="mt-6 pt-6 border-t border-gray-700">
-              <p className="text-purple-400 font-medium flex items-center gap-2">
-                Active community members
-              </p>
+              <p className="text-gray-400 text-sm font-medium mb-2 uppercase tracking-wide">Total Registrations</p>
+              <p className="text-5xl font-black text-white mb-2">{stats.totalRegistrations}</p>
+              <p className="text-gray-500 text-sm">Across all events</p>
             </div>
           </div>
         </div>
@@ -169,7 +176,7 @@ export default function Dashboard() {
                   </div>
                   <div>
                     <h3 className="text-2xl font-bold">Events Management</h3>
-                    <p className="text-white/80">{stats.events} total events</p>
+                    <p className="text-white/80">{stats.totalEvents} total events</p>
                   </div>
                 </div>
               </div>
@@ -182,7 +189,10 @@ export default function Dashboard() {
                 
                 <div className="space-y-3">
                   <button
-                    onClick={() => router.push('/pages/dashboard/events/add')}
+                    onClick={() => {
+                      window.scrollTo(0, 0);
+                      router.push('/pages/dashboard/events/add');
+                    }}
                     className="w-full flex items-center justify-center px-6 py-4 bg-gradient-to-r from-accent to-accent-light text-white rounded-xl hover:shadow-lg hover:shadow-accent/50 transition-all duration-300 font-bold group/btn"
                   >
                     <Plus className="w-5 h-5 mr-2 transition-transform duration-300 group-hover/btn:rotate-90" />
@@ -190,7 +200,10 @@ export default function Dashboard() {
                   </button>
                   
                   <button
-                    onClick={() => router.push('/pages/dashboard/events')}
+                    onClick={() => {
+                      window.scrollTo(0, 0);
+                      router.push('/pages/dashboard/events');
+                    }}
                     className="w-full flex items-center justify-center px-6 py-4 bg-gray-800/50 border border-gray-700 text-gray-300 rounded-xl hover:bg-gray-800 hover:border-accent/50 hover:text-white transition-all duration-300 font-bold group/btn"
                   >
                     <Edit className="w-5 h-5 mr-2" />
@@ -209,8 +222,8 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* Coming Soon Card */}
-            <div className="bg-gradient-to-br from-gray-900 to-black rounded-2xl overflow-hidden border-2 border-gray-700/50 opacity-60">
+            {/* Registrations Management Card */}
+            <div className="bg-gradient-to-br from-gray-900 to-black rounded-2xl overflow-hidden border-2 border-gray-700/50 hover:border-purple-500/50 transition-all duration-500 group">
               {/* Header */}
               <div className="bg-gradient-to-r from-purple-500 to-purple-600 p-6">
                 <div className="flex items-center text-white">
@@ -218,8 +231,8 @@ export default function Dashboard() {
                     <Users className="w-8 h-8" />
                   </div>
                   <div>
-                    <h3 className="text-2xl font-bold">User Management</h3>
-                    <p className="text-white/80">Coming Soon</p>
+                    <h3 className="text-2xl font-bold">Registrations</h3>
+                    <p className="text-white/80">{stats.totalRegistrations} total registrations</p>
                   </div>
                 </div>
               </div>
@@ -227,20 +240,38 @@ export default function Dashboard() {
               {/* Content */}
               <div className="p-6">
                 <p className="text-gray-300 mb-6 leading-relaxed">
-                  User management features are currently in development. Soon you'll be able to manage user accounts, permissions, and more.
+                  View and manage all event registrations. Track attendees, check capacity, and export registration data.
                 </p>
                 
-                <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-6 text-center">
-                  <Activity className="w-12 h-12 text-purple-500 mx-auto mb-3" />
-                  <p className="text-gray-400 font-medium">Feature in development</p>
+                <div className="space-y-3">
+                  <button
+                    onClick={() => {
+                      window.scrollTo(0, 0);
+                      router.push('/pages/dashboard/registrations');
+                    }}
+                    className="w-full flex items-center justify-center px-6 py-4 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl hover:shadow-lg hover:shadow-purple-500/50 transition-all duration-300 font-bold group/btn"
+                  >
+                    <Eye className="w-5 h-5 mr-2" />
+                    View All Registrations
+                    <ArrowRight className="w-5 h-5 ml-2 transition-transform duration-300 group-hover/btn:translate-x-1" />
+                  </button>
+                  
+                  <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-400 text-sm">Average per event</span>
+                      <span className="text-purple-400 font-bold text-lg">
+                        {stats.totalEvents > 0 ? Math.round(stats.totalRegistrations / stats.totalEvents) : 0}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              {/* Footer */}
+              {/* Footer Stats */}
               <div className="bg-gray-800/30 px-6 py-4 border-t border-gray-700">
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-gray-400">Status</span>
-                  <span className="text-purple-400 font-medium">In Progress</span>
+                  <span className="text-purple-400 font-medium">Active</span>
                 </div>
               </div>
             </div>
