@@ -11,7 +11,7 @@ export async function GET(request) {
 
     const { searchParams } = new URL(request.url);
     const search = searchParams.get('search') || '';
-    const tags = searchParams.get('tags') || '';
+    const category = searchParams.get('category') || '';
     const page = parseInt(searchParams.get('page')) || 1;
     const limit = parseInt(searchParams.get('limit')) || 10;
     const skip = (page - 1) * limit;
@@ -26,9 +26,8 @@ export async function GET(request) {
       ];
     }
 
-    if (tags && tags !== 'all') {
-      const tagArray = tags.split(',').map(tag => tag.trim());
-      query.tags = { $in: tagArray };
+    if (category && category !== 'all') {
+      query.category = category;
     }
 
     // Fetch events with pagination and populate createdBy
@@ -66,11 +65,27 @@ export async function POST(request) {
     await connectDB();
     
     const body = await request.json();
-    const { title, location, date, tags, imageUrl, description, createdBy } = body;
+    const { 
+      title, 
+      description,
+      location, 
+      date, 
+      startTime,
+      endTime,
+      category,
+      capacity,
+      imageUrl, 
+      registrationLink,
+      isOnline,
+      speakers,
+      price,
+      createdBy 
+    } = body;
 
-    if (!title || !location || !date) {
+    // Validate required fields
+    if (!title || !description || !location || !date || !startTime || !endTime || !category) {
       return NextResponse.json(
-        { error: 'Title, location, and date are required fields' },
+        { error: 'Title, description, location, date, start time, end time, and category are required fields' },
         { status: 400 }
       );
     }
@@ -99,28 +114,33 @@ export async function POST(request) {
       );
     }
 
-    // Process tags
-    let processedTags = [];
-    if (tags) {
-      if (Array.isArray(tags)) {
-        processedTags = tags.map(tag => tag.trim()).filter(tag => tag.length > 0);
-      } else if (typeof tags === 'string') {
-        processedTags = tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
+    // Process speakers array
+    let processedSpeakers = [];
+    if (speakers) {
+      if (Array.isArray(speakers)) {
+        processedSpeakers = speakers.map(speaker => speaker.trim()).filter(speaker => speaker.length > 0);
+      } else if (typeof speakers === 'string') {
+        processedSpeakers = speakers.split(',').map(speaker => speaker.trim()).filter(speaker => speaker.length > 0);
       }
     }
 
-    // Create event
+    // Create event with all fields
     const newEvent = new Event({
       title: title.trim(),
+      description: description.trim(),
       location: location.trim(),
       date: new Date(date),
-      tags: processedTags,
+      startTime: startTime.trim(),
+      endTime: endTime.trim(),
+      category: category.trim(),
+      capacity: capacity ? parseInt(capacity) : 0,
       imageUrl: imageUrl?.trim() || null,
-      description: description.trim(),
+      registrationLink: registrationLink?.trim() || null,
+      isOnline: Boolean(isOnline),
+      speakers: processedSpeakers,
+      price: price ? parseFloat(price) : 0,
+      registeredAttendees: 0,
       createdBy: createdBy || null,
-      startTime: body.startTime || '09:00 AM',
-      endTime: body.endTime || '05:00 PM',
-      category: body.category || 'General',
     });
 
     const savedEvent = await newEvent.save();

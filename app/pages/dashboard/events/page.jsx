@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from "/components/header/Header";
-import { CalendarDays, Plus, Trash2, Search, Filter, ArrowLeft, Clock, MapPin, Edit, Eye } from 'lucide-react';
+import { CalendarDays, Plus, Trash2, Search, Filter, ArrowLeft, Clock, MapPin, Users, Infinity, DollarSign, Tag } from 'lucide-react';
 
 export default function EventsManagement() {
   const [events, setEvents] = useState([]);
@@ -210,6 +210,9 @@ export default function EventsManagement() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredEvents.map((event) => {
             const isUpcoming = new Date(event.date) > new Date();
+            const isUnlimitedCapacity = event.capacity === 0;
+            const spotsRemaining = isUnlimitedCapacity ? null : event.capacity - (event.registeredAttendees || 0);
+            
             return (
               <div
                 key={event._id}
@@ -242,6 +245,16 @@ export default function EventsManagement() {
                       {isUpcoming ? 'Upcoming' : 'Past'}
                     </div>
                   </div>
+
+                  {/* Category Badge */}
+                  {event.category && (
+                    <div className="absolute top-4 left-4">
+                      <div className="px-3 py-1.5 rounded-full bg-accent/90 backdrop-blur-sm font-semibold text-xs text-white flex items-center gap-1">
+                        <Tag className="w-3 h-3" />
+                        {event.category}
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* Content Section */}
@@ -257,7 +270,7 @@ export default function EventsManagement() {
                   </p>
 
                   {/* Event Details */}
-                  <div className="space-y-3 mb-6">
+                  <div className="space-y-3 mb-4">
                     <div className="flex items-center gap-3 text-gray-300">
                       <div className="w-10 h-10 bg-accent/10 rounded-lg flex items-center justify-center flex-shrink-0">
                         <CalendarDays className="w-5 h-5 text-accent" />
@@ -277,7 +290,10 @@ export default function EventsManagement() {
                       <div className="w-10 h-10 bg-accent/10 rounded-lg flex items-center justify-center flex-shrink-0">
                         <Clock className="w-5 h-5 text-accent" />
                       </div>
-                      <p className="text-sm">{event.startTime}</p>
+                      <p className="text-sm">
+                        {event.startTime}
+                        {event.endTime && ` - ${event.endTime}`}
+                      </p>
                     </div>
 
                     {event.location && (
@@ -286,6 +302,41 @@ export default function EventsManagement() {
                           <MapPin className="w-5 h-5 text-accent" />
                         </div>
                         <p className="text-sm truncate">{event.location}</p>
+                      </div>
+                    )}
+
+                    {/* Capacity Info */}
+                    <div className="flex items-center gap-3 text-gray-300">
+                      <div className="w-10 h-10 bg-accent/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                        {isUnlimitedCapacity ? (
+                          <Infinity className="w-5 h-5 text-accent" />
+                        ) : (
+                          <Users className="w-5 h-5 text-accent" />
+                        )}
+                      </div>
+                      <p className="text-sm">
+                        {isUnlimitedCapacity ? (
+                          <span className="text-emerald-400 font-medium">Unlimited capacity</span>
+                        ) : (
+                          <>
+                            <span className="text-white font-medium">{event.registeredAttendees || 0}</span>
+                            <span className="text-gray-400"> / </span>
+                            <span className="text-white font-medium">{event.capacity}</span>
+                            <span className="text-gray-400"> registered</span>
+                          </>
+                        )}
+                      </p>
+                    </div>
+
+                    {/* Price Info */}
+                    {event.price !== undefined && event.price > 0 && (
+                      <div className="flex items-center gap-3 text-gray-300">
+                        <div className="w-10 h-10 bg-accent/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <DollarSign className="w-5 h-5 text-accent" />
+                        </div>
+                        <p className="text-sm">
+                          <span className="text-white font-medium">${event.price.toFixed(2)}</span>
+                        </p>
                       </div>
                     )}
                   </div>

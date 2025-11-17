@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { gsap } from "gsap";
-import { Calendar, MapPin, Clock, Users, DollarSign, Video, User, ArrowLeft, CheckCircle } from 'lucide-react';
+import { Calendar, MapPin, Clock, Users, DollarSign, Video, User, ArrowLeft, CheckCircle, Infinity } from 'lucide-react';
 import Header from "/components/header/Header";
 import Footer from "/components/footer/Footer";
 import { useRouter, useParams } from 'next/navigation';
@@ -17,7 +17,6 @@ const EventDetailsPage = () => {
   const eventId = params.id;
 
   useEffect(() => {
-    // GSAP animation
     if (headerRef.current && contentRef.current) {
       const tl = gsap.timeline({ delay: 0.3 });
       gsap.set([headerRef.current, contentRef.current], { opacity: 0, y: 50 });
@@ -59,6 +58,8 @@ const EventDetailsPage = () => {
       'Community': 'from-rose-500 to-rose-600',
       'Retreat': 'from-teal-500 to-teal-600',
       'Fundraiser': 'from-pink-500 to-pink-600',
+      'Social Gathering': 'from-indigo-500 to-indigo-600',
+      'Sports': 'from-orange-500 to-orange-600',
     };
     return colors[category] || 'from-gray-500 to-gray-600';
   };
@@ -108,8 +109,10 @@ const EventDetailsPage = () => {
     );
   }
 
-  const spotsRemaining = event.capacity - event.registeredAttendees;
-  const isFull = spotsRemaining <= 0;
+  // Check for unlimited capacity
+  const isUnlimitedCapacity = event.capacity === 0;
+  const spotsRemaining = isUnlimitedCapacity ? null : event.capacity - (event.registeredAttendees || 0);
+  const isFull = !isUnlimitedCapacity && spotsRemaining <= 0;
 
   return (
     <>
@@ -273,42 +276,60 @@ const EventDetailsPage = () => {
                 <h3 className="text-2xl font-bold text-white mb-6">Registration</h3>
 
                 {/* Capacity Info */}
-                <div className="bg-white/5 rounded-xl p-6 border border-white/10 mb-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center">
-                        <Users className="w-5 h-5 text-accent" />
+                {isUnlimitedCapacity ? (
+                  <div className="bg-white/5 rounded-xl p-6 border border-white/10 mb-6 text-center">
+                    <div className="flex items-center justify-center gap-3 mb-4">
+                      <div className="w-12 h-12 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+                        <Infinity className="w-8 h-8 text-emerald-400" />
                       </div>
-                      <div>
+                      <div className="text-left">
                         <p className="text-xs text-gray-400 uppercase tracking-wide">Capacity</p>
-                        <p className="text-white font-bold text-lg">{event.capacity}</p>
+                        <p className="text-emerald-400 font-bold text-xl">Unlimited</p>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <p className="text-xs text-gray-400 uppercase tracking-wide">Registered</p>
-                      <p className="text-white font-bold text-lg">{event.registeredAttendees}</p>
+                    <div className="bg-emerald-500/10 rounded-lg p-4 border border-emerald-500/30">
+                      <p className="text-white font-bold text-lg mb-1">{event.registeredAttendees || 0}</p>
+                      <p className="text-gray-400 text-sm">people registered</p>
                     </div>
                   </div>
+                ) : (
+                  <div className="bg-white/5 rounded-xl p-6 border border-white/10 mb-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-accent/20 rounded-lg flex items-center justify-center">
+                          <Users className="w-5 h-5 text-accent" />
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-400 uppercase tracking-wide">Capacity</p>
+                          <p className="text-white font-bold text-lg">{event.capacity}</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-xs text-gray-400 uppercase tracking-wide">Registered</p>
+                        <p className="text-white font-bold text-lg">{event.registeredAttendees || 0}</p>
+                      </div>
+                    </div>
 
-                  {/* Progress Bar */}
-                  <div className="w-full bg-gray-700 rounded-full h-3 overflow-hidden">
-                    <div 
-                      className="bg-gradient-to-r from-accent to-accent-light h-full rounded-full transition-all duration-500"
-                      style={{ width: `${(event.registeredAttendees / event.capacity) * 100}%` }}
-                    ></div>
+                    {/* Progress Bar */}
+                    <div className="w-full bg-gray-700 rounded-full h-3 overflow-hidden">
+                      <div 
+                        className="bg-gradient-to-r from-accent to-accent-light h-full rounded-full transition-all duration-500"
+                        style={{ width: `${Math.min(((event.registeredAttendees || 0) / event.capacity) * 100, 100)}%` }}
+                      ></div>
+                    </div>
+
+                    {/* Spots Remaining */}
+                    <p className="text-center mt-3 text-sm">
+                      {isFull ? (
+                        <span className="text-red-400 font-semibold">Event Full</span>
+                      ) : (
+                        <span className="text-gray-300">
+                          <span className="text-accent font-bold">{spotsRemaining}</span> {spotsRemaining === 1 ? 'spot' : 'spots'} remaining
+                        </span>
+                      )}
+                    </p>
                   </div>
-
-                  {/* Spots Remaining */}
-                  <p className="text-center mt-3 text-sm">
-                    {isFull ? (
-                      <span className="text-red-400 font-semibold">Event Full</span>
-                    ) : (
-                      <span className="text-gray-300">
-                        <span className="text-accent font-bold">{spotsRemaining || "Available"}</span> spots remaining
-                      </span>
-                    )}
-                  </p>
-                </div>
+                )}
 
                 {/* Price Display */}
                 <div className="bg-white/5 rounded-xl p-6 border border-white/10 mb-6 text-center">
@@ -341,6 +362,17 @@ const EventDetailsPage = () => {
                   )}
                 </button>
 
+                {/* Registration Link (if provided) */}
+                {event.registrationLink && (
+                  <a
+                    href={event.registrationLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-center text-accent hover:text-accent-light text-sm font-medium underline"
+                  >
+                    External Registration Link
+                  </a>
+                )}
 
               </div>
             </div>

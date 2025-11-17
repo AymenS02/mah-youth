@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { gsap } from "gsap";
-import { Calendar, MapPin, Clock, User, Mail, Phone, ArrowLeft, CheckCircle, AlertCircle } from 'lucide-react';
+import { Calendar, MapPin, Clock, User, Mail, Phone, ArrowLeft, CheckCircle, AlertCircle, Infinity } from 'lucide-react';
 import Header from "/components/header/Header";
 import Footer from "/components/footer/Footer";
 import { useRouter, useParams } from 'next/navigation';
@@ -11,7 +11,7 @@ const EventRegistrationPage = () => {
   const [event, setEvent] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState(null); // 'success' | 'error'
+  const [submitStatus, setSubmitStatus] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
   
   const headerRef = useRef(null);
@@ -89,7 +89,6 @@ const EventRegistrationPage = () => {
 
       if (response.ok) {
         setSubmitStatus('success');
-        // Reset form
         setFormData({
           fullName: '',
           email: '',
@@ -100,7 +99,6 @@ const EventRegistrationPage = () => {
           additionalNotes: ''
         });
         
-        // Redirect after 3 seconds
         setTimeout(() => {
           window.scrollTo(0, 0);
           router.push(`/pages/events/${eventId}`);
@@ -158,8 +156,10 @@ const EventRegistrationPage = () => {
     );
   }
 
-  const spotsRemaining = event.capacity - event.registeredAttendees;
-  const isFull = spotsRemaining <= 0;
+  // Check if event has unlimited capacity (capacity === 0)
+  const hasUnlimitedCapacity = event.capacity === 0;
+  const spotsRemaining = hasUnlimitedCapacity ? null : event.capacity - event.registeredAttendees;
+  const isFull = !hasUnlimitedCapacity && spotsRemaining <= 0;
 
   if (isFull) {
     return (
@@ -227,9 +227,16 @@ const EventRegistrationPage = () => {
 
             {/* Spots Remaining Alert */}
             <div className="inline-block mt-6 bg-accent/10 border border-accent/30 rounded-full px-6 py-2">
-              <span className="text-accent font-semibold">
-                {spotsRemaining} spots remaining
-              </span>
+              {hasUnlimitedCapacity ? (
+                <span className="text-accent font-semibold flex items-center gap-2">
+                  <Infinity className="w-5 h-5" />
+                  Unlimited spots available
+                </span>
+              ) : (
+                <span className="text-accent font-semibold">
+                  {spotsRemaining} {spotsRemaining === 1 ? 'spot' : 'spots'} remaining
+                </span>
+              )}
             </div>
           </div>
 

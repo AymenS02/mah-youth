@@ -341,19 +341,32 @@ export default function AddEvent() {
                       <label htmlFor="capacity" className="block text-sm font-medium text-gray-300 mb-2">
                         Capacity
                       </label>
-                      <div className="relative">
-                        <Users className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                        <input
-                          type="number"
-                          id="capacity"
-                          name="capacity"
-                          min="0"
-                          disabled={isLoading}
-                          value={formData.capacity}
-                          onChange={handleInputChange}
-                          className="w-full pl-12 pr-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all disabled:opacity-50"
-                          placeholder="0"
-                        />
+                      <div className="space-y-3">
+                        <div className="relative">
+                          <Users className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                          <input
+                            type="number"
+                            id="capacity"
+                            name="capacity"
+                            min="0"
+                            disabled={isLoading || formData.unlimitedCapacity}
+                            value={formData.unlimitedCapacity ? '' : formData.capacity}
+                            onChange={handleInputChange}
+                            className="w-full pl-12 pr-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all disabled:opacity-50"
+                            placeholder={formData.unlimitedCapacity ? "Unlimited" : "0"}
+                          />
+                        </div>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            name="unlimitedCapacity"
+                            checked={formData.unlimitedCapacity}
+                            onChange={handleInputChange}
+                            disabled={isLoading}
+                            className="w-4 h-4 rounded border-gray-600 text-accent focus:ring-accent focus:ring-offset-gray-900"
+                          />
+                          <span className="text-sm text-gray-300">Unlimited capacity</span>
+                        </label>
                       </div>
                     </div>
 
