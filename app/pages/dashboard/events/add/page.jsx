@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from '/components/header/Header';
-import { CalendarPlus, ArrowLeft, Save, X, Upload, Image as ImageIcon, Clock, MapPin, Tag, FileText } from 'lucide-react';
+import { CalendarPlus, ArrowLeft, Save, X, Upload, Image as ImageIcon, Clock, MapPin, Tag, FileText, Users, DollarSign, Link2, Monitor } from 'lucide-react';
 
 export default function AddEvent() {
   const [isLoading, setIsLoading] = useState(false);
@@ -16,8 +16,14 @@ export default function AddEvent() {
     category: '',
     location: '',
     date: '',
-    time: '',
+    startTime: '',
+    endTime: '',
+    capacity: '',
     imageUrl: '',
+    registrationLink: '',
+    isOnline: false,
+    speakers: '',
+    price: '0',
   });
 
   const categories = [
@@ -31,10 +37,10 @@ export default function AddEvent() {
   ];
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: type === 'checkbox' ? checked : value,
     }));
   };
 
@@ -48,8 +54,25 @@ export default function AddEvent() {
       const userData = localStorage.getItem('user');
       const user = userData ? JSON.parse(userData) : null;
 
+      // Convert speakers string to array
+      const speakersArray = formData.speakers
+        ? formData.speakers.split(',').map(s => s.trim()).filter(s => s)
+        : [];
+
       const submitData = {
-        ...formData,
+        title: formData.title,
+        description: formData.description,
+        category: formData.category,
+        location: formData.location,
+        date: formData.date,
+        startTime: formData.startTime,
+        endTime: formData.endTime,
+        capacity: formData.capacity ? parseInt(formData.capacity) : 0,
+        imageUrl: formData.imageUrl,
+        registrationLink: formData.registrationLink,
+        isOnline: formData.isOnline,
+        speakers: speakersArray,
+        price: parseFloat(formData.price) || 0,
         createdBy: user?.id || null,
       };
 
@@ -222,60 +245,175 @@ export default function AddEvent() {
                   Event Details
                 </h2>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {/* Date */}
-                  <div>
-                    <label htmlFor="date" className="block text-sm font-medium text-gray-300 mb-2">
-                      Date *
-                    </label>
-                    <input
-                      type="date"
-                      id="date"
-                      name="date"
-                      required
-                      disabled={isLoading}
-                      value={formData.date}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all disabled:opacity-50"
-                    />
-                  </div>
-
-                  {/* Time */}
-                  <div>
-                    <label htmlFor="time" className="block text-sm font-medium text-gray-300 mb-2">
-                      Time *
-                    </label>
-                    <input
-                      type="time"
-                      id="time"
-                      name="time"
-                      required
-                      disabled={isLoading}
-                      value={formData.time}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all disabled:opacity-50"
-                    />
-                  </div>
-
-                  {/* Location */}
-                  <div className="lg:col-span-2">
-                    <label htmlFor="location" className="block text-sm font-medium text-gray-300 mb-2">
-                      Location *
-                    </label>
-                    <div className="relative">
-                      <MapPin className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <div className="space-y-6">
+                  {/* Date, Start Time, End Time */}
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div>
+                      <label htmlFor="date" className="block text-sm font-medium text-gray-300 mb-2">
+                        Date *
+                      </label>
                       <input
-                        type="text"
-                        id="location"
-                        name="location"
+                        type="date"
+                        id="date"
+                        name="date"
                         required
                         disabled={isLoading}
-                        value={formData.location}
+                        value={formData.date}
                         onChange={handleInputChange}
-                        className="w-full pl-12 pr-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all disabled:opacity-50"
-                        placeholder="e.g., Toronto Masjid Main Hall"
+                        className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all disabled:opacity-50"
                       />
                     </div>
+
+                    <div>
+                      <label htmlFor="startTime" className="block text-sm font-medium text-gray-300 mb-2">
+                        Start Time *
+                      </label>
+                      <input
+                        type="time"
+                        id="startTime"
+                        name="startTime"
+                        required
+                        disabled={isLoading}
+                        value={formData.startTime}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all disabled:opacity-50"
+                      />
+                    </div>
+
+                    <div>
+                      <label htmlFor="endTime" className="block text-sm font-medium text-gray-300 mb-2">
+                        End Time *
+                      </label>
+                      <input
+                        type="time"
+                        id="endTime"
+                        name="endTime"
+                        required
+                        disabled={isLoading}
+                        value={formData.endTime}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all disabled:opacity-50"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Location & Online Checkbox */}
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div className="lg:col-span-2">
+                      <label htmlFor="location" className="block text-sm font-medium text-gray-300 mb-2">
+                        Location *
+                      </label>
+                      <div className="relative">
+                        <MapPin className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                        <input
+                          type="text"
+                          id="location"
+                          name="location"
+                          required
+                          disabled={isLoading}
+                          value={formData.location}
+                          onChange={handleInputChange}
+                          className="w-full pl-12 pr-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all disabled:opacity-50"
+                          placeholder="e.g., Toronto Masjid Main Hall"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex items-end">
+                      <label className="flex items-center gap-3 cursor-pointer bg-gray-800/50 border border-gray-700 rounded-xl px-4 py-3 w-full hover:border-accent transition-all">
+                        <input
+                          type="checkbox"
+                          name="isOnline"
+                          checked={formData.isOnline}
+                          onChange={handleInputChange}
+                          disabled={isLoading}
+                          className="w-5 h-5 rounded border-gray-600 text-accent focus:ring-accent focus:ring-offset-gray-900"
+                        />
+                        <Monitor className="w-5 h-5 text-gray-400" />
+                        <span className="text-sm font-medium text-gray-300">Online Event</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* Capacity, Price, Registration Link */}
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div>
+                      <label htmlFor="capacity" className="block text-sm font-medium text-gray-300 mb-2">
+                        Capacity
+                      </label>
+                      <div className="relative">
+                        <Users className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                        <input
+                          type="number"
+                          id="capacity"
+                          name="capacity"
+                          min="0"
+                          disabled={isLoading}
+                          value={formData.capacity}
+                          onChange={handleInputChange}
+                          className="w-full pl-12 pr-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all disabled:opacity-50"
+                          placeholder="0"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label htmlFor="price" className="block text-sm font-medium text-gray-300 mb-2">
+                        Price ($)
+                      </label>
+                      <div className="relative">
+                        <DollarSign className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                        <input
+                          type="number"
+                          id="price"
+                          name="price"
+                          min="0"
+                          step="0.01"
+                          disabled={isLoading}
+                          value={formData.price}
+                          onChange={handleInputChange}
+                          className="w-full pl-12 pr-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all disabled:opacity-50"
+                          placeholder="0.00"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label htmlFor="registrationLink" className="block text-sm font-medium text-gray-300 mb-2">
+                        Registration Link
+                      </label>
+                      <div className="relative">
+                        <Link2 className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                        <input
+                          type="url"
+                          id="registrationLink"
+                          name="registrationLink"
+                          disabled={isLoading}
+                          value={formData.registrationLink}
+                          onChange={handleInputChange}
+                          className="w-full pl-12 pr-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all disabled:opacity-50"
+                          placeholder="https://..."
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Speakers */}
+                  <div>
+                    <label htmlFor="speakers" className="block text-sm font-medium text-gray-300 mb-2">
+                      Speakers
+                    </label>
+                    <input
+                      type="text"
+                      id="speakers"
+                      name="speakers"
+                      disabled={isLoading}
+                      value={formData.speakers}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all disabled:opacity-50"
+                      placeholder="Enter speaker names separated by commas (e.g., Dr. Ahmed, Sheikh Ibrahim)"
+                    />
+                    <p className="text-xs text-gray-400 mt-2">Separate multiple speakers with commas</p>
                   </div>
                 </div>
               </div>
@@ -416,11 +554,15 @@ export default function AddEvent() {
             </li>
             <li className="flex items-start gap-2">
               <span className="text-accent mt-0.5">•</span>
-              <span>Upload high-quality images that represent your event well</span>
+              <span>Set accurate start and end times for better planning</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-accent mt-0.5">•</span>
-              <span>Double-check the date and time to avoid confusion</span>
+              <span>Add capacity limits to manage attendance effectively</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-accent mt-0.5">•</span>
+              <span>Upload high-quality images that represent your event well</span>
             </li>
           </ul>
         </div>
