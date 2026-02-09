@@ -1,7 +1,6 @@
 'use client';
 import { Users, Book, Heart } from "lucide-react";
 import { useEffect } from "react";
-import { animateWeeklyPrograms } from "../animations/weeklyprograms"; // Adjust path
 
 const WeeklyPrograms = () => {
 
@@ -47,20 +46,6 @@ const WeeklyPrograms = () => {
       iconBg: "bg-purple-500/20",
     },
   ];
-
-  // Initialize animation only on desktop
-  useEffect(() => {
-    // Check if desktop
-    if (window.innerWidth >= 1024) {
-      const timer = setTimeout(() => {
-        const cleanup = animateWeeklyPrograms();
-        
-        return cleanup;
-      }, 100);
-
-      return () => clearTimeout(timer);
-    }
-  }, []);
 
   useEffect(() => {
   if (programs.length > 0) return;{
@@ -153,7 +138,7 @@ const WeeklyPrograms = () => {
           <p className="text-gray-400 text-xs sm:text-sm mb-3 lg:mb-4 px-4">
             Want to learn more or register for a program?
           </p>
-          <button onClick={handleContactUsClick} className="px-6 lg:px-8 py-2.5 lg:py-3 bg-gradient-to-r from-accent to-accent-light text-primary text-sm lg:text-base font-semibold rounded-lg hover:shadow-lg hover:shadow-accent/50 transform hover:scale-105 transition-all duration-300 active:scale-95">
+          <button onClick={handleContactUsClick} className="px-6 lg:px-8 py-2.5 lg:py-3 bg-gradient-to-r from-accent to-accent-light text-white text-sm lg:text-base font-semibold rounded-lg hover:shadow-lg hover:shadow-accent/50 transform hover:scale-105 transition-all duration-300 active:scale-95">
             Contact Us
           </button>
         </div>
