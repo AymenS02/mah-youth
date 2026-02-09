@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.90.20",
     "bcryptjs": "^3.0.2",
     "cloudinary": "^2.7.0",
     "gsap": "^3.13.0",
