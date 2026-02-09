@@ -1,5 +1,6 @@
 import { Nunito } from "next/font/google";
 import "./globals.css";
+import QueryProvider from "/lib/providers/QueryProvider";
 
 const nunitoSans = Nunito({
   variable: "--font-nunito-sans",
@@ -21,7 +22,9 @@ export default function RootLayout({ children }) {
       <body
         className={`${nunitoSans.variable} antialiased`}
       >
-        {children}
+        <QueryProvider>
+          {children}
+        </QueryProvider>
       </body>
     </html>
   );
