@@ -50,11 +50,12 @@ const SkeletonEvents = () => {
               <div className="team-member-name-initial absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none"
                    style={{ zIndex: 0 }}>
                 <h1 
-                  className='text-accent text-[300px] font-bold'
+                  className='text-accent text-[150px] font-bold'
                   style={{
                     animation: `pulseGlow 2s ease-in-out infinite`,
                     animationDelay: `${index * 0.3}s`,
                     opacity: 0.15,
+                    transform: 'scale(2)',
                   }}
                 >
                   {index}
@@ -226,24 +227,6 @@ const SkeletonEvents = () => {
           }
         }
 
-        @keyframes shimmer-slow {
-          0% {
-            transform: translateX(-100%);
-          }
-          100% {
-            transform: translateX(100%);
-          }
-        }
-
-        @keyframes shimmer-fast {
-          0% {
-            transform: translateX(-100%);
-          }
-          100% {
-            transform: translateX(100%);
-          }
-        }
-
         @keyframes fadeInScale {
           from {
             opacity: 0;
@@ -306,11 +289,11 @@ const SkeletonEvents = () => {
         }
 
         .animate-shimmer-slow {
-          animation: shimmer-slow 3s infinite;
+          animation: shimmer 3s infinite;
         }
 
         .animate-shimmer-fast {
-          animation: shimmer-fast 1.5s infinite;
+          animation: shimmer 1.5s infinite;
         }
 
         .animate-float {
