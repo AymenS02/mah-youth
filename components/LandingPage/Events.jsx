@@ -115,7 +115,7 @@ const EventsPage = () => {
                   </div>
                   
                   <div className="team-member-info flex-1 p-6 overflow-y-auto">
-                    <h3 className="text-2xl font-bold mb-4 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent break-words">
+                    <h3 className="text-2xl font-bold mb-4 text-white break-words">
                       {event.title}
                     </h3>
 
@@ -139,10 +139,6 @@ const EventsPage = () => {
                         <p className="text-sm break-all">{event.location}</p>
                       </div>
                     </div>
-
-                    <p className="text-gray-400 text-sm leading-relaxed border-t border-gray-800 pt-4 break-all">
-                      {event.description}
-                    </p>
                   </div>
 
 
@@ -242,11 +238,6 @@ const EventsPage = () => {
 
                     {/* Divider */}
                     <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-700 to-transparent my-4"></div>
-
-                    {/* Description */}
-                    <p className="text-gray-400 text-sm leading-relaxed">
-                      {event.description}
-                    </p>
 
                     {/* CTA Button */}
                     <button className="w-full mt-6 bg-gradient-to-r from-accent to-accent-light text-white font-bold py-3 px-6 rounded-xl hover:shadow-lg hover:shadow-accent/50 transition-all duration-300 flex items-center justify-center gap-2">
