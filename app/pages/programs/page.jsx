@@ -33,8 +33,8 @@ export default function ProgramsPage() {
     if (program.recurrenceType === 'weekly') {
       return `Every ${days[program.dayOfWeek]}`;
     } else if (program.recurrenceType === 'bi-weekly') {
-      const weekText = program.weekPattern === '1,3' ? '1st & 3rd' : '2nd & 4th';
-      return `${weekText} ${days[program.dayOfWeek]} of every month`;
+      const weekText = program.weekPattern === '1,2' ? 'First half' : 'Second half';
+      return `${weekText} ${days[program.dayOfWeek]}s of every month`;
     } else if (program.recurrenceType === 'monthly') {
       return `Monthly on the ${program.dayOfMonth}${getOrdinalSuffix(program.dayOfMonth)}`;
     }

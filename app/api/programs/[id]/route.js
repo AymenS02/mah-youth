@@ -85,6 +85,9 @@ export async function PUT(request, { params }) {
 }
 
 // DELETE - Delete a program (soft delete by setting isActive to false)
+// Note: This is a soft delete operation. The program remains in the database
+// but is marked as inactive and won't appear in active program listings.
+// This preserves data history and prevents accidental data loss.
 export async function DELETE(request, { params }) {
   try {
     await connectDB();

@@ -96,8 +96,8 @@ export default function ProgramsManagement() {
     if (program.recurrenceType === 'weekly') {
       return `Every ${days[program.dayOfWeek]}`;
     } else if (program.recurrenceType === 'bi-weekly') {
-      const weekText = program.weekPattern === '1,3' ? '1st & 3rd' : '2nd & 4th';
-      return `${weekText} ${days[program.dayOfWeek]}`;
+      const weekText = program.weekPattern === '1,2' ? 'First half' : 'Second half';
+      return `${weekText} ${days[program.dayOfWeek]}s of the month`;
     } else if (program.recurrenceType === 'monthly') {
       return `Monthly on ${program.dayOfMonth}${getOrdinalSuffix(program.dayOfMonth)}`;
     }

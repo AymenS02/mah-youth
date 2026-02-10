@@ -87,15 +87,14 @@ export async function POST(request) {
       }
     }
 
-    // Check for duplicates
+    // Check for duplicates (including inactive programs to prevent title reuse)
     const existingProgram = await Program.findOne({
-      title: body.title,
-      isActive: true
+      title: body.title
     });
 
     if (existingProgram) {
       return NextResponse.json(
-        { success: false, error: "A program with this title already exists" },
+        { success: false, error: "A program with this title already exists. Please choose a different title." },
         { status: 409 }
       );
     }

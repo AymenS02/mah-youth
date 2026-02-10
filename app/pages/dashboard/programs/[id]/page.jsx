@@ -408,8 +408,8 @@ export default function EditProgram() {
                             onChange={handleInputChange}
                             className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none appearance-none cursor-pointer transition-all disabled:opacity-50"
                           >
-                            <option value="1,3">1st & 3rd week</option>
-                            <option value="2,4">2nd & 4th week</option>
+                            <option value="1,2">First half of month (weeks 1-2)</option>
+                            <option value="3,4">Second half of month (weeks 3-4)</option>
                           </select>
                         </div>
                       )}
