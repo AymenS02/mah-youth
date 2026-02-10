@@ -2,14 +2,15 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from "/components/header/Header";
-import { Plus, Edit, Calendar, LogOut, Activity, ArrowRight, Users, Eye } from 'lucide-react';
+import { Plus, Edit, Calendar, LogOut, Activity, ArrowRight, Users, Eye, Repeat } from 'lucide-react';
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
   const [stats, setStats] = useState({
     totalEvents: 0,
     upcomingEvents: 0,
-    totalRegistrations: 0
+    totalRegistrations: 0,
+    totalPrograms: 0
   });
   const router = useRouter();
 
@@ -35,23 +36,32 @@ export default function Dashboard() {
       const regsRes = await fetch("/api/registrations");
       const regsData = await regsRes.json();
 
+      // Fetch programs
+      const programsRes = await fetch("/api/programs");
+      const programsData = await programsRes.json();
+
       if (eventsRes.ok && eventsData.events) {
         const now = new Date();
         const upcoming = eventsData.events.filter(event => new Date(event.date) >= now);
         
         // Get actual registration count from registrations API
         const totalRegs = regsData.success ? regsData.count : 0;
+        
+        // Get program count
+        const totalProgs = programsData.success ? programsData.count : 0;
 
         console.log("📊 Dashboard Stats:", {
           totalEvents: eventsData.events.length,
           upcomingEvents: upcoming.length,
-          totalRegistrations: totalRegs
+          totalRegistrations: totalRegs,
+          totalPrograms: totalProgs
         });
 
         setStats({
           totalEvents: eventsData.events.length,
           upcomingEvents: upcoming.length,
-          totalRegistrations: totalRegs
+          totalRegistrations: totalRegs,
+          totalPrograms: totalProgs
         });
       }
     } catch (err) {
@@ -165,7 +175,7 @@ export default function Dashboard() {
             Quick Actions
           </h2>
           
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Events Management Card */}
             <div className="bg-gradient-to-br from-gray-900 to-black rounded-2xl overflow-hidden border-2 border-gray-700/50 hover:border-accent/50 transition-all duration-500 group">
               {/* Header */}
@@ -272,6 +282,62 @@ export default function Dashboard() {
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-gray-400">Status</span>
                   <span className="text-purple-400 font-medium">Active</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Programs Management Card */}
+            <div className="bg-gradient-to-br from-gray-900 to-black rounded-2xl overflow-hidden border-2 border-gray-700/50 hover:border-emerald-500/50 transition-all duration-500 group">
+              {/* Header */}
+              <div className="bg-gradient-to-r from-emerald-500 to-emerald-600 p-6">
+                <div className="flex items-center text-white">
+                  <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm mr-4">
+                    <Repeat className="w-8 h-8" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold">Recurring Programs</h3>
+                    <p className="text-white/80">{stats.totalPrograms} total programs</p>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Content */}
+              <div className="p-6">
+                <p className="text-gray-300 mb-6 leading-relaxed">
+                  Manage recurring programs that happen weekly, bi-weekly, or monthly at MAH.
+                </p>
+                
+                <div className="space-y-3">
+                  <button
+                    onClick={() => {
+                      window.scrollTo(0, 0);
+                      router.push('/pages/dashboard/programs/add');
+                    }}
+                    className="w-full flex items-center justify-center px-6 py-4 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-xl hover:shadow-lg hover:shadow-emerald-500/50 transition-all duration-300 font-bold group/btn"
+                  >
+                    <Plus className="w-5 h-5 mr-2 transition-transform duration-300 group-hover/btn:rotate-90" />
+                    Add New Program
+                  </button>
+                  
+                  <button
+                    onClick={() => {
+                      window.scrollTo(0, 0);
+                      router.push('/pages/dashboard/programs');
+                    }}
+                    className="w-full flex items-center justify-center px-6 py-4 bg-gray-800/50 border border-gray-700 text-gray-300 rounded-xl hover:bg-gray-800 hover:border-emerald-500/50 hover:text-white transition-all duration-300 font-bold group/btn"
+                  >
+                    <Edit className="w-5 h-5 mr-2" />
+                    Manage All Programs
+                    <ArrowRight className="w-5 h-5 ml-2 transition-transform duration-300 group-hover/btn:translate-x-1" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Footer Stats */}
+              <div className="bg-gray-800/30 px-6 py-4 border-t border-gray-700">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-400">Active programs</span>
+                  <span className="text-emerald-400 font-medium">{stats.totalPrograms}</span>
                 </div>
               </div>
             </div>
