@@ -366,7 +366,7 @@ export default function EditProgram() {
                       className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none appearance-none cursor-pointer transition-all disabled:opacity-50"
                     >
                       <option value="weekly">Weekly</option>
-                      <option value="bi-weekly">Bi-Weekly (1st & 3rd OR 2nd & 4th)</option>
+                      <option value="bi-weekly">Bi-Weekly (First/Second half of month)</option>
                       <option value="monthly">Monthly</option>
                     </select>
                   </div>
