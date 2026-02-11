@@ -6,6 +6,7 @@ import { Calendar, MapPin, Clock, User, Mail, Phone, ArrowLeft, CheckCircle, Ale
 import Header from "/components/header/Header";
 import Footer from "/components/footer/Footer";
 import { useRouter, useParams } from 'next/navigation';
+import { isRegistrationDeadlinePassed } from '/lib/utils/eventUtils';
 
 const EventRegistrationPage = () => {
   const [event, setEvent] = useState(null);
@@ -175,9 +176,7 @@ const EventRegistrationPage = () => {
   const isFull = !hasUnlimitedCapacity && spotsRemaining <= 0;
   
   // Check if registration deadline has passed
-  const now = new Date();
-  const registrationDeadline = event.registrationDeadline ? new Date(event.registrationDeadline) : null;
-  const isDeadlinePassed = registrationDeadline && now > registrationDeadline;
+  const isDeadlinePassed = isRegistrationDeadlinePassed(event.registrationDeadline);
 
   if (isFull || isDeadlinePassed) {
     return (

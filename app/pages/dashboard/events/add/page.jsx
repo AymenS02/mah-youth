@@ -54,6 +54,18 @@ export default function AddEvent() {
     setSuccess('');
 
     try {
+      // Validate registration deadline is before event start
+      if (formData.registrationDeadline && formData.date) {
+        const deadline = new Date(formData.registrationDeadline);
+        const eventDate = new Date(formData.date);
+        
+        if (deadline >= eventDate) {
+          setError('Registration deadline must be before the event date.');
+          setIsLoading(false);
+          return;
+        }
+      }
+
       const userData = localStorage.getItem('user');
       const user = userData ? JSON.parse(userData) : null;
 
