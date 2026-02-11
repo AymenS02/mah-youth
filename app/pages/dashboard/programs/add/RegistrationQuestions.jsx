@@ -10,11 +10,11 @@ const RegistrationQuestions = forwardRef((props, ref) => {
   }));
 
   const generateId = () => {
-    if (crypto.randomUUID) {
+    if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
       return crypto.randomUUID();
     }
     // Fallback for older browsers - combine timestamp with random string
-    return 'q-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+    return 'q-' + Date.now() + '-' + Math.random().toString(36).slice(2, 11);
   };
 
   const addQuestion = () => {
