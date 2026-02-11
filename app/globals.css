@@ -16,9 +16,9 @@
   --color-primary-dark: #061426; /* Darker navy for depth */
   --color-primary-light: #163052; /* Lighter navy for hover states */
   
-  --color-accent: #d7ae7e;       /* Warm Gold - Primary accent */
-  --color-accent-dark: #a67c4a;  /* Darker gold for hover */
-  --color-accent-light: #d4aa7a; /* Lighter gold for subtle elements */
+  --color-accent: #c1916a;       /* Warm Gold - Primary accent */
+  --color-accent-dark: #8f6b4f;  /* Darker gold for hover */
+  --color-accent-light: #f5b887; /* Lighter gold for subtle elements */
   
   --color-light: #f8feff;        /* Off-white - Light backgrounds */
   --color-light-gray: #e8f0f2;   /* Light gray for sections */

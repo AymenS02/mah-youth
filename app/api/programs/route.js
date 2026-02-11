@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import connectDB from "/lib/config/db";
-import Program from "/lib/models/ProgramModel";
+import { connectDB } from '../../../lib/config/db';
+import Program from "../../../lib/models/ProgramModel";
 
 // GET - Fetch all programs
 export async function GET(request) {

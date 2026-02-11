@@ -243,7 +243,7 @@ const Footer = () => {
                         className="w-8 h-8 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-300"
                         style={{backgroundColor: 'var(--color-accent)', opacity: 0.2}}
                       >
-                        <IconComponent className="w-4 h-4" style={{color: 'var(--color-accent-light)'}} />
+                        <IconComponent className="w-4 h-4 text-white" />
                       </div>
                       <span>{program.name}</span>
                       <ExternalLink className="w-3 h-3 ml-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

@@ -58,7 +58,7 @@ const EventsPage = () => {
   return (
     <>
       {/* Desktop Version - Modern Card Design */}
-      <section className="hidden lg:block relative min-h-screen w-full py-20 px-8 bg-gradient-to-b from-primary to-primary-light">
+      <section className="hidden lg:block relative min-h-[50vh] w-full py-20 px-8 bg-gradient-to-b from-primary to-primary-light">
         {/* Section Header */}
         <div className="text-center mb-16">
           <h1 className="text-6xl font-black mb-4">
@@ -99,13 +99,11 @@ const EventsPage = () => {
                     <img 
                       src={event.imageUrl} 
                       alt={event.title}
-                      className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+                      className="w-full h-full object-cover"
                     />
                     {/* Gradient Overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-500"></div>
                     
-                    {/* Accent Bar */}
-                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-accent to-accent-light transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
                   </div>
 
                   {/* Content Container - Flexible with consistent spacing */}

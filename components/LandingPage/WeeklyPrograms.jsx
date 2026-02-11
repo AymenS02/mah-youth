@@ -1,67 +1,42 @@
 'use client';
 import { Users, Book, Heart } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const WeeklyPrograms = () => {
+
+
+  const [programs, setPrograms] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // 🔄 Fetch programs from API
+  useEffect(() => {
+    const fetchPrograms = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch('/api/programs');
+        const data = await response.json();
+        if (response.ok) {
+          const sortedPrograms = data.programs
+            .sort((a, b) => new Date(b.startTime) - new Date(a.startTime))
+            .slice(0, 3);
+          setPrograms(sortedPrograms);
+        } else {
+          console.error('Failed to fetch programs:', data.error);
+        }
+      } catch (error) {
+        console.error('Error fetching programs:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPrograms();
+  }, []);
 
   const handleContactUsClick = () => {
     window.location.href = '/pages/contact';
   }
-
-  const programs = [
-    {
-      day: "Friday",
-      title: "Jumu'ah Youth Circle",
-      time: "1:00 PM - 2:30 PM",
-      description: "Post-Jumu'ah discussion circle and community building",
-      icon: <Users className="w-8 h-8" />,
-      color: "from-blue-500 to-blue-600",
-      iconBg: "bg-blue-500/20",
-    },
-    {
-      day: "Saturday",
-      title: "Quran Study Group",
-      time: "10:00 AM - 11:30 AM",
-      description: "Tafseer and memorization sessions for all levels",
-      icon: <Book className="w-8 h-8" />,
-      color: "from-emerald-500 to-emerald-600",
-      iconBg: "bg-emerald-500/20",
-    },
-    {
-      day: "Sunday",
-      title: "Sports & Recreation",
-      time: "3:00 PM - 5:00 PM",
-      description: "Basketball, soccer, and other sports activities",
-      icon: <Heart className="w-8 h-8" />,
-      color: "from-rose-500 to-rose-600",
-      iconBg: "bg-rose-500/20",
-    },
-    {
-      day: "Wednesday",
-      title: "Youth Night",
-      time: "7:00 PM - 9:00 PM",
-      description: "Games, discussions, and social activities",
-      icon: <Users className="w-8 h-8" />,
-      color: "from-purple-500 to-purple-600",
-      iconBg: "bg-purple-500/20",
-    },
-  ];
-
-  useEffect(() => {
-  if (programs.length > 0) return;{
-    const timer = setTimeout(() => {
-      const cleanup = animateWeeklyPrograms(); // Get cleanup function
-      
-      // Return cleanup from the timer callback
-      return cleanup;
-    }, 100);
-
-    // Return function that clears timer and runs cleanup
-    return () => {
-      clearTimeout(timer);
-    };
-  }
-}, [programs]);
 
   return (
     <section className="min-h-screen py-12 lg:py-20 bg-gradient-to-b from-primary-light to-primary-dark flex items-center justify-center px-4">
