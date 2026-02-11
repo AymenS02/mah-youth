@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from '/components/header/Header';
 import RegistrationQuestions from './RegistrationQuestions';
@@ -10,6 +10,7 @@ export default function AddProgram() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const router = useRouter();
+  const questionsRef = useRef();
 
   const [formData, setFormData] = useState({
     title: '',
@@ -60,12 +61,16 @@ export default function AddProgram() {
       const userData = localStorage.getItem('user');
       const user = userData ? JSON.parse(userData) : null;
 
+      // Get questions from the ref
+      const registrationQuestions = questionsRef.current ? questionsRef.current.getQuestions() : [];
+
       const submitData = {
         ...formData,
         capacity: formData.capacity ? parseInt(formData.capacity) : 0,
         price: parseFloat(formData.price) || 0,
         dayOfWeek: formData.dayOfWeek !== '' ? parseInt(formData.dayOfWeek) : undefined,
         dayOfMonth: formData.dayOfMonth ? parseInt(formData.dayOfMonth) : undefined,
+        registrationQuestions: registrationQuestions,
         createdBy: user?.id || null,
       };
 
@@ -527,7 +532,7 @@ export default function AddProgram() {
               {/* Registration Questions */}
               <div className="border-t border-gray-700 pt-8">
                 <h2 className="text-2xl font-bold text-white mb-6">Registration Questions:</h2>
-                  <RegistrationQuestions />
+                  <RegistrationQuestions ref={questionsRef} />
               </div>
 
 

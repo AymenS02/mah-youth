@@ -99,7 +99,37 @@ export async function POST(request) {
       );
     }
 
-    const program = await Program.create(body);
+    // Process registration questions
+    let processedQuestions = [];
+    if (body.registrationQuestions && Array.isArray(body.registrationQuestions)) {
+      processedQuestions = body.registrationQuestions
+        .filter(q => q.text && q.text.trim().length > 0) // Only include questions with text
+        .map(q => ({
+          id: q.id,
+          text: q.text.trim(),
+          type: q.type || 'text',
+          required: Boolean(q.required),
+          options: (q.options && Array.isArray(q.options)) 
+            ? q.options
+                .filter(opt => opt.text && opt.text.trim().length > 0)
+                .map(opt => ({
+                  id: opt.id,
+                  text: opt.text.trim()
+                }))
+            : []
+        }));
+    }
+
+    // Create program with processed questions
+    const programData = {
+      ...body,
+      registrationQuestions: processedQuestions
+    };
+
+    const program = await Program.create(programData);
+
+    console.log('✅ Program created successfully:', program._id);
+    console.log('📝 Registration questions:', processedQuestions.length);
 
     return NextResponse.json({
       success: true,

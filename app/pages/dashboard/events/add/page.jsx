@@ -1,7 +1,8 @@
 'use client';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from '/components/header/Header';
+import RegistrationQuestions from './RegistrationQuestions';
 import { CalendarPlus, ArrowLeft, Save, X, Upload, Image as ImageIcon, Clock, MapPin, Tag, FileText, Users, DollarSign, Link2, Monitor } from 'lucide-react';
 
 export default function AddEvent() {
@@ -9,6 +10,7 @@ export default function AddEvent() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const router = useRouter();
+  const questionsRef = useRef();
 
   const [formData, setFormData] = useState({
     title: '',
@@ -59,6 +61,9 @@ export default function AddEvent() {
         ? formData.speakers.split(',').map(s => s.trim()).filter(s => s)
         : [];
 
+      // Get questions from the ref
+      const registrationQuestions = questionsRef.current ? questionsRef.current.getQuestions() : [];
+
       const submitData = {
         title: formData.title,
         description: formData.description,
@@ -73,6 +78,7 @@ export default function AddEvent() {
         isOnline: formData.isOnline,
         speakers: speakersArray,
         price: parseFloat(formData.price) || 0,
+        registrationQuestions: registrationQuestions,
         createdBy: user?.id || null,
       };
 
@@ -516,6 +522,9 @@ export default function AddEvent() {
                   )}
                 </div>
               </div>
+
+              {/* Registration Questions */}
+              <RegistrationQuestions ref={questionsRef} />
 
               {/* Action Buttons */}
               <div className="border-t border-gray-700 pt-8 flex flex-col sm:flex-row justify-end gap-4">
