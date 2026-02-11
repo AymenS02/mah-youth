@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from '/components/header/Header';
+import RegistrationQuestions from './RegistrationQuestions';
 import { Repeat, ArrowLeft, Save, X, Clock, MapPin, User, FileText, Calendar, Upload, Image as ImageIcon } from 'lucide-react';
 
 export default function AddProgram() {
@@ -521,6 +522,14 @@ export default function AddProgram() {
                   )}
                 </div>
               </div>
+              
+
+              {/* Registration Questions */}
+              <div className="border-t border-gray-700 pt-8">
+                <h2 className="text-2xl font-bold text-white mb-6">Registration Questions:</h2>
+                  <RegistrationQuestions />
+              </div>
+
 
               {/* Optional Details */}
               <div className="border-t border-gray-700 pt-8">

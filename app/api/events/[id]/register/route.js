@@ -1,3 +1,5 @@
+// app/api/events/[id]/register/route.js
+
 import { connectDB } from '../../../../../lib/config/db';
 import Event from '../../../../../lib/models/EventModel';
 import Registration from "../../../../../lib/models/RegistrationModel";
@@ -16,7 +18,8 @@ export async function POST(request, { params }) {
       dietaryRestrictions,
       emergencyContact,
       emergencyPhone,
-      additionalNotes
+      additionalNotes,
+      questionAnswers // New field for custom question answers
     } = body;
 
     // Validate required fields
@@ -37,24 +40,62 @@ export async function POST(request, { params }) {
     }
 
     // Check if event is full
-    if (event.registeredAttendees >= event.capacity) {
+    if (event.capacity > 0 && event.registeredAttendees >= event.capacity) {
       return Response.json(
         { error: "Event is full" },
         { status: 400 }
       );
     }
 
-    // Check if user already registered
+    // Validate required custom questions are answered
+    if (event.registrationQuestions && event.registrationQuestions.length > 0) {
+      const requiredQuestions = event.registrationQuestions.filter(q => q.required);
+      
+      for (const question of requiredQuestions) {
+        const answer = questionAnswers?.[question.id];
+        
+        if (!answer || (typeof answer === 'string' && answer.trim() === '')) {
+          return Response.json(
+            { error: `Please answer the required question: "${question.text}"` },
+            { status: 400 }
+          );
+        }
+
+        // For checkbox type, ensure at least one option is selected
+        if (question.type === 'checkbox' && Array.isArray(answer) && answer.length === 0) {
+          return Response.json(
+            { error: `Please select at least one option for: "${question.text}"` },
+            { status: 400 }
+          );
+        }
+      }
+    }
+
+    // Check if user already registered (by email)
     const existingRegistration = await Registration.findOne({
       event: id,
-      fullName: fullName.toLowerCase()
+      email: email.toLowerCase()
     });
 
     if (existingRegistration) {
       return Response.json(
-        { error: "You have already registered for this event" },
+        { error: "This email has already been registered for this event" },
         { status: 400 }
       );
+    }
+
+    // Process question answers for storage
+    let processedAnswers = [];
+    if (questionAnswers && event.registrationQuestions) {
+      processedAnswers = event.registrationQuestions.map(question => {
+        const answer = questionAnswers[question.id];
+        return {
+          questionId: question.id,
+          questionText: question.text,
+          questionType: question.type,
+          answer: answer || null
+        };
+      }).filter(qa => qa.answer !== null); // Only store answered questions
     }
 
     // Create new registration
@@ -67,6 +108,7 @@ export async function POST(request, { params }) {
       emergencyContact,
       emergencyPhone,
       additionalNotes,
+      questionAnswers: processedAnswers,
       status: 'confirmed'
     });
 
@@ -76,6 +118,9 @@ export async function POST(request, { params }) {
 
     // TODO: Send confirmation email here
     // await sendConfirmationEmail(email, event, registration);
+
+    console.log('✅ Registration successful:', registration._id);
+    console.log('📝 Answered questions:', processedAnswers.length);
 
     return Response.json(
       {
@@ -92,7 +137,7 @@ export async function POST(request, { params }) {
     );
 
   } catch (error) {
-    console.error("Registration error:", error);
+    console.error("❌ Registration error:", error);
     return Response.json(
       { error: "Failed to process registration" },
       { status: 500 }

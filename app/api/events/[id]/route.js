@@ -9,7 +9,7 @@ export async function GET(request, { params }) {
   try {
     await connectDB();
 
-    const { id } = params;
+    const { id } = await params;
 
     if (!id) {
       return NextResponse.json(
@@ -46,7 +46,7 @@ export async function PUT(request, { params }) {
   try {
     await connectDB();
 
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
 
     if (!id) {
@@ -56,7 +56,23 @@ export async function PUT(request, { params }) {
       );
     }
 
-    const { title, location, date, tags, imageUrl, description } = body;
+    const { 
+      title, 
+      description,
+      location, 
+      date, 
+      startTime,
+      endTime,
+      category,
+      capacity,
+      imageUrl, 
+      registrationLink,
+      isOnline,
+      speakers,
+      price,
+      registrationQuestions,
+      tags // Legacy field support
+    } = body;
 
     // Validation
     if (!title || !location || !date) {
@@ -75,7 +91,7 @@ export async function PUT(request, { params }) {
       );
     }
 
-    // Check for duplicates (same title + date)
+    // Check for duplicates (same title + date, but not this event)
     const duplicateEvent = await Event.findOne({
       _id: { $ne: id },
       title: { $regex: new RegExp(`^${title}$`, 'i') },
@@ -89,7 +105,17 @@ export async function PUT(request, { params }) {
       );
     }
 
-    // Process tags
+    // Process speakers array
+    let processedSpeakers = [];
+    if (speakers) {
+      if (Array.isArray(speakers)) {
+        processedSpeakers = speakers.map(speaker => speaker.trim()).filter(speaker => speaker.length > 0);
+      } else if (typeof speakers === 'string') {
+        processedSpeakers = speakers.split(',').map(speaker => speaker.trim()).filter(speaker => speaker.length > 0);
+      }
+    }
+
+    // Process tags (legacy support)
     let processedTags = [];
     if (tags) {
       if (Array.isArray(tags)) {
@@ -99,21 +125,61 @@ export async function PUT(request, { params }) {
       }
     }
 
+    // Process registration questions
+    let processedQuestions = [];
+    if (registrationQuestions !== undefined) {
+      if (Array.isArray(registrationQuestions)) {
+        processedQuestions = registrationQuestions
+          .filter(q => q.text && q.text.trim().length > 0) // Only include questions with text
+          .map(q => ({
+            id: q.id,
+            text: q.text.trim(),
+            type: q.type || 'text',
+            required: Boolean(q.required),
+            options: (q.options && Array.isArray(q.options)) 
+              ? q.options
+                  .filter(opt => opt.text && opt.text.trim().length > 0)
+                  .map(opt => ({
+                    id: opt.id,
+                    text: opt.text.trim()
+                  }))
+              : []
+          }));
+      }
+    }
+
+    // Build update object with only provided fields
+    const updateData = {
+      title: title.trim(),
+      location: location.trim(),
+      date: new Date(date),
+      description: description?.trim() || existingEvent.description,
+      imageUrl: imageUrl !== undefined ? (imageUrl?.trim() || null) : existingEvent.imageUrl,
+    };
+
+    // Add optional fields only if provided
+    if (startTime !== undefined) updateData.startTime = startTime.trim();
+    if (endTime !== undefined) updateData.endTime = endTime.trim();
+    if (category !== undefined) updateData.category = category.trim();
+    if (capacity !== undefined) updateData.capacity = parseInt(capacity);
+    if (registrationLink !== undefined) updateData.registrationLink = registrationLink?.trim() || null;
+    if (isOnline !== undefined) updateData.isOnline = Boolean(isOnline);
+    if (speakers !== undefined) updateData.speakers = processedSpeakers;
+    if (price !== undefined) updateData.price = parseFloat(price) || 0;
+    if (tags !== undefined) updateData.tags = processedTags;
+    if (registrationQuestions !== undefined) updateData.registrationQuestions = processedQuestions;
+
     // Update event
     const updatedEvent = await Event.findByIdAndUpdate(
       id,
-      {
-        title: title.trim(),
-        location: location.trim(),
-        date: new Date(date),
-        tags: processedTags,
-        imageUrl: imageUrl?.trim() || null,
-        description: description.trim()
-      },
+      updateData,
       { new: true, runValidators: true }
     ).populate('createdBy', 'name email');
 
     console.log('✅ Event updated successfully:', updatedEvent._id);
+    if (registrationQuestions !== undefined) {
+      console.log('📝 Registration questions updated:', processedQuestions.length);
+    }
 
     return NextResponse.json({
       success: true,

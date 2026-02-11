@@ -79,6 +79,7 @@ export async function POST(request) {
       isOnline,
       speakers,
       price,
+      registrationQuestions,
       createdBy 
     } = body;
 
@@ -124,6 +125,27 @@ export async function POST(request) {
       }
     }
 
+    // Process registration questions
+    let processedQuestions = [];
+    if (registrationQuestions && Array.isArray(registrationQuestions)) {
+      processedQuestions = registrationQuestions
+        .filter(q => q.text && q.text.trim().length > 0) // Only include questions with text
+        .map(q => ({
+          id: q.id,
+          text: q.text.trim(),
+          type: q.type || 'text',
+          required: Boolean(q.required),
+          options: (q.options && Array.isArray(q.options)) 
+            ? q.options
+                .filter(opt => opt.text && opt.text.trim().length > 0)
+                .map(opt => ({
+                  id: opt.id,
+                  text: opt.text.trim()
+                }))
+            : []
+        }));
+    }
+
     // Create event with all fields
     const newEvent = new Event({
       title: title.trim(),
@@ -139,6 +161,7 @@ export async function POST(request) {
       isOnline: Boolean(isOnline),
       speakers: processedSpeakers,
       price: price ? parseFloat(price) : 0,
+      registrationQuestions: processedQuestions,
       registeredAttendees: 0,
       createdBy: createdBy || null,
     });
@@ -147,6 +170,7 @@ export async function POST(request) {
     await savedEvent.populate('createdBy', 'name email');
 
     console.log('✅ Event created successfully:', savedEvent._id);
+    console.log('📝 Registration questions:', processedQuestions.length);
 
     return NextResponse.json({
       success: true,
