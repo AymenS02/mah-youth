@@ -30,6 +30,8 @@ const EventRegistrationPage = () => {
     additionalNotes: ''
   });
 
+  const [questionAnswers, setQuestionAnswers] = useState({});
+
   useEffect(() => {
     if (headerRef.current && formRef.current) {
       const tl = gsap.timeline({ delay: 0.3 });
@@ -70,6 +72,13 @@ const EventRegistrationPage = () => {
     });
   };
 
+  const handleQuestionChange = (questionId, value) => {
+    setQuestionAnswers(prev => ({
+      ...prev,
+      [questionId]: value
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -82,7 +91,10 @@ const EventRegistrationPage = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          questionAnswers
+        }),
       });
 
       const data = await response.json();
@@ -98,6 +110,7 @@ const EventRegistrationPage = () => {
           emergencyPhone: '',
           additionalNotes: ''
         });
+        setQuestionAnswers({});
         
         setTimeout(() => {
           window.scrollTo(0, 0);
@@ -398,6 +411,160 @@ const EventRegistrationPage = () => {
                     placeholder="Any additional information or special requirements"
                   />
                 </div>
+
+                {/* Custom Registration Questions */}
+                {event.registrationQuestions && event.registrationQuestions.length > 0 && (
+                  <div className="border-t border-gray-700 pt-6">
+                    <h3 className="text-xl font-bold text-white mb-4">Additional Questions</h3>
+                    
+                    <div className="space-y-6">
+                      {event.registrationQuestions.map((question, index) => (
+                        <div key={question.id}>
+                          <label className="block text-gray-300 font-medium mb-2">
+                            {index + 1}. {question.text}
+                            {question.required && <span className="text-red-400 ml-1">*</span>}
+                          </label>
+                          
+                          {/* Text Input */}
+                          {question.type === 'text' && (
+                            <input
+                              type="text"
+                              required={question.required}
+                              value={questionAnswers[question.id] || ''}
+                              onChange={(e) => handleQuestionChange(question.id, e.target.value)}
+                              className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all duration-300"
+                              placeholder="Your answer"
+                            />
+                          )}
+
+                          {/* Textarea */}
+                          {question.type === 'textarea' && (
+                            <textarea
+                              required={question.required}
+                              value={questionAnswers[question.id] || ''}
+                              onChange={(e) => handleQuestionChange(question.id, e.target.value)}
+                              rows="4"
+                              className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all duration-300 resize-none"
+                              placeholder="Your answer"
+                            />
+                          )}
+
+                          {/* Email Input */}
+                          {question.type === 'email' && (
+                            <input
+                              type="email"
+                              required={question.required}
+                              value={questionAnswers[question.id] || ''}
+                              onChange={(e) => handleQuestionChange(question.id, e.target.value)}
+                              className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all duration-300"
+                              placeholder="your.email@example.com"
+                            />
+                          )}
+
+                          {/* Phone Input */}
+                          {question.type === 'phone' && (
+                            <input
+                              type="tel"
+                              required={question.required}
+                              value={questionAnswers[question.id] || ''}
+                              onChange={(e) => handleQuestionChange(question.id, e.target.value)}
+                              className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all duration-300"
+                              placeholder="(123) 456-7890"
+                            />
+                          )}
+
+                          {/* Number Input */}
+                          {question.type === 'number' && (
+                            <input
+                              type="number"
+                              required={question.required}
+                              value={questionAnswers[question.id] || ''}
+                              onChange={(e) => handleQuestionChange(question.id, e.target.value)}
+                              className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all duration-300"
+                              placeholder="Enter a number"
+                            />
+                          )}
+
+                          {/* Date Input */}
+                          {question.type === 'date' && (
+                            <input
+                              type="date"
+                              required={question.required}
+                              value={questionAnswers[question.id] || ''}
+                              onChange={(e) => handleQuestionChange(question.id, e.target.value)}
+                              className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all duration-300"
+                            />
+                          )}
+
+                          {/* Dropdown Select */}
+                          {question.type === 'select' && (
+                            <select
+                              required={question.required}
+                              value={questionAnswers[question.id] || ''}
+                              onChange={(e) => handleQuestionChange(question.id, e.target.value)}
+                              className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all duration-300"
+                            >
+                              <option value="" disabled={question.required}>Select an option</option>
+                              {question.options?.map((option) => (
+                                <option key={option.id} value={option.text}>
+                                  {option.text}
+                                </option>
+                              ))}
+                            </select>
+                          )}
+
+                          {/* Radio Buttons */}
+                          {question.type === 'radio' && (
+                            <div className="space-y-3">
+                              {question.options?.map((option) => (
+                                <label key={option.id} className="flex items-center gap-3 cursor-pointer group">
+                                  <input
+                                    type="radio"
+                                    name={question.id}
+                                    required={question.required}
+                                    value={option.text}
+                                    checked={questionAnswers[question.id] === option.text}
+                                    onChange={(e) => handleQuestionChange(question.id, e.target.value)}
+                                    className="w-5 h-5 text-accent border-gray-600 focus:ring-accent focus:ring-offset-gray-900"
+                                  />
+                                  <span className="text-gray-300 group-hover:text-white transition">{option.text}</span>
+                                </label>
+                              ))}
+                            </div>
+                          )}
+
+                          {/* Checkboxes */}
+                          {question.type === 'checkbox' && (
+                            <div className="space-y-3">
+                              {question.options?.map((option) => {
+                                const currentAnswers = questionAnswers[question.id] || [];
+                                const isChecked = Array.isArray(currentAnswers) && currentAnswers.includes(option.text);
+                                
+                                return (
+                                  <label key={option.id} className="flex items-center gap-3 cursor-pointer group">
+                                    <input
+                                      type="checkbox"
+                                      checked={isChecked}
+                                      onChange={(e) => {
+                                        const current = questionAnswers[question.id] || [];
+                                        const updated = e.target.checked
+                                          ? [...current, option.text]
+                                          : current.filter(v => v !== option.text);
+                                        handleQuestionChange(question.id, updated);
+                                      }}
+                                      className="w-5 h-5 rounded text-accent border-gray-600 focus:ring-accent focus:ring-offset-gray-900"
+                                    />
+                                    <span className="text-gray-300 group-hover:text-white transition">{option.text}</span>
+                                  </label>
+                                );
+                              })}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {/* Submit Button */}
                 <button
