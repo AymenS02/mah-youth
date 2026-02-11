@@ -57,6 +57,28 @@ export async function PUT(request, { params }) {
     delete body.createdAt;
     delete body.updatedAt;
 
+    // Process registration questions if provided
+    if (body.registrationQuestions !== undefined) {
+      if (Array.isArray(body.registrationQuestions)) {
+        body.registrationQuestions = body.registrationQuestions
+          .filter(q => q.text && q.text.trim().length > 0) // Only include questions with text
+          .map(q => ({
+            id: q.id,
+            text: q.text.trim(),
+            type: q.type || 'text',
+            required: Boolean(q.required),
+            options: (q.options && Array.isArray(q.options)) 
+              ? q.options
+                  .filter(opt => opt.text && opt.text.trim().length > 0)
+                  .map(opt => ({
+                    id: opt.id,
+                    text: opt.text.trim()
+                  }))
+              : []
+          }));
+      }
+    }
+
     const program = await Program.findByIdAndUpdate(
       id,
       { $set: body },
@@ -68,6 +90,11 @@ export async function PUT(request, { params }) {
         { success: false, error: "Program not found" },
         { status: 404 }
       );
+    }
+
+    console.log('✅ Program updated successfully:', program._id);
+    if (body.registrationQuestions !== undefined) {
+      console.log('📝 Registration questions updated:', body.registrationQuestions.length);
     }
 
     return NextResponse.json({
