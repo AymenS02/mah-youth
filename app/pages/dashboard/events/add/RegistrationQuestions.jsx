@@ -13,7 +13,7 @@ const RegistrationQuestions = forwardRef((props, ref) => {
     setQuestions([
       ...questions,
       {
-        id: crypto.randomUUID ? crypto.randomUUID().split('-')[0] : Date.now(),
+        id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
         text: "",
         type: "text",
         required: false,
@@ -36,7 +36,7 @@ const RegistrationQuestions = forwardRef((props, ref) => {
     setQuestions(
       questions.map((q) =>
         q.id === questionId
-          ? { ...q, options: [...q.options, { id: crypto.randomUUID ? crypto.randomUUID().split('-')[0] : Date.now(), text: "" }] }
+          ? { ...q, options: [...q.options, { id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()), text: "" }] }
           : q
       )
     );
@@ -70,7 +70,7 @@ const RegistrationQuestions = forwardRef((props, ref) => {
   const duplicateQuestion = (question) => {
     const newQuestion = {
       ...question,
-      id: crypto.randomUUID ? crypto.randomUUID().split('-')[0] : Date.now(),
+      id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
     };
     setQuestions([...questions, newQuestion]);
   };
