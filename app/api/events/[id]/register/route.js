@@ -46,6 +46,18 @@ export async function POST(request, { params }) {
         { status: 400 }
       );
     }
+    
+    // Check if registration deadline has passed
+    if (event.registrationDeadline) {
+      const now = new Date();
+      const deadline = new Date(event.registrationDeadline);
+      if (now > deadline) {
+        return Response.json(
+          { error: "Registration deadline has passed" },
+          { status: 400 }
+        );
+      }
+    }
 
     // Validate required custom questions are answered
     if (event.registrationQuestions && event.registrationQuestions.length > 0) {
