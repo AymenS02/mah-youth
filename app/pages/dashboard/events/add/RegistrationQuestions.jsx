@@ -9,11 +9,19 @@ const RegistrationQuestions = forwardRef((props, ref) => {
     setQuestions: (newQuestions) => setQuestions(newQuestions)
   }));
 
+  const generateId = () => {
+    if (crypto.randomUUID) {
+      return crypto.randomUUID();
+    }
+    // Fallback for older browsers - combine timestamp with random string
+    return 'q-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+  };
+
   const addQuestion = () => {
     setQuestions([
       ...questions,
       {
-        id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
+        id: generateId(),
         text: "",
         type: "text",
         required: false,
@@ -36,7 +44,7 @@ const RegistrationQuestions = forwardRef((props, ref) => {
     setQuestions(
       questions.map((q) =>
         q.id === questionId
-          ? { ...q, options: [...q.options, { id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()), text: "" }] }
+          ? { ...q, options: [...q.options, { id: generateId(), text: "" }] }
           : q
       )
     );
@@ -70,7 +78,7 @@ const RegistrationQuestions = forwardRef((props, ref) => {
   const duplicateQuestion = (question) => {
     const newQuestion = {
       ...question,
-      id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
+      id: generateId(),
     };
     setQuestions([...questions, newQuestion]);
   };
