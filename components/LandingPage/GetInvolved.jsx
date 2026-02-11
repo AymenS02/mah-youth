@@ -60,13 +60,6 @@ const GetInvolved = () => {
           <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
             Be an active part of our thriving youth community and make a lasting impact
           </p>
-
-          {/* Decorative Divider */}
-          <div className="flex items-center justify-center gap-2 mt-6">
-            <div className="w-2 h-2 bg-white/30 rounded-full animate-pulse"></div>
-            <div className="w-16 h-1 bg-gradient-to-r from-transparent via-white/20 to-transparent rounded-full"></div>
-            <div className="w-2 h-2 bg-white/30 rounded-full animate-pulse" style={{ animationDelay: '0.5s' }}></div>
-          </div>
         </div>
 
         {/* Cards Grid */}

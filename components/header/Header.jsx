@@ -66,7 +66,7 @@ const Header = () => {
                   <p className='paragraph'>Muslim Association of Hamilton Youth</p>
                 </div>
                 <div className="menu-col">
-                  <p className='paragraph'>youth@mah.ca</p>
+                  <p className='paragraph'>youth@hamiltonmosque.com</p>
                 </div>
               </div>
             </div>

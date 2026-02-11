@@ -115,18 +115,10 @@ const ContactPage = () => {
     { 
       icon: Mail, 
       title: "Email Us", 
-      details: "youth@mah.ca", 
+      details: "youth@hamiltonmosque.com", 
       description: "Send us an email anytime", 
-      link: "mailto:youth@mah.ca",
+      link: "mailto:youth@hamiltonmosque.com",
       color: "from-blue-500 to-blue-600"
-    },
-    { 
-      icon: Phone, 
-      title: "Call Us", 
-      details: "(905) 555-YOUTH", 
-      description: "Mon-Fri, 9AM-5PM EST", 
-      link: "tel:+19055559684",
-      color: "from-emerald-500 to-emerald-600"
     },
     { 
       icon: MapPin, 

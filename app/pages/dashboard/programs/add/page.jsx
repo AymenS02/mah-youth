@@ -123,15 +123,15 @@ export default function AddProgram() {
               window.scrollTo(0, 0);
               router.push('/pages/dashboard/programs');
             }}
-            className="mb-6 flex items-center gap-2 text-gray-300 hover:text-emerald-500 transition-colors duration-300 group"
+            className="mb-6 flex items-center gap-2 text-gray-300 hover:text-accent transition-colors duration-300 group"
           >
             <ArrowLeft className="w-5 h-5 transition-transform duration-300 group-hover:-translate-x-1" />
             <span className="font-medium">Back to Programs</span>
           </button>
 
           <div className="flex items-center gap-4 mb-4">
-            <div className="p-4 bg-emerald-500/10 rounded-xl">
-              <Repeat className="w-10 h-10 text-emerald-500" />
+            <div className="p-4 bg-accent/10 rounded-xl">
+              <Repeat className="w-10 h-10 text-accent" />
             </div>
             <div>
               <h1 className="text-4xl md:text-5xl font-black text-white">
@@ -157,11 +157,11 @@ export default function AddProgram() {
 
             {/* Success Message */}
             {success && (
-              <div className="mb-6 p-4 bg-emerald-500/10 border border-emerald-500/50 rounded-xl flex items-start gap-3">
-                <div className="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <div className="mb-6 p-4 bg-accent/10 border border-accent/50 rounded-xl flex items-start gap-3">
+                <div className="w-6 h-6 rounded-full bg-accent flex items-center justify-center flex-shrink-0 mt-0.5">
                   <Save className="w-4 h-4 text-white" />
                 </div>
-                <p className="text-emerald-400 text-sm">{success}</p>
+                <p className="text-accent-dark text-sm">{success}</p>
               </div>
             )}
 
@@ -169,7 +169,7 @@ export default function AddProgram() {
               {/* Basic Information */}
               <div>
                 <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
-                  <FileText className="w-6 h-6 text-emerald-500" />
+                  <FileText className="w-6 h-6 text-accent" />
                   Basic Information
                 </h2>
 
@@ -187,7 +187,7 @@ export default function AddProgram() {
                       disabled={isLoading}
                       value={formData.title}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all disabled:opacity-50"
+                      className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all disabled:opacity-50"
                       placeholder="e.g., Youth Friday Night"
                     />
                   </div>
@@ -205,7 +205,7 @@ export default function AddProgram() {
                       disabled={isLoading}
                       value={formData.description}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all resize-none disabled:opacity-50"
+                      className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all resize-none disabled:opacity-50"
                       placeholder="Describe your program in detail..."
                     />
                   </div>
@@ -226,7 +226,7 @@ export default function AddProgram() {
                           disabled={isLoading}
                           value={formData.host}
                           onChange={handleInputChange}
-                          className="w-full pl-12 pr-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all disabled:opacity-50"
+                          className="w-full pl-12 pr-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all disabled:opacity-50"
                           placeholder="e.g., Sheikh Ahmed"
                         />
                       </div>
@@ -243,7 +243,7 @@ export default function AddProgram() {
                         disabled={isLoading}
                         value={formData.category}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all disabled:opacity-50"
+                        className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all disabled:opacity-50"
                         placeholder="e.g., Education, Sports, Social"
                       />
                     </div>
@@ -254,7 +254,7 @@ export default function AddProgram() {
               {/* Schedule & Recurrence */}
               <div className="border-t border-gray-700 pt-8">
                 <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
-                  <Calendar className="w-6 h-6 text-emerald-500" />
+                  <Calendar className="w-6 h-6 text-accent" />
                   Schedule & Recurrence
                 </h2>
 
@@ -275,7 +275,7 @@ export default function AddProgram() {
                           disabled={isLoading}
                           value={formData.startTime}
                           onChange={handleInputChange}
-                          className="w-full pl-12 pr-4 py-3 bg-gray-800/50 border border-gray-700 text-white rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all disabled:opacity-50"
+                          className="w-full pl-12 pr-4 py-3 bg-gray-800/50 border border-gray-700 text-white rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all disabled:opacity-50"
                         />
                       </div>
                     </div>
@@ -294,7 +294,7 @@ export default function AddProgram() {
                           disabled={isLoading}
                           value={formData.endTime}
                           onChange={handleInputChange}
-                          className="w-full pl-12 pr-4 py-3 bg-gray-800/50 border border-gray-700 text-white rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all disabled:opacity-50"
+                          className="w-full pl-12 pr-4 py-3 bg-gray-800/50 border border-gray-700 text-white rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all disabled:opacity-50"
                         />
                       </div>
                     </div>
@@ -312,7 +312,7 @@ export default function AddProgram() {
                       disabled={isLoading}
                       value={formData.recurrenceType}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none appearance-none cursor-pointer transition-all disabled:opacity-50"
+                      className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none appearance-none cursor-pointer transition-all disabled:opacity-50"
                     >
                       <option value="weekly">Weekly</option>
                       <option value="bi-weekly">Bi-Weekly (First/Second half of month)</option>
@@ -334,7 +334,7 @@ export default function AddProgram() {
                           disabled={isLoading}
                           value={formData.dayOfWeek}
                           onChange={handleInputChange}
-                          className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none appearance-none cursor-pointer transition-all disabled:opacity-50"
+                          className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none appearance-none cursor-pointer transition-all disabled:opacity-50"
                         >
                           <option value="">Select day</option>
                           {daysOfWeek.map((day) => (
@@ -356,7 +356,7 @@ export default function AddProgram() {
                             disabled={isLoading}
                             value={formData.weekPattern}
                             onChange={handleInputChange}
-                            className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none appearance-none cursor-pointer transition-all disabled:opacity-50"
+                            className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none appearance-none cursor-pointer transition-all disabled:opacity-50"
                           >
                             <option value="1,2">First half of month (weeks 1-2)</option>
                             <option value="3,4">Second half of month (weeks 3-4)</option>
@@ -382,7 +382,7 @@ export default function AddProgram() {
                         disabled={isLoading}
                         value={formData.dayOfMonth}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all disabled:opacity-50"
+                        className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all disabled:opacity-50"
                         placeholder="1-31"
                       />
                     </div>
@@ -393,7 +393,7 @@ export default function AddProgram() {
               {/* Location Details */}
               <div className="border-t border-gray-700 pt-8">
                 <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
-                  <MapPin className="w-6 h-6 text-emerald-500" />
+                  <MapPin className="w-6 h-6 text-accent" />
                   Location & Contact
                 </h2>
 
@@ -412,7 +412,7 @@ export default function AddProgram() {
                         disabled={isLoading}
                         value={formData.location}
                         onChange={handleInputChange}
-                        className="w-full pl-12 pr-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all disabled:opacity-50"
+                        className="w-full pl-12 pr-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all disabled:opacity-50"
                         placeholder="e.g., MAH Main Hall"
                       />
                     </div>
@@ -429,10 +429,96 @@ export default function AddProgram() {
                       disabled={isLoading}
                       value={formData.contactInfo}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all disabled:opacity-50"
+                      className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all disabled:opacity-50"
                       placeholder="Email or phone number for inquiries"
                     />
                   </div>
+                </div>
+              </div>
+
+              {/* Image Upload Section */}
+              <div className="border-t border-gray-700 pt-8">
+                <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+                  <ImageIcon className="w-6 h-6 text-accent" />
+                  Event Image
+                </h2>
+
+                <div className="space-y-4">
+                  <label
+                    htmlFor="image"
+                    className={`block w-full border-2 border-dashed border-gray-700 rounded-xl p-8 text-center hover:border-accent transition-all duration-300 cursor-pointer group ${
+                      isLoading ? 'opacity-50 cursor-not-allowed' : ''
+                    }`}
+                  >
+                    <input
+                      type="file"
+                      id="image"
+                      name="image"
+                      accept="image/*"
+                      disabled={isLoading}
+                      onChange={async (e) => {
+                        const file = e.target.files[0];
+                        if (!file) return;
+                        setIsLoading(true);
+                        const formData = new FormData();
+                        formData.append('file', file);
+
+                        try {
+                          const res = await fetch('/api/upload', {
+                            method: 'POST',
+                            body: formData,
+                          });
+                          const data = await res.json();
+                          if (res.ok) {
+                            setFormData((prev) => ({
+                              ...prev,
+                              imageUrl: data.url,
+                            }));
+                            setSuccess('Image uploaded successfully!');
+                            setTimeout(() => setSuccess(''), 3000);
+                          } else {
+                            setError(data.error || 'Failed to upload image');
+                          }
+                        } catch (err) {
+                          console.error(err);
+                          setError('Image upload failed. Please try again.');
+                        } finally {
+                          setIsLoading(false);
+                        }
+                      }}
+                      className="hidden"
+                    />
+                    <Upload className="w-12 h-12 text-gray-400 group-hover:text-accent mx-auto mb-4 transition-colors" />
+                    <p className="text-gray-300 font-medium mb-2">
+                      Click to upload event image
+                    </p>
+                    <p className="text-gray-500 text-sm">
+                      PNG, JPG or WEBP (MAX. 5MB)
+                    </p>
+                  </label>
+
+                  {/* Image Preview */}
+                  {formData.imageUrl && (
+                    <div className="relative rounded-xl overflow-hidden border-2 border-accent/50">
+                      <img
+                        src={formData.imageUrl}
+                        alt="Preview"
+                        className="w-full h-64 object-cover"
+                      />
+                      <div className="absolute top-4 right-4">
+                        <button
+                          type="button"
+                          onClick={() => setFormData(prev => ({ ...prev, imageUrl: '' }))}
+                          className="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                        >
+                          <X className="w-5 h-5" />
+                        </button>
+                      </div>
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                        <p className="text-white text-sm font-medium">Image uploaded successfully</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -454,7 +540,7 @@ export default function AddProgram() {
                         disabled={isLoading}
                         value={formData.capacity}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all disabled:opacity-50"
+                        className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all disabled:opacity-50"
                         placeholder="0"
                       />
                     </div>
@@ -472,7 +558,7 @@ export default function AddProgram() {
                         disabled={isLoading}
                         value={formData.price}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all disabled:opacity-50"
+                        className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all disabled:opacity-50"
                         placeholder="0.00"
                       />
                     </div>
@@ -489,7 +575,7 @@ export default function AddProgram() {
                       disabled={isLoading}
                       value={formData.registrationLink}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all disabled:opacity-50"
+                      className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all disabled:opacity-50"
                       placeholder="https://..."
                     />
                   </div>
@@ -505,7 +591,7 @@ export default function AddProgram() {
                       disabled={isLoading}
                       value={formData.imageUrl}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all disabled:opacity-50"
+                      className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all disabled:opacity-50"
                       placeholder="https://..."
                     />
                   </div>
@@ -521,7 +607,7 @@ export default function AddProgram() {
                       disabled={isLoading}
                       value={formData.notes}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all resize-none disabled:opacity-50"
+                      className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all resize-none disabled:opacity-50"
                       placeholder="Any additional information..."
                     />
                   </div>
@@ -535,7 +621,7 @@ export default function AddProgram() {
                       checked={formData.isActive}
                       onChange={handleInputChange}
                       disabled={isLoading}
-                      className="w-5 h-5 rounded border-gray-600 text-emerald-500 focus:ring-emerald-500 focus:ring-offset-gray-900"
+                      className="w-5 h-5 rounded border-gray-600 text-accent focus:ring-accent focus:ring-offset-gray-900"
                     />
                     <label htmlFor="isActive" className="text-sm font-medium text-gray-300 cursor-pointer">
                       Program is active (visible to users)
@@ -559,7 +645,7 @@ export default function AddProgram() {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="px-8 py-4 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-xl hover:shadow-lg hover:shadow-emerald-500/50 transition-all duration-300 font-bold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transform hover:scale-105"
+                  className="px-8 py-4 bg-gradient-to-r from-accent to-accent-light text-white rounded-xl hover:shadow-lg hover:shadow-accent/50 transition-all duration-300 font-bold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 transform hover:scale-105"
                 >
                   {isLoading ? (
                     <>

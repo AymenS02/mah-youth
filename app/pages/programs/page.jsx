@@ -71,12 +71,6 @@ export default function ProgramsPage() {
       <div className="pt-32 pb-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Page Header */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-3 bg-gradient-to-r from-emerald-500/10 to-emerald-600/10 backdrop-blur-sm px-6 py-3 rounded-full mb-6 border border-emerald-500/30">
-            <Repeat className="w-5 h-5 text-emerald-500" />
-            <span className="text-sm font-bold text-emerald-500 tracking-wider uppercase">
-              Recurring Programs
-            </span>
-          </div>
 
           <h1 className="text-5xl md:text-6xl font-black text-white mb-6">
             Weekly Programs at MAH

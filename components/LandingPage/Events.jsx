@@ -66,11 +66,6 @@ const EventsPage = () => {
               Upcoming Events
             </span>
           </h1>
-          <div className="flex items-center justify-center gap-2 mt-4">
-            <div className="w-2 h-2 bg-accent rounded-full animate-pulse"></div>
-            <div className="w-16 h-1 bg-gradient-to-r from-accent to-accent-light rounded-full"></div>
-            <div className="w-2 h-2 bg-accent-light rounded-full animate-pulse" style={{ animationDelay: '0.5s' }}></div>
-          </div>
         </div>
 
         {/* Cards Grid */}
@@ -161,7 +156,7 @@ const EventsPage = () => {
                     {/* CTA Button - Always at bottom */}
                     <div className='w-full flex gap-4'>
                     <Link href={`/pages/events/${event.id}/`} className="mt-auto">
-                      <button className="w-full bg-primary-light text-white font-bold py-3 px-6 rounded-xl hover:shadow-lg hover:shadow-primary/50 transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 group/btn">
+                      <button className="w-full bg-primary outline-2 outline-accent-light text-white font-bold py-3 px-6 rounded-xl hover:shadow-lg hover:shadow-primary/50 transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 group/btn">
                         <span>Learn More</span>
                       </button>
                     </Link>
@@ -190,16 +185,11 @@ const EventsPage = () => {
       <section className="lg:hidden min-h-screen py-20 px-4 bg-gradient-to-b from-primary to-primary-light">
         {/* Mobile Header */}
         <div className="text-center mb-12">
-          <h1 className="text-5xl font-black mb-4">
+          <h1 className="text-4xl font-black mb-4">
             <span className="bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent">
               Upcoming Events
             </span>
           </h1>
-          <div className="flex items-center justify-center gap-2 mt-4">
-            <div className="w-2 h-2 bg-accent rounded-full animate-pulse"></div>
-            <div className="w-16 h-1 bg-gradient-to-r from-accent to-accent-light rounded-full"></div>
-            <div className="w-2 h-2 bg-accent-light rounded-full animate-pulse" style={{ animationDelay: '0.5s' }}></div>
-          </div>
         </div>
 
         {/* Mobile Cards */}
@@ -208,7 +198,7 @@ const EventsPage = () => {
             events.map((event, index) => (
               <div 
                 key={index}
-                className="relative group active:scale-95 transition-transform duration-200"
+                className="relative"
               >
                 {/* Card Number Badge */}
                 <div className="absolute -top-4 -left-4 z-10">
@@ -280,19 +270,35 @@ const EventsPage = () => {
 
                     {/* CTA Button */}
                     <Link href={`/pages/events/${event.id}/`}>
-                      <button className="w-full mt-6 bg-gradient-to-r from-accent to-accent-light text-white font-bold py-3 px-6 rounded-xl hover:shadow-lg hover:shadow-accent/50 transition-all duration-300 flex items-center justify-center gap-2 active:scale-95">
+                      <button
+                        className="
+                          w-full mt-6
+                          bg-primary outline-2 outline-accent-light
+                          text-white font-bold py-3 px-6 rounded-xl
+                          flex items-center justify-center gap-2
+                          transition-all duration-200 ease-out
+                          hover:scale-[1.03]
+                          hover:shadow-xl
+                          active:scale-95
+                        "
+                      >
                         <span>Learn More</span>
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                        </svg>
                       </button>
                     </Link>
                     <Link href={`/pages/events/${event.id}/register`}>
-                      <button className="w-full mt-6 bg-gradient-to-r from-accent to-accent-light text-white font-bold py-3 px-6 rounded-xl hover:shadow-lg hover:shadow-accent/50 transition-all duration-300 flex items-center justify-center gap-2 active:scale-95">
+                      <button
+                        className="
+                          w-full mt-6
+                          bg-gradient-to-r from-accent to-accent-light
+                          text-white font-bold py-3 px-6 rounded-xl
+                          flex items-center justify-center gap-2
+                          transition-all duration-200 ease-out
+                          hover:scale-[1.03]
+                          hover:shadow-xl
+                          active:scale-95
+                        "
+                      >
                         <span>Register Now</span>
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                        </svg>
                       </button>
                     </Link>
                   </div>

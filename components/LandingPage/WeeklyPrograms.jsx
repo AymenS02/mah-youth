@@ -101,7 +101,7 @@ const WeeklyPrograms = () => {
   }, []);
 
   const handleContactUsClick = () => {
-    window.location.href = '/pages/contact';
+    window.location.href = '/pages/programs';
   };
 
   const handleRegistrationClick = (registrationLink) => {
@@ -258,7 +258,7 @@ const WeeklyPrograms = () => {
             onClick={handleContactUsClick} 
             className="px-6 lg:px-8 py-2.5 lg:py-3 bg-gradient-to-r from-accent to-accent-light text-white text-sm lg:text-base font-semibold rounded-lg hover:shadow-lg hover:shadow-accent/50 transform hover:scale-105 transition-all duration-300 active:scale-95"
           >
-            Contact Us
+            Programs & Registration
           </button>
         </div>
       </div>

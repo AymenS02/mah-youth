@@ -108,9 +108,9 @@ const Footer = () => {
   ];
 
   const programLinks = [
-    { name: 'Weekly Programs', href: '/programs', icon: Calendar },
-    { name: 'Youth Leadership', href: '/leadership', icon: Users },
-    { name: 'Volunteer', href: '/volunteer', icon: Users }
+    { name: 'Weekly Programs', href: '/pages/programs', icon: Calendar },
+    { name: 'Youth Leadership', href: '/pages/contact', icon: Users },
+    { name: 'Volunteer', href: '/pages/contact', icon: Users }
   ];
 
   const socialLinks = [
@@ -118,30 +118,11 @@ const Footer = () => {
   ];
 
   const contactInfo = [
-    { icon: Mail, text: 'youth@mah.ca', href: 'mailto:youth@mah.ca' },
+    { icon: Mail, text: 'youth@hamiltonmosque.com', href: 'mailto:youth@hamiltonmosque.com' },
   ];
 
   return (
     <footer ref={footerRef} className="relative overflow-hidden" style={{background: 'var(--gradient-primary)'}}>
-      {/* Animated background pattern */}
-      <div ref={backgroundRef} className="absolute inset-0 opacity-5">
-        <svg width="100%" height="100%" viewBox="0 0 800 600">
-          <defs>
-            <pattern id="footerPattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
-              <circle cx="50" cy="50" r="25" fill="none" stroke="var(--color-accent)" strokeWidth="1" opacity="0.3"/>
-              <circle cx="50" cy="50" r="15" fill="none" stroke="var(--color-accent-light)" strokeWidth="1" opacity="0.4"/>
-              <circle cx="50" cy="50" r="5" fill="var(--color-accent)" opacity="0.2"/>
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#footerPattern)"/>
-        </svg>
-      </div>
-
-      {/* Floating elements */}
-      <div className="absolute top-10 left-10 w-4 h-4 rounded-full animate-pulse" style={{backgroundColor: 'var(--color-accent)', animationDelay: '0s', opacity: 0.6}}></div>
-      <div className="absolute top-20 right-20 w-6 h-6 rounded-full animate-pulse" style={{backgroundColor: 'var(--color-accent-light)', animationDelay: '2s', opacity: 0.4}}></div>
-      <div className="absolute bottom-20 left-1/4 w-3 h-3 rounded-full animate-pulse" style={{backgroundColor: 'var(--color-accent)', animationDelay: '1s', opacity: 0.5}}></div>
-
       {/* Scroll to top button */}
       <button
         onClick={scrollToTop}
@@ -175,14 +156,12 @@ const Footer = () => {
                       key={index}
                       href={social.href}
                       ref={addToSocialRefs}
-                      className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 hover:-translate-y-1 group"
-                      style={{backgroundColor: 'var(--color-accent)', opacity: 0.2}}
+                      className="bg-accent w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 hover:-translate-y-1 group"
                       onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
-                      onMouseLeave={(e) => e.currentTarget.style.opacity = '0.2'}
+                      onMouseLeave={(e) => e.currentTarget.style.opacity = '0.8'}
                     >
                       <IconComponent 
-                        className="w-5 h-5 transition-colors duration-300"
-                        style={{color: 'var(--color-light)'}}
+                        className="bg-accent w-5 h-5 transition-colors duration-300"
                       />
                     </Link>
                   );
@@ -234,14 +213,12 @@ const Footer = () => {
                   <li key={index}>
                     <Link
                       href={program.href}
-                      className="transition-all duration-300 flex items-center group hover:translate-x-2"
-                      style={{color: 'var(--color-light)', opacity: 0.7}}
+                      className="text-white transition-all duration-300 flex items-center group hover:translate-x-2"
                       onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
                       onMouseLeave={(e) => e.currentTarget.style.opacity = '0.7'}
                     >
                       <div 
-                        className="w-8 h-8 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-300"
-                        style={{backgroundColor: 'var(--color-accent)', opacity: 0.2}}
+                        className="bg-accent w-8 h-8 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-300"
                       >
                         <IconComponent className="w-4 h-4 text-white" />
                       </div>
@@ -270,14 +247,12 @@ const Footer = () => {
                   <li key={index}>
                     <Link
                       href={contact.href}
-                      className="transition-all duration-300 flex items-start group"
-                      style={{color: 'var(--color-light)', opacity: 0.7}}
+                      className="text-white transition-all duration-300 flex items-center group"
                       onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
                       onMouseLeave={(e) => e.currentTarget.style.opacity = '0.7'}
                     >
                       <div 
-                        className="w-8 h-8 rounded-lg flex items-center justify-center mr-3 mt-0.5 group-hover:scale-110 transition-transform duration-300"
-                        style={{backgroundColor: 'var(--color-accent)', opacity: 0.2}}
+                        className="bg-accent w-8 h-8 rounded-lg flex items-center justify-center mr-3 mt-0.5 group-hover:scale-110 transition-transform duration-300"
                       >
                         <IconComponent className="w-4 h-4" style={{color: 'var(--color-accent-light)'}} />
                       </div>
@@ -296,14 +271,6 @@ const Footer = () => {
             <div className="text-sm mb-4 md:mb-0 flex items-center" style={{color: 'var(--color-light)', opacity: 0.6}}>
               <span>© 2025 Muslim Association of Hamilton Youth. All rights reserved.</span>           
             </div>
-          </div>
-
-          {/* Decorative bottom line */}
-          <div className="mt-6 flex justify-center">
-            <div 
-              className="w-32 h-1 rounded-full"
-              style={{background: 'linear-gradient(90deg, transparent 0%, var(--color-accent) 20%, var(--color-accent-light) 50%, var(--color-accent) 80%, transparent 100%)'}}
-            ></div>
           </div>
         </div>
       </div>
