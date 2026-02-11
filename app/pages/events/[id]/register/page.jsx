@@ -72,7 +72,7 @@ const EventRegistrationPage = () => {
     });
   };
 
-  const handleQuestionChange = (questionId, value, type) => {
+  const handleQuestionChange = (questionId, value) => {
     setQuestionAnswers(prev => ({
       ...prev,
       [questionId]: value
@@ -431,7 +431,7 @@ const EventRegistrationPage = () => {
                               type="text"
                               required={question.required}
                               value={questionAnswers[question.id] || ''}
-                              onChange={(e) => handleQuestionChange(question.id, e.target.value, question.type)}
+                              onChange={(e) => handleQuestionChange(question.id, e.target.value)}
                               className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all duration-300"
                               placeholder="Your answer"
                             />
@@ -442,7 +442,7 @@ const EventRegistrationPage = () => {
                             <textarea
                               required={question.required}
                               value={questionAnswers[question.id] || ''}
-                              onChange={(e) => handleQuestionChange(question.id, e.target.value, question.type)}
+                              onChange={(e) => handleQuestionChange(question.id, e.target.value)}
                               rows="4"
                               className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all duration-300 resize-none"
                               placeholder="Your answer"
@@ -455,7 +455,7 @@ const EventRegistrationPage = () => {
                               type="email"
                               required={question.required}
                               value={questionAnswers[question.id] || ''}
-                              onChange={(e) => handleQuestionChange(question.id, e.target.value, question.type)}
+                              onChange={(e) => handleQuestionChange(question.id, e.target.value)}
                               className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all duration-300"
                               placeholder="your.email@example.com"
                             />
@@ -467,7 +467,7 @@ const EventRegistrationPage = () => {
                               type="tel"
                               required={question.required}
                               value={questionAnswers[question.id] || ''}
-                              onChange={(e) => handleQuestionChange(question.id, e.target.value, question.type)}
+                              onChange={(e) => handleQuestionChange(question.id, e.target.value)}
                               className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all duration-300"
                               placeholder="(123) 456-7890"
                             />
@@ -479,7 +479,7 @@ const EventRegistrationPage = () => {
                               type="number"
                               required={question.required}
                               value={questionAnswers[question.id] || ''}
-                              onChange={(e) => handleQuestionChange(question.id, e.target.value, question.type)}
+                              onChange={(e) => handleQuestionChange(question.id, e.target.value)}
                               className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all duration-300"
                               placeholder="Enter a number"
                             />
@@ -491,7 +491,7 @@ const EventRegistrationPage = () => {
                               type="date"
                               required={question.required}
                               value={questionAnswers[question.id] || ''}
-                              onChange={(e) => handleQuestionChange(question.id, e.target.value, question.type)}
+                              onChange={(e) => handleQuestionChange(question.id, e.target.value)}
                               className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all duration-300"
                             />
                           )}
@@ -501,10 +501,10 @@ const EventRegistrationPage = () => {
                             <select
                               required={question.required}
                               value={questionAnswers[question.id] || ''}
-                              onChange={(e) => handleQuestionChange(question.id, e.target.value, question.type)}
+                              onChange={(e) => handleQuestionChange(question.id, e.target.value)}
                               className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all duration-300"
                             >
-                              <option value="">Select an option</option>
+                              <option value="" disabled={question.required}>Select an option</option>
                               {question.options?.map((option) => (
                                 <option key={option.id} value={option.text}>
                                   {option.text}
@@ -524,7 +524,7 @@ const EventRegistrationPage = () => {
                                     required={question.required}
                                     value={option.text}
                                     checked={questionAnswers[question.id] === option.text}
-                                    onChange={(e) => handleQuestionChange(question.id, e.target.value, question.type)}
+                                    onChange={(e) => handleQuestionChange(question.id, e.target.value)}
                                     className="w-5 h-5 text-accent border-gray-600 focus:ring-accent focus:ring-offset-gray-900"
                                   />
                                   <span className="text-gray-300 group-hover:text-white transition">{option.text}</span>
@@ -550,7 +550,7 @@ const EventRegistrationPage = () => {
                                         const updated = e.target.checked
                                           ? [...current, option.text]
                                           : current.filter(v => v !== option.text);
-                                        handleQuestionChange(question.id, updated, question.type);
+                                        handleQuestionChange(question.id, updated);
                                       }}
                                       className="w-5 h-5 rounded text-accent border-gray-600 focus:ring-accent focus:ring-offset-gray-900"
                                     />
