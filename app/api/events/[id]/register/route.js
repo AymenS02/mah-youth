@@ -124,7 +124,7 @@ export async function POST(request, { params }) {
       fullName,
       email: email.toLowerCase(),
       phone,
-      age,
+      age: ageNum,
       gender,
       dietaryRestrictions,
       emergencyContact,
