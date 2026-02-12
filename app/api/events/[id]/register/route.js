@@ -16,6 +16,8 @@ export async function POST(request, { params }) {
       fullName,
       email,
       phone,
+      age,
+      gender,
       dietaryRestrictions,
       emergencyContact,
       emergencyPhone,
@@ -24,7 +26,7 @@ export async function POST(request, { params }) {
     } = body;
 
     // Validate required fields
-    if (!fullName || !email || !phone) {
+    if (!fullName || !email || !phone || !age || !gender) {
       return Response.json(
         { error: "Please provide all required fields" },
         { status: 400 }
@@ -113,6 +115,8 @@ export async function POST(request, { params }) {
       fullName,
       email: email.toLowerCase(),
       phone,
+      age,
+      gender,
       dietaryRestrictions,
       emergencyContact,
       emergencyPhone,
