@@ -381,16 +381,21 @@ const EventRegistrationPage = () => {
                   <label className="block text-gray-300 font-medium mb-2" htmlFor="gender">
                     Gender <span className="text-red-400">*</span>
                   </label>
-                  <input
-                    type="text"
+                  <select
                     id="gender"
                     name="gender"
                     value={formData.gender}
                     onChange={handleChange}
                     required
                     className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all duration-300"
-                    placeholder="Enter your gender"
-                  />
+                  >
+                    <option value="" disabled>Select your gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Non-binary">Non-binary</option>
+                    <option value="Prefer not to say">Prefer not to say</option>
+                    <option value="Other">Other</option>
+                  </select>
                 </div>
 
                 {/* Dietary Restrictions */}
