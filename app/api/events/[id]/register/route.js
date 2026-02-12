@@ -33,6 +33,15 @@ export async function POST(request, { params }) {
       );
     }
 
+    // Validate age range
+    const ageNum = parseInt(age);
+    if (isNaN(ageNum) || ageNum < 1 || ageNum > 120) {
+      return Response.json(
+        { error: "Please provide a valid age between 1 and 120" },
+        { status: 400 }
+      );
+    }
+
     // Check if event exists
     const event = await Event.findById(id);
     if (!event) {
