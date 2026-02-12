@@ -25,6 +25,8 @@ const EventRegistrationPage = () => {
     fullName: '',
     email: '',
     phone: '',
+    age: '',
+    gender: '',
     dietaryRestrictions: '',
     emergencyContact: '',
     emergencyPhone: '',
@@ -106,6 +108,8 @@ const EventRegistrationPage = () => {
           fullName: '',
           email: '',
           phone: '',
+          age: '',
+          gender: '',
           dietaryRestrictions: '',
           emergencyContact: '',
           emergencyPhone: '',
@@ -351,6 +355,47 @@ const EventRegistrationPage = () => {
                       placeholder="(123) 456-7890"
                     />
                   </div>
+                </div>
+
+                {/* Age */}
+                <div>
+                  <label className="block text-gray-300 font-medium mb-2" htmlFor="age">
+                    Age <span className="text-red-400">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    id="age"
+                    name="age"
+                    value={formData.age}
+                    onChange={handleChange}
+                    required
+                    min="1"
+                    max="120"
+                    className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all duration-300"
+                    placeholder="Enter your age"
+                  />
+                </div>
+
+                {/* Gender */}
+                <div>
+                  <label className="block text-gray-300 font-medium mb-2" htmlFor="gender">
+                    Gender <span className="text-red-400">*</span>
+                  </label>
+                  <select
+                    id="gender"
+                    name="gender"
+                    value={formData.gender}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all duration-300"
+                  >
+                    <option value="" disabled>Select your gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Non-binary">Non-binary</option>
+                    <option value="Prefer not to say">Prefer not to say</option>
+                    <option value="Other">Other</option>
+                  </select>
                 </div>
 
                 {/* Dietary Restrictions */}
