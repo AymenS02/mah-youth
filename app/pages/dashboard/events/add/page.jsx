@@ -23,6 +23,7 @@ export default function AddEvent() {
     capacity: '',
     imageUrl: '',
     registrationLink: '',
+    registrationDeadline: '',
     isOnline: false,
     speakers: '',
     price: '0',
@@ -53,6 +54,18 @@ export default function AddEvent() {
     setSuccess('');
 
     try {
+      // Validate registration deadline is before event start
+      if (formData.registrationDeadline && formData.date) {
+        const deadline = new Date(formData.registrationDeadline);
+        const eventDate = new Date(formData.date);
+        
+        if (deadline >= eventDate) {
+          setError('Registration deadline must be before the event date.');
+          setIsLoading(false);
+          return;
+        }
+      }
+
       const userData = localStorage.getItem('user');
       const user = userData ? JSON.parse(userData) : null;
 
@@ -75,6 +88,7 @@ export default function AddEvent() {
         capacity: formData.capacity ? parseInt(formData.capacity) : 0,
         imageUrl: formData.imageUrl,
         registrationLink: formData.registrationLink,
+        registrationDeadline: formData.registrationDeadline || null,
         isOnline: formData.isOnline,
         speakers: speakersArray,
         price: parseFloat(formData.price) || 0,
@@ -301,6 +315,23 @@ export default function AddEvent() {
                         className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all disabled:opacity-50"
                       />
                     </div>
+                  </div>
+
+                  {/* Registration Deadline */}
+                  <div>
+                    <label htmlFor="registrationDeadline" className="block text-sm font-medium text-gray-300 mb-2">
+                      Registration Deadline
+                    </label>
+                    <input
+                      type="datetime-local"
+                      id="registrationDeadline"
+                      name="registrationDeadline"
+                      disabled={isLoading}
+                      value={formData.registrationDeadline}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 text-white rounded-xl focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all disabled:opacity-50"
+                    />
+                    <p className="text-xs text-gray-400 mt-2">Optional: Set a deadline for when registrations close (before the event starts)</p>
                   </div>
 
                   {/* Location & Online Checkbox */}

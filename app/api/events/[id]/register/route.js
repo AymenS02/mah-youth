@@ -3,6 +3,7 @@
 import { connectDB } from '../../../../../lib/config/db';
 import Event from '../../../../../lib/models/EventModel';
 import Registration from "../../../../../lib/models/RegistrationModel";
+import { isRegistrationDeadlinePassed } from '../../../../../lib/utils/eventUtils';
 
 export async function POST(request, { params }) {
   try {
@@ -43,6 +44,14 @@ export async function POST(request, { params }) {
     if (event.capacity > 0 && event.registeredAttendees >= event.capacity) {
       return Response.json(
         { error: "Event is full" },
+        { status: 400 }
+      );
+    }
+    
+    // Check if registration deadline has passed
+    if (isRegistrationDeadlinePassed(event.registrationDeadline)) {
+      return Response.json(
+        { error: "Registration deadline has passed" },
         { status: 400 }
       );
     }

@@ -6,6 +6,7 @@ import { Calendar, MapPin, Clock, User, Mail, Phone, ArrowLeft, CheckCircle, Ale
 import Header from "/components/header/Header";
 import Footer from "/components/footer/Footer";
 import { useRouter, useParams } from 'next/navigation';
+import { isRegistrationDeadlinePassed } from '/lib/utils/eventUtils';
 
 const EventRegistrationPage = () => {
   const [event, setEvent] = useState(null);
@@ -173,8 +174,11 @@ const EventRegistrationPage = () => {
   const hasUnlimitedCapacity = event.capacity === 0;
   const spotsRemaining = hasUnlimitedCapacity ? null : event.capacity - event.registeredAttendees;
   const isFull = !hasUnlimitedCapacity && spotsRemaining <= 0;
+  
+  // Check if registration deadline has passed
+  const isDeadlinePassed = isRegistrationDeadlinePassed(event.registrationDeadline);
 
-  if (isFull) {
+  if (isFull || isDeadlinePassed) {
     return (
       <>
         <Header />
@@ -182,8 +186,14 @@ const EventRegistrationPage = () => {
           <div className="text-center max-w-md">
             <div className="bg-gradient-to-br from-gray-900 to-black rounded-2xl p-12 border-2 border-gray-700">
               <AlertCircle className="w-20 h-20 text-red-400 mx-auto mb-6" />
-              <h2 className="text-3xl font-bold text-white mb-4">Event Full</h2>
-              <p className="text-gray-300 mb-6">Sorry, this event has reached its capacity.</p>
+              <h2 className="text-3xl font-bold text-white mb-4">
+                {isDeadlinePassed ? 'Registration Closed' : 'Event Full'}
+              </h2>
+              <p className="text-gray-300 mb-6">
+                {isDeadlinePassed 
+                  ? 'Sorry, the registration deadline for this event has passed.' 
+                  : 'Sorry, this event has reached its capacity.'}
+              </p>
               <button
                 onClick={handleBack}
                 className="bg-accent text-white px-6 py-3 rounded-xl hover:bg-accent-light transition-colors duration-300"

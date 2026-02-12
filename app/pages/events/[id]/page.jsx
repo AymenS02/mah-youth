@@ -6,6 +6,7 @@ import { Calendar, MapPin, Clock, Users, DollarSign, Video, User, ArrowLeft, Che
 import Header from "/components/header/Header";
 import Footer from "/components/footer/Footer";
 import { useRouter, useParams } from 'next/navigation';
+import { isRegistrationDeadlinePassed } from '/lib/utils/eventUtils';
 
 const EventDetailsPage = () => {
   const [event, setEvent] = useState(null);
@@ -113,6 +114,9 @@ const EventDetailsPage = () => {
   const isUnlimitedCapacity = event.capacity === 0;
   const spotsRemaining = isUnlimitedCapacity ? null : event.capacity - (event.registeredAttendees || 0);
   const isFull = !isUnlimitedCapacity && spotsRemaining <= 0;
+  
+  // Check if registration deadline has passed
+  const isDeadlinePassed = isRegistrationDeadlinePassed(event.registrationDeadline);
 
   return (
     <>
@@ -343,9 +347,9 @@ const EventDetailsPage = () => {
                 {/* Register Button */}
                 <button
                   onClick={handleRegister}
-                  disabled={isFull}
+                  disabled={isFull || isDeadlinePassed}
                   className={`w-full ${
-                    isFull 
+                    (isFull || isDeadlinePassed)
                       ? 'bg-gray-700 cursor-not-allowed' 
                       : 'bg-gradient-to-r from-accent to-accent-light hover:shadow-lg hover:shadow-accent/50'
                   } text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 mb-4`}
@@ -353,6 +357,10 @@ const EventDetailsPage = () => {
                   {isFull ? (
                     <>
                       <span>Event Full</span>
+                    </>
+                  ) : isDeadlinePassed ? (
+                    <>
+                      <span>Registration Deadline Passed</span>
                     </>
                   ) : (
                     <>
