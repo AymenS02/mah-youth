@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from "/components/header/Header";
-import { Plus, Edit, Calendar, LogOut, Activity, ArrowRight, Users, Eye, Repeat } from 'lucide-react';
+import { Plus, Edit, Calendar, LogOut, Activity, ArrowRight, Users, Eye, Repeat, BarChart3 } from 'lucide-react';
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
@@ -175,7 +175,7 @@ export default function Dashboard() {
             Quick Actions
           </h2>
           
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-8">
             {/* Events Management Card */}
             <div className="bg-gradient-to-br from-gray-900 to-black rounded-2xl overflow-hidden border-2 border-gray-700/50 hover:border-accent/50 transition-all duration-500 group">
               {/* Header */}
@@ -338,6 +338,58 @@ export default function Dashboard() {
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-gray-400">Active programs</span>
                   <span className="text-emerald-400 font-medium">{stats.totalPrograms}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Analytics Dashboard Card */}
+            <div className="bg-gradient-to-br from-gray-900 to-black rounded-2xl overflow-hidden border-2 border-gray-700/50 hover:border-blue-500/50 transition-all duration-500 group">
+              {/* Header */}
+              <div className="bg-gradient-to-r from-blue-500 to-blue-600 p-6">
+                <div className="flex items-center text-white">
+                  <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm mr-4">
+                    <BarChart3 className="w-8 h-8" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold">Analytics</h3>
+                    <p className="text-white/80">Data insights & trends</p>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Content */}
+              <div className="p-6">
+                <p className="text-gray-300 mb-6 leading-relaxed">
+                  View comprehensive analytics with charts, graphs, and insights. Track demographics, trends, and event performance.
+                </p>
+                
+                <div className="space-y-3">
+                  <button
+                    onClick={() => {
+                      window.scrollTo(0, 0);
+                      router.push('/pages/dashboard/analytics');
+                    }}
+                    className="w-full flex items-center justify-center px-6 py-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:shadow-lg hover:shadow-blue-500/50 transition-all duration-300 font-bold group/btn"
+                  >
+                    <BarChart3 className="w-5 h-5 mr-2" />
+                    View Analytics Dashboard
+                    <ArrowRight className="w-5 h-5 ml-2 transition-transform duration-300 group-hover/btn:translate-x-1" />
+                  </button>
+                  
+                  <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-400 text-sm">Features</span>
+                      <span className="text-blue-400 font-bold text-lg">Charts & Filters</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Footer Stats */}
+              <div className="bg-gray-800/30 px-6 py-4 border-t border-gray-700">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-400">Real-time data</span>
+                  <span className="text-blue-400 font-medium">Live</span>
                 </div>
               </div>
             </div>
