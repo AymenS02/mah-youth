@@ -66,13 +66,13 @@ export async function GET(request) {
     
     // Calculate average attendance (registrations per event)
     const averageAttendance = totalEvents > 0 
-      ? (totalRegistrations / totalEvents).toFixed(2) 
+      ? parseFloat((totalRegistrations / totalEvents).toFixed(2))
       : 0;
 
     // Calculate capacity utilization
     const totalCapacity = events.reduce((sum, e) => sum + (e.capacity || 0), 0);
     const capacityUtilization = totalCapacity > 0 
-      ? ((totalRegistrations / totalCapacity) * 100).toFixed(2) 
+      ? parseFloat(((totalRegistrations / totalCapacity) * 100).toFixed(2))
       : 0;
 
     // Gender distribution
@@ -162,7 +162,7 @@ export async function GET(request) {
         capacity: item.event.capacity || 0,
         category: item.event.category,
         utilizationPercentage: item.event.capacity > 0 
-          ? ((item.count / item.event.capacity) * 100).toFixed(2)
+          ? parseFloat(((item.count / item.event.capacity) * 100).toFixed(2))
           : 0
       }));
 
