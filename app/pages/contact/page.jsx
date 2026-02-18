@@ -6,7 +6,6 @@ import Header from "/components/header/Header";
 import Footer from '../../../components/footer/Footer';
 import Swal from 'sweetalert2';
 
-const web3formsKey = '4811c4ac-102d-47ca-98eb-fb475f877a96';
 const twelveHours = 12 * 60 * 60 * 1000;
 
 const ContactPage = () => {
@@ -69,7 +68,10 @@ const ContactPage = () => {
       const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({ access_key: web3formsKey, ...formData })
+        body: JSON.stringify({ 
+          access_key: process.env.NEXT_PUBLIC_WEB3FORMS_KEY, 
+          ...formData 
+        })
       });
 
       const result = await response.json();
