@@ -16,6 +16,10 @@ export default function Analytics() {
   const [loading, setLoading] = useState(true);
   const [analytics, setAnalytics] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [eventAnalytics, setEventAnalytics] = useState(null);
+  const [loadingEventAnalytics, setLoadingEventAnalytics] = useState(false);
+  const [allEvents, setAllEvents] = useState([]);
   const router = useRouter();
 
   // Filter states
@@ -39,6 +43,7 @@ export default function Analytics() {
     
     setUser(JSON.parse(userData));
     fetchAnalytics();
+    fetchAllEvents();
   }, [router]);
 
   const fetchAnalytics = async (customFilters = filters) => {
@@ -79,6 +84,44 @@ export default function Analytics() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const fetchAllEvents = async () => {
+    try {
+      const res = await fetch('/api/events');
+      const data = await res.json();
+      if (data.success) {
+        setAllEvents(data.events || []);
+      }
+    } catch (err) {
+      console.error("Error fetching events:", err);
+    }
+  };
+
+  const fetchEventAnalytics = async (eventId) => {
+    setLoadingEventAnalytics(true);
+    try {
+      const res = await fetch(`/api/analytics/event?eventId=${eventId}`);
+      const data = await res.json();
+
+      if (data.success) {
+        setEventAnalytics(data.eventAnalytics);
+      }
+    } catch (err) {
+      console.error("Error fetching event analytics:", err);
+    } finally {
+      setLoadingEventAnalytics(false);
+    }
+  };
+
+  const handleEventClick = (event) => {
+    setSelectedEvent(event);
+    fetchEventAnalytics(event._id);
+  };
+
+  const handleBackToOverview = () => {
+    setSelectedEvent(null);
+    setEventAnalytics(null);
   };
 
   const handleFilterChange = (key, value) => {
@@ -478,11 +521,284 @@ export default function Analytics() {
               </table>
             </div>
           </div>
+
+          {/* Per-Event Analytics Section */}
+          <div className="mt-12 bg-gradient-to-br from-gray-900 to-black rounded-2xl p-8 border-2 border-gray-700/50">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-3 bg-accent/10 rounded-xl">
+                <Calendar className="w-8 h-8 text-accent" />
+              </div>
+              <div>
+                <h3 className="text-2xl font-black text-white">Event-Specific Analytics</h3>
+                <p className="text-gray-400">Click on any event to view detailed analytics</p>
+              </div>
+            </div>
+
+            {selectedEvent ? (
+              <EventAnalyticsDetail 
+                event={selectedEvent}
+                eventAnalytics={eventAnalytics}
+                loading={loadingEventAnalytics}
+                onBack={handleBackToOverview}
+                COLORS={COLORS}
+              />
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {allEvents.length > 0 ? (
+                  allEvents.map((event) => (
+                    <button
+                      key={event._id}
+                      onClick={() => handleEventClick(event)}
+                      className="bg-gray-800 hover:bg-gray-700 border-2 border-gray-700 hover:border-accent transition-all duration-300 rounded-xl p-6 text-left group"
+                    >
+                      <div className="flex items-start justify-between mb-3">
+                        <span className="px-3 py-1 bg-accent/20 text-accent rounded-full text-xs font-medium">
+                          {event.category}
+                        </span>
+                        <Activity className="w-5 h-5 text-gray-500 group-hover:text-accent transition-colors" />
+                      </div>
+                      <h4 className="text-lg font-bold text-white mb-2 group-hover:text-accent transition-colors">
+                        {event.title}
+                      </h4>
+                      <div className="flex items-center gap-2 text-sm text-gray-400 mb-2">
+                        <Calendar className="w-4 h-4" />
+                        <span>{new Date(event.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                      </div>
+                      <div className="flex items-center justify-between pt-3 border-t border-gray-700">
+                        <div className="text-sm">
+                          <span className="text-gray-400">Registrations: </span>
+                          <span className="text-emerald-400 font-bold">{event.registeredAttendees || 0}</span>
+                        </div>
+                        <div className="text-sm">
+                          <span className="text-gray-400">Capacity: </span>
+                          <span className="text-white font-bold">{event.capacity || 0}</span>
+                        </div>
+                      </div>
+                    </button>
+                  ))
+                ) : (
+                  <div className="col-span-full py-12 text-center text-gray-400">
+                    No events found
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>
   );
 }
+
+// Event Analytics Detail Component
+function EventAnalyticsDetail({ event, eventAnalytics, loading, onBack, COLORS }) {
+  if (loading) {
+    return (
+      <div className="text-center py-12">
+        <div className="w-16 h-16 border-4 border-accent border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+        <p className="text-white text-lg font-medium">Loading event analytics...</p>
+      </div>
+    );
+  }
+
+  if (!eventAnalytics) {
+    return (
+      <div className="text-center py-12 text-gray-400">
+        Failed to load event analytics
+      </div>
+    );
+  }
+
+  const { summary, distributions, timeline } = eventAnalytics;
+
+  return (
+    <div>
+      {/* Back Button */}
+      <button
+        onClick={onBack}
+        className="inline-flex items-center gap-2 text-accent hover:text-accent-light transition-colors mb-6"
+      >
+        <ArrowLeft className="w-5 h-5" />
+        <span className="font-medium">Back to All Events</span>
+      </button>
+
+      {/* Event Header */}
+      <div className="bg-gradient-to-r from-accent/10 to-accent-light/10 rounded-xl p-6 mb-8 border border-accent/30">
+        <div className="flex items-start justify-between">
+          <div className="flex-1">
+            <h3 className="text-3xl font-black text-white mb-2">{eventAnalytics.event.title}</h3>
+            <p className="text-gray-300 mb-4">{eventAnalytics.event.description}</p>
+            <div className="flex flex-wrap gap-4 text-sm">
+              <div className="flex items-center gap-2">
+                <Calendar className="w-4 h-4 text-accent" />
+                <span className="text-gray-300">
+                  {new Date(eventAnalytics.event.date).toLocaleDateString('en-US', { 
+                    weekday: 'long',
+                    month: 'long', 
+                    day: 'numeric', 
+                    year: 'numeric' 
+                  })}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-gray-300">
+                  {eventAnalytics.event.startTime} - {eventAnalytics.event.endTime}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="px-3 py-1 bg-accent/20 text-accent rounded-full font-medium">
+                  {eventAnalytics.event.category}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Key Metrics */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl p-5 border-2 border-emerald-500/50">
+          <div className="flex items-center gap-2 mb-2">
+            <UserCheck className="w-5 h-5 text-white" />
+            <p className="text-white/80 text-sm font-medium uppercase">Total Registrations</p>
+          </div>
+          <p className="text-3xl font-black text-white">{summary.totalRegistrations}</p>
+        </div>
+
+        <div className="bg-gradient-to-br from-accent to-accent-light rounded-xl p-5 border-2 border-accent/50">
+          <div className="flex items-center gap-2 mb-2">
+            <Users className="w-5 h-5 text-white" />
+            <p className="text-white/80 text-sm font-medium uppercase">Confirmed</p>
+          </div>
+          <p className="text-3xl font-black text-white">{summary.confirmedRegistrations}</p>
+        </div>
+
+        <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl p-5 border-2 border-orange-500/50">
+          <div className="flex items-center gap-2 mb-2">
+            <Target className="w-5 h-5 text-white" />
+            <p className="text-white/80 text-sm font-medium uppercase">Turnout Rate</p>
+          </div>
+          <p className="text-3xl font-black text-white">{summary.turnoutRate}%</p>
+        </div>
+
+        <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-5 border-2 border-purple-500/50">
+          <div className="flex items-center gap-2 mb-2">
+            <Activity className="w-5 h-5 text-white" />
+            <p className="text-white/80 text-sm font-medium uppercase">Spots Remaining</p>
+          </div>
+          <p className="text-3xl font-black text-white">{summary.spotsRemaining}</p>
+        </div>
+      </div>
+
+      {/* Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        {/* Gender Distribution */}
+        <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
+          <h4 className="text-xl font-bold text-white mb-4">Gender Distribution</h4>
+          <ResponsiveContainer width="100%" height={250}>
+            <RePieChart>
+              <Pie
+                data={Object.entries(distributions.gender).map(([name, value]) => ({ name, value }))}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                outerRadius={80}
+                fill="#8884d8"
+                dataKey="value"
+              >
+                {Object.entries(distributions.gender).map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip
+                contentStyle={{ backgroundColor: '#1F2937', border: '1px solid #374151', borderRadius: '8px' }}
+              />
+            </RePieChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Age Distribution */}
+        <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
+          <h4 className="text-xl font-bold text-white mb-4">Age Distribution</h4>
+          <ResponsiveContainer width="100%" height={250}>
+            <BarChart data={Object.entries(distributions.age).map(([range, count]) => ({ range, count }))}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+              <XAxis dataKey="range" stroke="#9CA3AF" angle={-45} textAnchor="end" height={80} />
+              <YAxis stroke="#9CA3AF" />
+              <Tooltip
+                contentStyle={{ backgroundColor: '#1F2937', border: '1px solid #374151', borderRadius: '8px' }}
+              />
+              <Bar dataKey="count" fill="#7C4DFF" radius={[8, 8, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Registration Timeline */}
+        <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
+          <h4 className="text-xl font-bold text-white mb-4">Registration Timeline</h4>
+          <ResponsiveContainer width="100%" height={250}>
+            <LineChart data={timeline}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+              <XAxis dataKey="date" stroke="#9CA3AF" angle={-45} textAnchor="end" height={80} />
+              <YAxis stroke="#9CA3AF" />
+              <Tooltip
+                contentStyle={{ backgroundColor: '#1F2937', border: '1px solid #374151', borderRadius: '8px' }}
+              />
+              <Line type="monotone" dataKey="count" stroke="#00E5FF" strokeWidth={3} dot={{ fill: '#00E5FF', r: 5 }} />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Status Distribution */}
+        <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
+          <h4 className="text-xl font-bold text-white mb-4">Registration Status</h4>
+          <ResponsiveContainer width="100%" height={250}>
+            <RePieChart>
+              <Pie
+                data={Object.entries(distributions.status).map(([name, value]) => ({ name, value }))}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                label={({ name, percent, value }) => value > 0 ? `${name}: ${value}` : ''}
+                outerRadius={80}
+                fill="#8884d8"
+                dataKey="value"
+              >
+                <Cell fill="#00E676" /> {/* confirmed */}
+                <Cell fill="#FFAB00" /> {/* waitlist */}
+                <Cell fill="#FF4081" /> {/* cancelled */}
+              </Pie>
+              <Tooltip
+                contentStyle={{ backgroundColor: '#1F2937', border: '1px solid #374151', borderRadius: '8px' }}
+              />
+            </RePieChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* Additional Insights */}
+      <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
+        <h4 className="text-xl font-bold text-white mb-4">Additional Insights</h4>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div>
+            <p className="text-gray-400 text-sm mb-1">Average Age</p>
+            <p className="text-2xl font-bold text-white">{summary.averageAge} years</p>
+          </div>
+          <div>
+            <p className="text-gray-400 text-sm mb-1">Capacity Utilization</p>
+            <p className="text-2xl font-bold text-white">
+              {eventAnalytics.event.capacity > 0 
+                ? `${((summary.confirmedRegistrations / eventAnalytics.event.capacity) * 100).toFixed(1)}%`
+                : 'N/A'}
+            </p>
+          </div>
+          <div>
+            <p className="text-gray-400 text-sm mb-1">Dietary Restrictions</p>
+            <p className="text-2xl font-bold text-white">{eventAnalytics.insights.dietaryRestrictionsCount}</p>
+          </div>
+        </div>
+      </div>
 
 // Reusable Metric Card Component
 function MetricCard({ icon, title, value, subtitle, color }) {
