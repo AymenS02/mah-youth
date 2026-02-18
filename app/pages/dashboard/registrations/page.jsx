@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from "/components/header/Header";
-import { Users, Calendar, Mail, Phone, Search, Filter, Download, ArrowLeft, Trash2 } from 'lucide-react';
+import { Users, Calendar, Mail, Phone, Search, Filter, Download, ArrowLeft, Trash2, X, ChevronDown, ChevronUp } from 'lucide-react';
 
 export default function RegistrationsPage() {
   const [registrations, setRegistrations] = useState([]);
@@ -13,6 +13,20 @@ export default function RegistrationsPage() {
   const [selectedEvent, setSelectedEvent] = useState('all');
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const router = useRouter();
+  
+  // Advanced filters
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [ageMin, setAgeMin] = useState('');
+  const [ageMax, setAgeMax] = useState('');
+  const [selectedGender, setSelectedGender] = useState('all');
+  const [selectedStatus, setSelectedStatus] = useState('all');
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
+  const [eventQuestionFilters, setEventQuestionFilters] = useState({});
+  
+  // User detail modal
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [showUserModal, setShowUserModal] = useState(false);
 
   useEffect(() => {
     const userData = localStorage.getItem('user');
@@ -72,9 +86,56 @@ export default function RegistrationsPage() {
     if (selectedEvent !== 'all') {
       filtered = filtered.filter(reg => reg.event._id === selectedEvent);
     }
+    
+    // Advanced filters: Age range
+    if (ageMin) {
+      filtered = filtered.filter(reg => reg.age >= parseInt(ageMin));
+    }
+    if (ageMax) {
+      filtered = filtered.filter(reg => reg.age <= parseInt(ageMax));
+    }
+    
+    // Advanced filters: Gender
+    if (selectedGender !== 'all') {
+      filtered = filtered.filter(reg => reg.gender === selectedGender);
+    }
+    
+    // Advanced filters: Status
+    if (selectedStatus !== 'all') {
+      filtered = filtered.filter(reg => reg.status === selectedStatus);
+    }
+    
+    // Advanced filters: Date range
+    if (dateFrom) {
+      filtered = filtered.filter(reg => new Date(reg.registeredAt) >= new Date(dateFrom));
+    }
+    if (dateTo) {
+      // Set to end of day to include all registrations on the selected date
+      const endOfDay = new Date(dateTo);
+      endOfDay.setHours(23, 59, 59, 999);
+      filtered = filtered.filter(reg => new Date(reg.registeredAt) <= endOfDay);
+    }
+    
+    // Advanced filters: Event-specific question filters
+    Object.entries(eventQuestionFilters).forEach(([questionId, filterValue]) => {
+      if (filterValue && filterValue !== '') {
+        filtered = filtered.filter(reg => {
+          const questionAnswer = reg.questionAnswers?.find(qa => qa.questionId === questionId);
+          if (!questionAnswer) return false;
+          
+          // Handle different answer types
+          if (Array.isArray(questionAnswer.answer)) {
+            return questionAnswer.answer.some(a => 
+              a.toLowerCase().includes(filterValue.toLowerCase())
+            );
+          }
+          return String(questionAnswer.answer).toLowerCase().includes(filterValue.toLowerCase());
+        });
+      }
+    });
 
     setFilteredRegistrations(filtered);
-  }, [searchTerm, selectedEvent, registrations]);
+  }, [searchTerm, selectedEvent, registrations, ageMin, ageMax, selectedGender, selectedStatus, dateFrom, dateTo, eventQuestionFilters]);
 
   const exportToCSV = () => {
     const headers = ['Event', 'Name', 'Email', 'Phone', 'Date Registered', 'Dietary Restrictions', 'Emergency Contact', 'Emergency Phone', 'Additional Notes', 'Status'];
@@ -104,6 +165,47 @@ export default function RegistrationsPage() {
     a.click();
     window.URL.revokeObjectURL(url);
   };
+  
+  const clearAllFilters = () => {
+    setSearchTerm('');
+    setSelectedEvent('all');
+    setAgeMin('');
+    setAgeMax('');
+    setSelectedGender('all');
+    setSelectedStatus('all');
+    setDateFrom('');
+    setDateTo('');
+    setEventQuestionFilters({});
+  };
+  
+  const hasActiveFilters = () => {
+    return searchTerm || selectedEvent !== 'all' || ageMin || ageMax || 
+           selectedGender !== 'all' || selectedStatus !== 'all' || 
+           dateFrom || dateTo || Object.keys(eventQuestionFilters).length > 0;
+  };
+  
+  const getSelectedEventQuestions = () => {
+    if (selectedEvent === 'all') return [];
+    const event = events.find(e => e._id === selectedEvent);
+    return event?.registrationQuestions || [];
+  };
+  
+  const handleEventQuestionFilterChange = (questionId, value) => {
+    setEventQuestionFilters(prev => {
+      const updated = { ...prev };
+      if (value === '') {
+        delete updated[questionId];
+      } else {
+        updated[questionId] = value;
+      }
+      return updated;
+    });
+  };
+  
+  const openUserModal = (registration) => {
+    setSelectedUser(registration);
+    setShowUserModal(true);
+  };
 
   const handleDelete = async (registrationId) => {
     if (!confirm('Are you sure you want to delete this registration? This action cannot be undone.')) {
@@ -120,6 +222,11 @@ export default function RegistrationsPage() {
         setRegistrations(prev => prev.filter(reg => reg._id !== registrationId));
         setFilteredRegistrations(prev => prev.filter(reg => reg._id !== registrationId));
         alert('Registration deleted successfully');
+        // Close modal if open
+        if (showUserModal && selectedUser?._id === registrationId) {
+          setShowUserModal(false);
+          setSelectedUser(null);
+        }
       } else {
         const data = await response.json();
         alert(`Failed to delete registration: ${data.error}`);
@@ -212,22 +319,152 @@ export default function RegistrationsPage() {
                   ))}
                 </select>
               </div>
+              
+              {/* Advanced Filters Toggle */}
+              <button
+                onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+                className="bg-gray-800/50 border border-gray-700 text-white px-6 py-4 rounded-xl hover:bg-gray-700/50 transition-all duration-300 flex items-center gap-2 justify-center"
+              >
+                <Filter className="w-5 h-5" />
+                Advanced Filters
+                {showAdvancedFilters ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+              </button>
             </div>
+            
+            {/* Advanced Filters Panel */}
+            {showAdvancedFilters && (
+              <div className="mt-6 pt-6 border-t border-gray-700">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {/* Age Range */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Age Range</label>
+                    <div className="flex gap-2">
+                      <input
+                        type="number"
+                        placeholder="Min"
+                        value={ageMin}
+                        onChange={(e) => setAgeMin(e.target.value)}
+                        className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent outline-none"
+                        min="0"
+                        max={ageMax || "120"}
+                      />
+                      <input
+                        type="number"
+                        placeholder="Max"
+                        value={ageMax}
+                        onChange={(e) => setAgeMax(e.target.value)}
+                        className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent outline-none"
+                        min={ageMin || "0"}
+                        max="120"
+                      />
+                    </div>
+                  </div>
+                  
+                  {/* Gender */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Gender</label>
+                    <select
+                      value={selectedGender}
+                      onChange={(e) => setSelectedGender(e.target.value)}
+                      className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 text-white rounded-lg focus:ring-2 focus:ring-accent focus:border-accent outline-none appearance-none cursor-pointer"
+                    >
+                      <option value="all">All Genders</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Non-binary">Non-binary</option>
+                      <option value="Prefer not to say">Prefer not to say</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                  
+                  {/* Status */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Status</label>
+                    <select
+                      value={selectedStatus}
+                      onChange={(e) => setSelectedStatus(e.target.value)}
+                      className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 text-white rounded-lg focus:ring-2 focus:ring-accent focus:border-accent outline-none appearance-none cursor-pointer"
+                    >
+                      <option value="all">All Statuses</option>
+                      <option value="confirmed">Confirmed</option>
+                      <option value="cancelled">Cancelled</option>
+                      <option value="waitlist">Waitlist</option>
+                    </select>
+                  </div>
+                  
+                  {/* Registration Date Range */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Registration Date</label>
+                    <div className="flex gap-2">
+                      <input
+                        type="date"
+                        value={dateFrom}
+                        onChange={(e) => setDateFrom(e.target.value)}
+                        className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 text-white rounded-lg focus:ring-2 focus:ring-accent focus:border-accent outline-none"
+                        placeholder="From"
+                      />
+                      <input
+                        type="date"
+                        value={dateTo}
+                        onChange={(e) => setDateTo(e.target.value)}
+                        className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 text-white rounded-lg focus:ring-2 focus:ring-accent focus:border-accent outline-none"
+                        placeholder="To"
+                      />
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Event-specific Question Filters */}
+                {selectedEvent !== 'all' && getSelectedEventQuestions().length > 0 && (
+                  <div className="mt-6 pt-6 border-t border-gray-700">
+                    <h3 className="text-lg font-semibold text-white mb-4">Event-Specific Questions</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {getSelectedEventQuestions().map(question => (
+                        <div key={question.id}>
+                          <label className="block text-sm font-medium text-gray-300 mb-2">
+                            {question.text}
+                          </label>
+                          {question.type === 'select' || question.type === 'radio' ? (
+                            <select
+                              value={eventQuestionFilters[question.id] || ''}
+                              onChange={(e) => handleEventQuestionFilterChange(question.id, e.target.value)}
+                              className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 text-white rounded-lg focus:ring-2 focus:ring-accent focus:border-accent outline-none appearance-none cursor-pointer"
+                            >
+                              <option value="">All</option>
+                              {question.options?.map(option => (
+                                <option key={option.id} value={option.text}>
+                                  {option.text}
+                                </option>
+                              ))}
+                            </select>
+                          ) : (
+                            <input
+                              type="text"
+                              placeholder={`Filter by ${question.text.toLowerCase()}...`}
+                              value={eventQuestionFilters[question.id] || ''}
+                              onChange={(e) => handleEventQuestionFilterChange(question.id, e.target.value)}
+                              className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent outline-none"
+                            />
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Results Counter */}
             <div className="mt-4 flex items-center justify-between text-sm">
               <span className="text-gray-400">
                 Showing <span className="text-accent font-semibold">{filteredRegistrations.length}</span> of <span className="text-white font-semibold">{registrations.length}</span> registrations
               </span>
-              {(searchTerm || selectedEvent !== 'all') && (
+              {hasActiveFilters() && (
                 <button
-                  onClick={() => {
-                    setSearchTerm('');
-                    setSelectedEvent('all');
-                  }}
+                  onClick={clearAllFilters}
                   className="text-accent hover:text-accent-light transition-colors duration-300"
                 >
-                  Clear filters
+                  Clear all filters
                 </button>
               )}
             </div>
@@ -265,7 +502,11 @@ export default function RegistrationsPage() {
                 <tbody className="divide-y divide-gray-700">
                   {filteredRegistrations.length > 0 ? (
                     filteredRegistrations.map((registration) => (
-                      <tr key={registration._id} className="hover:bg-gray-800/30 transition-colors duration-200">
+                      <tr 
+                        key={registration._id} 
+                        className="hover:bg-gray-800/30 transition-colors duration-200 cursor-pointer"
+                        onClick={() => openUserModal(registration)}
+                      >
                         <td className="px-6 py-4">
                           <div className="flex items-center">
                             <Calendar className="w-5 h-5 text-accent mr-3 flex-shrink-0" />
@@ -344,7 +585,10 @@ export default function RegistrationsPage() {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm">
                           <button
-                            onClick={() => handleDelete(registration._id)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDelete(registration._id);
+                            }}
                             className="text-red-400 hover:text-red-300 transition-colors duration-300 flex items-center gap-1 font-medium"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -369,6 +613,183 @@ export default function RegistrationsPage() {
 
         </div>
       </div>
+      
+      {/* User Details Modal */}
+      {showUserModal && selectedUser && (
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+          <div className="bg-gradient-to-br from-gray-900 to-black rounded-2xl shadow-2xl border-2 border-gray-700/50 max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+            {/* Modal Header */}
+            <div className="sticky top-0 bg-gradient-to-r from-gray-900 to-gray-800 px-6 py-4 border-b border-gray-700 flex justify-between items-center">
+              <h2 className="text-2xl font-bold text-white">Registration Details</h2>
+              <button
+                onClick={() => setShowUserModal(false)}
+                className="text-gray-400 hover:text-white transition-colors duration-300"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6 space-y-6">
+              {/* Event Info */}
+              <div className="bg-gray-800/50 rounded-xl p-4 border border-gray-700">
+                <h3 className="text-lg font-semibold text-accent mb-3 flex items-center gap-2">
+                  <Calendar className="w-5 h-5" />
+                  Event Information
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                  <div>
+                    <span className="text-gray-400">Event:</span>
+                    <p className="text-white font-medium">{selectedUser.event.title}</p>
+                  </div>
+                  <div>
+                    <span className="text-gray-400">Date:</span>
+                    <p className="text-white font-medium">
+                      {new Date(selectedUser.event.date).toLocaleDateString('en-US', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      })}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="text-gray-400">Time:</span>
+                    <p className="text-white font-medium">{selectedUser.event.startTime}</p>
+                  </div>
+                  <div>
+                    <span className="text-gray-400">Location:</span>
+                    <p className="text-white font-medium">{selectedUser.event.location}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Personal Info */}
+              <div className="bg-gray-800/50 rounded-xl p-4 border border-gray-700">
+                <h3 className="text-lg font-semibold text-accent mb-3 flex items-center gap-2">
+                  <Users className="w-5 h-5" />
+                  Personal Information
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                  <div>
+                    <span className="text-gray-400">Full Name:</span>
+                    <p className="text-white font-medium">{selectedUser.fullName}</p>
+                  </div>
+                  <div>
+                    <span className="text-gray-400">Email:</span>
+                    <p className="text-white font-medium">{selectedUser.email}</p>
+                  </div>
+                  <div>
+                    <span className="text-gray-400">Phone:</span>
+                    <p className="text-white font-medium">{selectedUser.phone}</p>
+                  </div>
+                  <div>
+                    <span className="text-gray-400">Age:</span>
+                    <p className="text-white font-medium">{selectedUser.age}</p>
+                  </div>
+                  <div>
+                    <span className="text-gray-400">Gender:</span>
+                    <p className="text-white font-medium">{selectedUser.gender}</p>
+                  </div>
+                  <div>
+                    <span className="text-gray-400">Status:</span>
+                    <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full ml-2 ${
+                      selectedUser.status === 'confirmed' 
+                        ? 'bg-green-500/10 text-green-400 border border-green-500/30'
+                        : selectedUser.status === 'cancelled'
+                        ? 'bg-red-500/10 text-red-400 border border-red-500/30'
+                        : 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/30'
+                    }`}>
+                      {selectedUser.status}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Additional Info */}
+              {(selectedUser.dietaryRestrictions || selectedUser.emergencyContact || selectedUser.additionalNotes) && (
+                <div className="bg-gray-800/50 rounded-xl p-4 border border-gray-700">
+                  <h3 className="text-lg font-semibold text-accent mb-3">Additional Information</h3>
+                  <div className="space-y-3 text-sm">
+                    {selectedUser.dietaryRestrictions && (
+                      <div>
+                        <span className="text-gray-400">Dietary Restrictions:</span>
+                        <p className="text-white font-medium">{selectedUser.dietaryRestrictions}</p>
+                      </div>
+                    )}
+                    {selectedUser.emergencyContact && (
+                      <div>
+                        <span className="text-gray-400">Emergency Contact:</span>
+                        <p className="text-white font-medium">
+                          {selectedUser.emergencyContact}
+                          {selectedUser.emergencyPhone && ` - ${selectedUser.emergencyPhone}`}
+                        </p>
+                      </div>
+                    )}
+                    {selectedUser.additionalNotes && (
+                      <div>
+                        <span className="text-gray-400">Additional Notes:</span>
+                        <p className="text-white font-medium">{selectedUser.additionalNotes}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Custom Questions */}
+              {selectedUser.questionAnswers && selectedUser.questionAnswers.length > 0 && (
+                <div className="bg-gray-800/50 rounded-xl p-4 border border-gray-700">
+                  <h3 className="text-lg font-semibold text-accent mb-3">Custom Registration Questions</h3>
+                  <div className="space-y-3 text-sm">
+                    {selectedUser.questionAnswers.map((qa, index) => (
+                      <div key={index}>
+                        <span className="text-gray-400">{qa.questionText}:</span>
+                        <p className="text-white font-medium">
+                          {Array.isArray(qa.answer) ? qa.answer.join(', ') : qa.answer}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Registration Date */}
+              <div className="bg-gray-800/50 rounded-xl p-4 border border-gray-700">
+                <h3 className="text-lg font-semibold text-accent mb-3">Registration Date</h3>
+                <p className="text-white text-sm">
+                  {new Date(selectedUser.registeredAt).toLocaleString('en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric'
+                  })}
+                </p>
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="sticky bottom-0 bg-gradient-to-r from-gray-900 to-gray-800 px-6 py-4 border-t border-gray-700 flex justify-end gap-3">
+              <button
+                onClick={() => setShowUserModal(false)}
+                className="px-6 py-3 bg-gray-700 text-white rounded-xl hover:bg-gray-600 transition-colors duration-300 font-medium"
+              >
+                Close
+              </button>
+              <button
+                onClick={(e) => {
+                  handleDelete(selectedUser._id);
+                }}
+                className="px-6 py-3 bg-red-600 text-white rounded-xl hover:bg-red-500 transition-colors duration-300 font-medium flex items-center gap-2"
+              >
+                <Trash2 className="w-4 h-4" />
+                Delete Registration
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
