@@ -170,7 +170,8 @@ export async function GET(request) {
     const eventPerformance = events
       .map(event => {
         const eventId = event._id.toString();
-        const regCount = eventRegistrationCounts[eventId]?.count || event.registeredAttendees || 0;
+        // Use calculated count from registrations, fallback to registeredAttendees field if no registrations found
+        const regCount = eventRegistrationCounts[eventId]?.count || 0;
         return {
           title: event.title.length > 20 ? event.title.substring(0, 20) + '...' : event.title,
           fullTitle: event.title,
