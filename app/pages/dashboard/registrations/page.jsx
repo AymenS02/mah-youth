@@ -110,23 +110,26 @@ export default function RegistrationsPage() {
       filtered = filtered.filter(reg => new Date(reg.registeredAt) >= new Date(dateFrom));
     }
     if (dateTo) {
-      filtered = filtered.filter(reg => new Date(reg.registeredAt) <= new Date(dateTo));
+      // Set to end of day to include all registrations on the selected date
+      const endOfDay = new Date(dateTo);
+      endOfDay.setHours(23, 59, 59, 999);
+      filtered = filtered.filter(reg => new Date(reg.registeredAt) <= endOfDay);
     }
     
     // Advanced filters: Event-specific question filters
     Object.entries(eventQuestionFilters).forEach(([questionId, filterValue]) => {
       if (filterValue && filterValue !== '') {
         filtered = filtered.filter(reg => {
-          const answer = reg.questionAnswers?.find(qa => qa.questionId === questionId);
-          if (!answer) return false;
+          const questionAnswer = reg.questionAnswers?.find(qa => qa.questionId === questionId);
+          if (!questionAnswer) return false;
           
           // Handle different answer types
-          if (Array.isArray(answer.answer)) {
-            return answer.answer.some(a => 
+          if (Array.isArray(questionAnswer.answer)) {
+            return questionAnswer.answer.some(a => 
               a.toLowerCase().includes(filterValue.toLowerCase())
             );
           }
-          return String(answer.answer).toLowerCase().includes(filterValue.toLowerCase());
+          return String(questionAnswer.answer).toLowerCase().includes(filterValue.toLowerCase());
         });
       }
     });
@@ -219,6 +222,11 @@ export default function RegistrationsPage() {
         setRegistrations(prev => prev.filter(reg => reg._id !== registrationId));
         setFilteredRegistrations(prev => prev.filter(reg => reg._id !== registrationId));
         alert('Registration deleted successfully');
+        // Close modal if open
+        if (showUserModal && selectedUser?._id === registrationId) {
+          setShowUserModal(false);
+          setSelectedUser(null);
+        }
       } else {
         const data = await response.json();
         alert(`Failed to delete registration: ${data.error}`);
@@ -338,6 +346,7 @@ export default function RegistrationsPage() {
                         onChange={(e) => setAgeMin(e.target.value)}
                         className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent outline-none"
                         min="0"
+                        max={ageMax || "120"}
                       />
                       <input
                         type="number"
@@ -345,7 +354,8 @@ export default function RegistrationsPage() {
                         value={ageMax}
                         onChange={(e) => setAgeMax(e.target.value)}
                         className="w-full px-4 py-2 bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent outline-none"
-                        min="0"
+                        min={ageMin || "0"}
+                        max="120"
                       />
                     </div>
                   </div>
@@ -769,7 +779,6 @@ export default function RegistrationsPage() {
               </button>
               <button
                 onClick={(e) => {
-                  setShowUserModal(false);
                   handleDelete(selectedUser._id);
                 }}
                 className="px-6 py-3 bg-red-600 text-white rounded-xl hover:bg-red-500 transition-colors duration-300 font-medium flex items-center gap-2"
