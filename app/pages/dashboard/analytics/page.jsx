@@ -799,6 +799,9 @@ function EventAnalyticsDetail({ event, eventAnalytics, loading, onBack, COLORS }
           </div>
         </div>
       </div>
+    </div>
+  );
+}
 
 // Reusable Metric Card Component
 function MetricCard({ icon, title, value, subtitle, color }) {
