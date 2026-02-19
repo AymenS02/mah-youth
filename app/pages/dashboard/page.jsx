@@ -185,7 +185,7 @@ export default function Dashboard() {
             Quick Actions
           </h2>
           
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-5 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
             {/* Events Management Card */}
             <div className="bg-gradient-to-br from-gray-900 to-black rounded-2xl overflow-hidden border-2 border-gray-700/50 hover:border-accent/50 transition-all duration-500 group">
               {/* Header */}
