@@ -148,4 +148,8 @@ export default function runHeaderAnimations() {
       isMenuOpen = false;
     }
   });
+
+  return () => {
+    lenis.destroy();
+  };
 }
