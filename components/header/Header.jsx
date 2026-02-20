@@ -8,10 +8,14 @@ import Link from 'next/link';
 const Header = () => {
   useEffect(() => {
     // Ensure code runs after DOM is ready
+    let cleanup;
     const id = requestAnimationFrame(() => {
-      runHeaderAnimations();
+      cleanup = runHeaderAnimations();
     });
-    return () => cancelAnimationFrame(id);
+    return () => {
+      cancelAnimationFrame(id);
+      if (cleanup) cleanup();
+    };
   }, []);
 
   return (

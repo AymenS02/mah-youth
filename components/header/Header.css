@@ -141,6 +141,9 @@
   display: flex;
   transform: translateY(-50%);
   will-change: transform;
+}
+
+.header-component nav:has(.menu-hamburger-icon.active) .menu-overlay-content {
   pointer-events: all;
 }
 
