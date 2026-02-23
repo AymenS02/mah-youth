@@ -476,6 +476,51 @@ const VolunteeringPage = () => {
                                     <option key={opt.id} value={opt.text}>{opt.text}</option>
                                   ))}
                                 </select>
+                              ) : question.type === 'radio' ? (
+                                <div className="space-y-3">
+                                  {question.options?.map(opt => (
+                                    <label key={opt.id} className="flex items-center gap-3 cursor-pointer group">
+                                      <input
+                                        type="radio"
+                                        name={`question-${question.id}`}
+                                        value={opt.text}
+                                        required={question.required}
+                                        checked={execForm.questionAnswers[index]?.answer === opt.text}
+                                        onChange={(e) => {
+                                          const newAnswers = [...execForm.questionAnswers];
+                                          newAnswers[index].answer = e.target.value;
+                                          setExecForm({...execForm, questionAnswers: newAnswers});
+                                        }}
+                                        className="w-5 h-5 accent-accent"
+                                      />
+                                      <span className="text-gray-300 group-hover:text-white transition">{opt.text}</span>
+                                    </label>
+                                  ))}
+                                </div>
+                              ) : question.type === 'checkbox' ? (
+                                <div className="space-y-3">
+                                  {question.options?.map(opt => (
+                                    <label key={opt.id} className="flex items-center gap-3 cursor-pointer group">
+                                      <input
+                                        type="checkbox"
+                                        value={opt.text}
+                                        checked={(execForm.questionAnswers[index]?.answer || '').split(',').filter(Boolean).includes(opt.text)}
+                                        onChange={(e) => {
+                                          const newAnswers = [...execForm.questionAnswers];
+                                          const current = (newAnswers[index].answer || '').split(',').filter(Boolean);
+                                          if (e.target.checked) {
+                                            newAnswers[index].answer = [...current, opt.text].join(',');
+                                          } else {
+                                            newAnswers[index].answer = current.filter(v => v !== opt.text).join(',');
+                                          }
+                                          setExecForm({...execForm, questionAnswers: newAnswers});
+                                        }}
+                                        className="w-5 h-5 accent-accent"
+                                      />
+                                      <span className="text-gray-300 group-hover:text-white transition">{opt.text}</span>
+                                    </label>
+                                  ))}
+                                </div>
                               ) : (
                                 <input
                                   type={question.type}
