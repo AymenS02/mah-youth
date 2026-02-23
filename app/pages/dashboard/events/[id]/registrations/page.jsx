@@ -268,9 +268,6 @@ export default function EventRegistrationsPage({ params }) {
                   <option value="all" className="bg-gray-900">All Genders</option>
                   <option value="Male" className="bg-gray-900">Male</option>
                   <option value="Female" className="bg-gray-900">Female</option>
-                  <option value="Non-binary" className="bg-gray-900">Non-binary</option>
-                  <option value="Prefer not to say" className="bg-gray-900">Prefer not to say</option>
-                  <option value="Other" className="bg-gray-900">Other</option>
                 </select>
               </div>
 
