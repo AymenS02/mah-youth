@@ -196,6 +196,7 @@ const RegistrationQuestions = forwardRef((props, ref) => {
                         className="flex-1 rounded-lg bg-gray-900 text-white px-4 py-3 md:py-1.5 text-base md:text-sm outline-none focus:ring-2 focus:ring-accent"
                       />
                       <button
+                        type="button"
                         onClick={() => removeOption(q.id, option.id)}
                         className="text-gray-500 hover:text-red-400 transition min-w-[40px] h-[40px] md:min-w-[32px] md:h-[32px] flex items-center justify-center"
                       >
@@ -204,6 +205,7 @@ const RegistrationQuestions = forwardRef((props, ref) => {
                     </div>
                   ))}
                   <button
+                    type="button"
                     onClick={() => addOption(q.id)}
                     className="text-base md:text-sm text-accent hover:text-accent/80 transition py-2"
                   >
@@ -215,6 +217,7 @@ const RegistrationQuestions = forwardRef((props, ref) => {
               {/* Action Buttons - Simplified without Up/Down */}
               <div className="grid grid-cols-2 gap-3 mt-4 pt-4 border-t border-gray-700">
                 <button
+                  type="button"
                   onClick={() => duplicateQuestion(q)}
                   className="flex items-center justify-center gap-2 px-4 py-3 md:py-2 rounded-lg bg-gray-700 hover:bg-blue-600 transition text-white text-sm font-medium"
                   title="Duplicate question"
@@ -236,6 +239,7 @@ const RegistrationQuestions = forwardRef((props, ref) => {
                 </button>
 
                 <button
+                  type="button"
                   onClick={() => removeQuestion(q.id)}
                   className="flex items-center justify-center gap-2 px-4 py-3 md:py-2 rounded-lg bg-red-600/20 hover:bg-red-600 transition text-red-400 hover:text-white text-sm font-medium"
                   title="Delete question"
