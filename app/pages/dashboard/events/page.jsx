@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from "/components/header/Header";
-import { CalendarDays, Plus, Trash2, Search, Filter, ArrowLeft, Clock, MapPin, Users, Infinity, DollarSign, Tag } from 'lucide-react';
+import { CalendarDays, Plus, Trash2, Search, Filter, ArrowLeft, Clock, MapPin, Users, Infinity, DollarSign, Tag, ClipboardList } from 'lucide-react';
 
 export default function EventsManagement() {
   const [events, setEvents] = useState([]);
@@ -346,6 +346,13 @@ export default function EventsManagement() {
 
                   {/* Action Buttons */}
                   <div className="flex gap-3">
+                    <button
+                      onClick={() => router.push(`/pages/dashboard/events/${event._id}/registrations`)}
+                      className="flex-1 bg-accent/10 border border-accent/50 text-accent py-3 px-4 rounded-xl hover:bg-accent hover:text-white transition-all duration-300 font-bold text-sm flex items-center justify-center gap-2 group/btn"
+                    >
+                      <ClipboardList className="w-4 h-4 transition-transform duration-300 group-hover/btn:scale-110" />
+                      Registrations
+                    </button>
                     <button
                       onClick={() => handleDelete(event._id)}
                       className="flex-1 bg-red-500/10 border border-red-500/50 text-red-400 py-3 px-4 rounded-xl hover:bg-red-500 hover:text-white transition-all duration-300 font-bold text-sm flex items-center justify-center gap-2 group/btn"

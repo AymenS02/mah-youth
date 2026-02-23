@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from "/components/header/Header";
-import { Users, ArrowLeft, Search, Mail, Phone, Calendar, User } from 'lucide-react';
+import { Users, ArrowLeft, Search, Mail, Phone, Calendar, User, CheckCircle, XCircle } from 'lucide-react';
 
 export default function YouthCommitteeApplicants() {
   const [applicants, setApplicants] = useState([]);
@@ -10,6 +10,7 @@ export default function YouthCommitteeApplicants() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [isLoading, setIsLoading] = useState(true);
+  const [updatingId, setUpdatingId] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -45,12 +46,10 @@ export default function YouthCommitteeApplicants() {
   const filterApplicants = () => {
     let filtered = applicants;
 
-    // Filter by status
     if (filterStatus !== 'all') {
       filtered = filtered.filter(app => app.status === filterStatus);
     }
 
-    // Filter by search term
     if (searchTerm) {
       filtered = filtered.filter(app =>
         app.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -61,6 +60,31 @@ export default function YouthCommitteeApplicants() {
     }
 
     setFilteredApplicants(filtered);
+  };
+
+  const updateStatus = async (applicantId, newStatus) => {
+    setUpdatingId(applicantId);
+    try {
+      const response = await fetch(`/api/volunteering/youth-committee/${applicantId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      if (response.ok) {
+        setApplicants(prev =>
+          prev.map(a => a._id === applicantId ? { ...a, status: newStatus } : a)
+        );
+      } else {
+        const data = await response.json();
+        alert('Failed to update status: ' + data.error);
+      }
+    } catch (error) {
+      console.error('Error updating status:', error);
+      alert('Failed to update status. Please try again.');
+    } finally {
+      setUpdatingId(null);
+    }
   };
 
   const statusCounts = {
@@ -151,8 +175,8 @@ export default function YouthCommitteeApplicants() {
             <div className="bg-gray-900/50 border-2 border-gray-700 rounded-3xl p-12 text-center">
               <Users className="w-16 h-16 text-gray-500 mx-auto mb-4" />
               <p className="text-gray-400 text-lg">
-                {searchTerm || filterStatus !== 'all' 
-                  ? 'No applicants match your filters.' 
+                {searchTerm || filterStatus !== 'all'
+                  ? 'No applicants match your filters.'
                   : 'No applicants yet.'}
               </p>
             </div>
@@ -169,7 +193,7 @@ export default function YouthCommitteeApplicants() {
                         {applicant.firstName} {applicant.lastName}
                       </h3>
                       <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                        applicant.status === 'approved' 
+                        applicant.status === 'approved'
                           ? 'bg-emerald-500/20 text-emerald-400'
                           : applicant.status === 'rejected'
                           ? 'bg-red-500/20 text-red-400'
@@ -203,6 +227,43 @@ export default function YouthCommitteeApplicants() {
                         <strong>Note:</strong> Remember to add this applicant to the WhatsApp group!
                       </p>
                     </div>
+                  </div>
+
+                  {/* Approve / Reject Actions */}
+                  <div className="flex flex-row md:flex-col gap-3 shrink-0">
+                    <button
+                      onClick={() => updateStatus(applicant._id, 'approved')}
+                      disabled={applicant.status === 'approved' || updatingId === applicant._id}
+                      className={`flex items-center gap-2 px-5 py-3 rounded-xl font-bold text-sm transition-all duration-300 ${
+                        applicant.status === 'approved'
+                          ? 'bg-emerald-500/20 text-emerald-400 border-2 border-emerald-500/40 cursor-default'
+                          : 'bg-emerald-500/10 border-2 border-emerald-500/50 text-emerald-400 hover:bg-emerald-500 hover:text-white'
+                      }`}
+                    >
+                      <CheckCircle className="w-4 h-4" />
+                      Approve
+                    </button>
+                    <button
+                      onClick={() => updateStatus(applicant._id, 'rejected')}
+                      disabled={applicant.status === 'rejected' || updatingId === applicant._id}
+                      className={`flex items-center gap-2 px-5 py-3 rounded-xl font-bold text-sm transition-all duration-300 ${
+                        applicant.status === 'rejected'
+                          ? 'bg-red-500/20 text-red-400 border-2 border-red-500/40 cursor-default'
+                          : 'bg-red-500/10 border-2 border-red-500/50 text-red-400 hover:bg-red-500 hover:text-white'
+                      }`}
+                    >
+                      <XCircle className="w-4 h-4" />
+                      Reject
+                    </button>
+                    {applicant.status !== 'pending' && (
+                      <button
+                        onClick={() => updateStatus(applicant._id, 'pending')}
+                        disabled={updatingId === applicant._id}
+                        className="flex items-center gap-2 px-5 py-3 rounded-xl font-bold text-sm bg-yellow-500/10 border-2 border-yellow-500/50 text-yellow-400 hover:bg-yellow-500 hover:text-white transition-all duration-300"
+                      >
+                        Reset
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>

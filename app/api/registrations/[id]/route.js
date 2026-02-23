@@ -34,6 +34,43 @@ export async function GET(request, { params }) {
   }
 }
 
+export async function PATCH(request, { params }) {
+  try {
+    await connectDB();
+
+    const { id } = await params;
+    const body = await request.json();
+
+    const registration = await Registration.findByIdAndUpdate(
+      id,
+      {
+        checkedIn: body.checkedIn,
+        ...(body.checkedIn === true ? { checkedInAt: new Date() } : { checkedInAt: null }),
+      },
+      { new: true }
+    );
+
+    if (!registration) {
+      return Response.json(
+        { error: "Registration not found" },
+        { status: 404 }
+      );
+    }
+
+    return Response.json(
+      { success: true, registration },
+      { status: 200 }
+    );
+
+  } catch (error) {
+    console.error("Error updating registration:", error);
+    return Response.json(
+      { error: "Failed to update registration" },
+      { status: 500 }
+    );
+  }
+}
+
 export async function DELETE(request, { params }) {
   try {
     await connectDB();
