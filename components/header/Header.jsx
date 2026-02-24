@@ -63,7 +63,9 @@ const Header = () => {
                     <Link className="links" href="/pages/contact">Contact</Link>
                   </div>
                 </div>
-
+                <div className="menu-col">
+                  <Link className="links" href="/pages/dashboard">Admin Portal</Link>
+                </div>
                 <div className="menu-col">
                   {/* Additional menu items can go here */}
                 </div>
@@ -74,9 +76,6 @@ const Header = () => {
                 </div>
                 <div className="menu-col">
                   <p className='paragraph'>youth@hamiltonmosque.com</p>
-                </div>
-                <div className="menu-col">
-                  <Link className="links" href="/pages/dashboard">Admin Portal</Link>
                 </div>
               </div>
             </div>
