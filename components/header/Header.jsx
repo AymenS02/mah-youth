@@ -75,6 +75,9 @@ const Header = () => {
                 <div className="menu-col">
                   <p className='paragraph'>youth@hamiltonmosque.com</p>
                 </div>
+                <div className="menu-col">
+                  <Link className="links" href="/pages/login">Admin Portal</Link>
+                </div>
               </div>
             </div>
           </div>
