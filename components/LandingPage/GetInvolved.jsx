@@ -8,7 +8,7 @@ const GetInvolved = () => {
   const router = useRouter();
 
   const handleClick = () => {
-      router.push("/pages/contact"); 
+      router.push("/pages/volunteering"); 
       window.scrollTo(0, 0); // Then scroll to top
     };
   const opportunities = [
