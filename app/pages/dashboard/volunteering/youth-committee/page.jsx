@@ -9,6 +9,7 @@ export default function YouthCommitteeApplicants() {
   const [filteredApplicants, setFilteredApplicants] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
+  const [filterGender, setFilterGender] = useState('all'); // NEW
   const [isLoading, setIsLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState(null);
   const router = useRouter();
@@ -25,7 +26,7 @@ export default function YouthCommitteeApplicants() {
 
   useEffect(() => {
     filterApplicants();
-  }, [searchTerm, filterStatus, applicants]);
+  }, [searchTerm, filterStatus, filterGender, applicants]); // NEW: filterGender
 
   const fetchApplicants = async () => {
     try {
@@ -48,6 +49,11 @@ export default function YouthCommitteeApplicants() {
 
     if (filterStatus !== 'all') {
       filtered = filtered.filter(app => app.status === filterStatus);
+    }
+
+    // NEW: Gender filter (case-insensitive)
+    if (filterGender !== 'all') {
+      filtered = filtered.filter(app => (app.gender || '').toLowerCase() === filterGender);
     }
 
     if (searchTerm) {
@@ -140,31 +146,44 @@ export default function YouthCommitteeApplicants() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Search */}
             <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
                 type="text"
                 placeholder="Search by name, email, or phone..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-12 pr-6 py-4 bg-gray-800 border-2 border-gray-700 rounded-xl text-white focus:border-purple-500 focus:ring-2 focus:ring-purple-500/50 transition-all"
+                className="w-full p-6 py-4 bg-gray-800 border-2 border-gray-700 rounded-xl text-white focus:border-purple-500 focus:ring-2 focus:ring-purple-500/50 transition-all"
               />
             </div>
 
-            {/* Status Filter */}
-            <div className="flex gap-3 overflow-x-auto">
-              {['all', 'pending', 'approved', 'rejected'].map(status => (
-                <button
-                  key={status}
-                  onClick={() => setFilterStatus(status)}
-                  className={`px-6 py-4 rounded-xl font-bold whitespace-nowrap transition-all ${
-                    filterStatus === status
-                      ? 'bg-purple-500 text-white'
-                      : 'bg-gray-800 border-2 border-gray-700 text-gray-300 hover:border-purple-500/50'
-                  }`}
-                >
-                  {status.charAt(0).toUpperCase() + status.slice(1)} ({statusCounts[status]})
-                </button>
-              ))}
+            {/* Status + Gender Filters */}
+            <div className="flex flex-col md:flex-row gap-3">
+              {/* Status Filter */}
+              <div className="flex gap-3 flex-wrap">
+                {['all', 'pending', 'approved', 'rejected'].map(status => (
+                  <button
+                    key={status}
+                    onClick={() => setFilterStatus(status)}
+                    className={`px-6 py-4 rounded-xl font-bold whitespace-nowrap transition-all ${
+                      filterStatus === status
+                        ? 'bg-purple-500 text-white'
+                        : 'bg-gray-800 border-2 border-gray-700 text-gray-300 hover:border-purple-500/50'
+                    }`}
+                  >
+                    {status.charAt(0).toUpperCase() + status.slice(1)} ({statusCounts[status]})
+                  </button>
+                ))}
+              </div>
+
+              {/* NEW: Gender Filter */}
+              <select
+                value={filterGender}
+                onChange={(e) => setFilterGender(e.target.value)}
+                className="px-5 py-4 rounded-xl font-bold bg-gray-800 border-2 border-gray-700 text-gray-300 hover:border-purple-500/50 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/50 transition-all"
+              >
+                <option value="all">All genders</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+              </select>
             </div>
           </div>
         </div>
@@ -175,7 +194,7 @@ export default function YouthCommitteeApplicants() {
             <div className="bg-gray-900/50 border-2 border-gray-700 rounded-3xl p-12 text-center">
               <Users className="w-16 h-16 text-gray-500 mx-auto mb-4" />
               <p className="text-gray-400 text-lg">
-                {searchTerm || filterStatus !== 'all'
+                {searchTerm || filterStatus !== 'all' || filterGender !== 'all'
                   ? 'No applicants match your filters.'
                   : 'No applicants yet.'}
               </p>
