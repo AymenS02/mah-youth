@@ -5,11 +5,39 @@ import React, { useState } from "react";
 const Newsletter = () => {
   const [email, setEmail] = useState("");
   const [isFocused, setIsFocused] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState(null);
+  const [error, setError] = useState(null);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle subscription logic here
-    console.log("Subscribing:", email);
+
+    setLoading(true);
+    setError(null);
+    setMessage(null);
+
+    try {
+      const res = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || 'Something went wrong');
+      }
+
+      setMessage('🎉 You’re subscribed!');
+      setEmail('');
+    } catch (err) {
+      setError('Please enter a valid email address');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -61,26 +89,16 @@ const Newsletter = () => {
                     required
                   />
                   {/* Floating label effect */}
-                  {email && (
-                    <span className="absolute left-6 -top-2 text-xs font-semibold bg-gradient-primary px-2 rounded">
-                      Email Address
-                    </span>
-                  )}
+
                 </div>
                 <button 
                   type="submit"
-                  className="group relative px-8 py-4 rounded-xl font-semibold hover:scale-110 transition-all duration-300 overflow-hidden flex items-center justify-center gap-2"
+                  disabled={loading}
+                  className="group relative px-8 py-4 rounded-xl font-semibold transition-all duration-300 overflow-hidden flex items-center justify-center gap-2 disabled:opacity-60"
                 >
-                  <span className="relative z-10">Subscribe</span>
-                  <svg 
-                    className="w-5 h-5 relative z-10 transition-transform duration-300 group-hover:translate-x-1" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                  </svg>
-                  <div className="absolute inset-0 translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
+                  <span className="relative z-10">
+                    {loading ? 'Subscribing...' : 'Subscribe'}
+                  </span>
                 </button>
               </div>
             </div>
@@ -89,6 +107,18 @@ const Newsletter = () => {
             <div className="absolute -top-3 -left-3 w-6 h-6 border-t-2 border-l-2 border-white/20 rounded-tl-lg"></div>
             <div className="absolute -bottom-3 -right-3 w-6 h-6 border-b-2 border-r-2 border-white/20 rounded-br-lg"></div>
           </form>
+
+          {message && (
+            <p className="text-green-400 font-medium m-4">
+              {message}
+            </p>
+          )}
+
+          {error && (
+            <p className="text-red-400 font-medium m-4">
+              {error}
+            </p>
+          )}
 
           {/* Features */}
           <div className="flex flex-wrap items-center justify-center gap-6 mb-8">
